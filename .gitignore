@@ -1,0 +1,65 @@
+# ============================================================
+# 《人格牌》PersonaCards Unity 项目忽略规则
+# 原则：
+#   - Unity 可再生缓存/生成目录一律忽略（Library 有 2G+）
+#   - Assets/ 下所有 .meta 文件必须提交（资源 GUID 引用依赖它）
+#   - 必须提交：Assets/、Packages/(含 packages-lock.json)、
+#     ProjectSettings/、Docs/、根目录策划案文档
+# ============================================================
+
+# ---------- Unity 自动生成目录（体积大头，必须忽略） ----------
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# ---------- Unity 构建与录制输出 ----------
+/[Bb]uild/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+*.unitypackage
+
+# ---------- Unity 崩溃与运行日志 ----------
+sysinfo.txt
+crash.dmp
+error.log
+output_log.txt
+*.crash
+
+# ---------- IDE / 编辑器本地文件 ----------
+.vs/
+.vsconfig
+.idea/
+.vscode/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.pidb.meta
+*.booproj
+*.svd
+*.userprefs
+
+# ---------- 系统与办公软件临时文件 ----------
+.DS_Store
+Thumbs.db
+*~
+~$*
+.~*
+
+# ============================================================
+# 后续资源预留（按需启用，不需要时保持注释状态）
+# ============================================================
+
+# 若美术音频（BGM/视频/大图）进场后单文件超过几十 MB，
+# 建议启用 Git LFS，并在 .gitattributes 中声明，例如：
+#   Assets/Art/** filter=lfs diff=lfs merge=lfs -text
+#   Assets/Audio/** filter=lfs diff=lfs merge=lfs -text
+
+# 移动端/主机平台构建产物（若未来扩展目标平台）：
+# *.apk
+# *.aab
+# *.ipa
+# *.app

@@ -1,0 +1,21 @@
+{
+  "name": "PersonaCards.UI",
+  "rootNamespace": "PersonaCards.UI",
+  "references": [
+    "PersonaCards.Core",
+    "PersonaCards.Data",
+    "PersonaCards.Cards",
+    "PersonaCards.Battle",
+    "Unity.InputSystem",
+    "Unity.ugui"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

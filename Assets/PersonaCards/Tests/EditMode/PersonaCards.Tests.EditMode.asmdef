@@ -1,0 +1,27 @@
+{
+  "name": "PersonaCards.Tests.EditMode",
+  "rootNamespace": "PersonaCards.Tests.EditMode",
+  "references": [
+    "PersonaCards.Core",
+    "PersonaCards.Data",
+    "PersonaCards.Cards",
+    "PersonaCards.Battle",
+    "PersonaCards.UI"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

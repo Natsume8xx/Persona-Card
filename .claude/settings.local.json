@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"/Users/natsumestar/Downloads/unity/GJ/小丑牌项目组\" -iname \"*玩法设计*\" -o -iname \"*.docx\" 2>/dev/null | head -20)",
+      "Read(//Users/natsumestar/Downloads/unity/GJ/小丑牌项目组/**)",
+      "Bash(textutil -convert txt -output /tmp/gdd_v1_1.txt \"《人格牌》-游戏玩法设计方案_v1.1.docx\")",
+      "Read(//tmp/**)",
+      "Bash(grep -o \"m_Script: {fileID: [0-9]*, guid: [a-f0-9]*\" BattlePrototype.unity)",
+      "Bash(git --version)",
+      "Bash(git config *)",
+      "Bash(gh auth *)"
+    ]
+  }
+}

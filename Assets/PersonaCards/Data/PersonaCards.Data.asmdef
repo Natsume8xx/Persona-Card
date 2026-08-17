@@ -1,0 +1,16 @@
+{
+  "name": "PersonaCards.Data",
+  "rootNamespace": "PersonaCards.Data",
+  "references": [
+    "PersonaCards.Core"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
