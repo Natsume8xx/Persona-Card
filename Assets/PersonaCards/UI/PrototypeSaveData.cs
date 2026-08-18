@@ -3,13 +3,19 @@ using System.Collections.Generic;
 
 namespace PersonaCards.UI
 {
+    /// <summary>存档根对象：schemaVersion 3（P0-8 升级 v4 并迁移字段名）。</summary>
     [Serializable]
     public sealed class PrototypeSaveData
     {
         public int schemaVersion = 3;
         public bool hasActiveRun;
         public int stage;
+        /// <summary>当前战斗节点索引（JSON 字段名沿用 battleNumber 以兼容旧档；P0-8 升 schema v4 时重命名为 nodeIndex）。</summary>
         public int battleNumber;
+        /// <summary>装备阶段是否由 Boss 揭示"返回检查装备"进入：true 时确认装备回到揭示界面（保留节点）。旧档缺该字段时为 false，行为与新局一致。</summary>
+        public bool personaSetupReturnsToBossReveal;
+        /// <summary>本局种子：场次种子由它派生，保证同局存档恢复后手牌顺序一致。</summary>
+        public uint runSeed;
         public int coins;
         public int selectedJourneyCardIndex;
         public bool rewardClaimed;

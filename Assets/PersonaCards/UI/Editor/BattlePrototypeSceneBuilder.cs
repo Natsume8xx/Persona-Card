@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using PersonaCards.Data;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace PersonaCards.UI.Editor
                 var scene = SceneManager.GetActiveScene();
                 if (scene.path != ScenePath) return;
                 if (GameObject.Find("Prototype Schema - Boss Rules Pass") == null) Build();
-                ValidateThreeBattleJourney();
+                ValidateSixBattleJourney();
             };
         }
 
@@ -180,7 +181,8 @@ namespace PersonaCards.UI.Editor
                 flowReferences.ForgeCandidates,
                 flowReferences.ForgeCandidateButtons,
                 flowReferences.ForgeConfirm,
-                controller);
+                controller,
+                EnsureRunRouteAsset());
 
             var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
@@ -191,8 +193,21 @@ namespace PersonaCards.UI.Editor
             Debug.Log("BattlePrototype rebuilt with serialized UI hierarchy and card prefab.");
         }
 
-        [MenuItem("Persona Cards/Validate Three Battle Journey %#v")]
-        public static void ValidateThreeBattleJourney()
+        /// <summary>确保路线资产存在并返回引用：缺失时按 GDD 默认路线创建（场景重建时自动挂接）。</summary>
+        private static RunRouteAsset EnsureRunRouteAsset()
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<RunRouteAsset>(RunRouteAssetGenerator.AssetPath);
+            if (asset == null)
+            {
+                RunRouteAssetGenerator.CreateOrReset();
+                asset = AssetDatabase.LoadAssetAtPath<RunRouteAsset>(RunRouteAssetGenerator.AssetPath);
+                Debug.Log("[RunRoute] 场景重建时发现路线资产缺失，已按默认路线自动创建。");
+            }
+            return asset;
+        }
+
+        [MenuItem("Persona Cards/Validate Six Battle Journey %#v")]
+        public static void ValidateSixBattleJourney()
         {
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             var requiredObjects = new[]
@@ -232,7 +247,7 @@ namespace PersonaCards.UI.Editor
                 "rewardCardText", "shopCardText", "shopCoinsText", "shopStatusText",
                 "rewardPreviousButton", "rewardNextButton", "shopPreviousButton", "shopNextButton",
                 "shopDeleteButton", "shopReforgeButton", "shopEnhanceButton",
-                "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController"
+                "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController", "runRoute"
             })
             {
                 var property = serializedFlow.FindProperty(propertyName);
@@ -283,16 +298,31 @@ namespace PersonaCards.UI.Editor
             }
 
             var flow = new PrototypeFlowStateMachine();
-            if (!flow.StartNewRun() || !flow.ConfirmPersonaSetup() || flow.BattleNumber != 1 ||
-                !flow.CompleteBattle(true) || !flow.ContinueFromReward() || flow.BattleNumber != 2 ||
-                !flow.CompleteBattle(true) || !flow.ContinueFromShop() || !flow.BeginBossBattle() ||
-                flow.BattleNumber != 3 || !flow.CompleteBattle(true) || flow.Stage != PrototypeFlowStage.RunReport ||
-                !flow.ContinueToForge() || flow.Stage != PrototypeFlowStage.PersonaForge)
+            if (!flow.StartNewRun() || !flow.ConfirmPersonaSetup() || flow.NodeIndex != 0)
             {
                 throw new System.InvalidOperationException("Journey validation failed: happy path state transitions are invalid.");
             }
+            for (var node = 0; node < RunRoute.BattleCount; node++)
+            {
+                if (flow.Stage != PrototypeFlowStage.Battle || !flow.CompleteBattle(true))
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node} battle transition is invalid.");
+                if (RunRoute.IsFinalNode(node))
+                {
+                    if (flow.Stage != PrototypeFlowStage.RunReport)
+                        throw new System.InvalidOperationException("Journey validation failed: final node did not reach run report.");
+                    continue;
+                }
+                if (!flow.ContinueFromReward() || !flow.ContinueFromShop() || flow.NodeIndex != node + 1)
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node} reward/shop transition is invalid.");
+                if (RunRoute.NextNodeIsBoss(node) && !flow.BeginBossBattle())
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node + 1} boss reveal transition is invalid.");
+            }
+            if (!flow.ContinueToForge() || flow.Stage != PrototypeFlowStage.PersonaForge)
+            {
+                throw new System.InvalidOperationException("Journey validation failed: forge transition is invalid.");
+            }
 
-            Debug.Log("Three-battle journey validation passed: scene bindings and full route are valid.");
+            Debug.Log("Six-battle journey validation passed: scene bindings and full route are valid.");
         }
 
         private static GameObject FindInScene(Scene scene, string name)
@@ -472,7 +502,7 @@ namespace PersonaCards.UI.Editor
             var forgeConfirm = CreateButton(forgeCard.transform, "Forge Confirm Button", "确认获得", new Vector2(0.32f, 0.07f), new Vector2(0.68f, 0.19f), Gold);
             forgeConfirm.interactable = false;
 
-            var battleProgress = CreateText(battleScreen.transform, "Journey Progress", "旅程 1 / 3", 20, TextAnchor.MiddleCenter, new Vector2(0.43f, 0.955f), new Vector2(0.57f, 0.995f), Gold, FontStyle.Bold);
+            var battleProgress = CreateText(battleScreen.transform, "Journey Progress", "旅程 1 / 6", 20, TextAnchor.MiddleCenter, new Vector2(0.43f, 0.955f), new Vector2(0.57f, 0.995f), Gold, FontStyle.Bold);
 
             battleScreen.SetActive(false);
             collection.gameObject.SetActive(false);

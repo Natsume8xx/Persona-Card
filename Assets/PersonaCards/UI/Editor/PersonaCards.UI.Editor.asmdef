@@ -3,10 +3,13 @@
   "rootNamespace": "PersonaCards.UI.Editor",
   "references": [
     "PersonaCards.UI",
+    "PersonaCards.Data",
     "Unity.InputSystem",
     "Unity.ugui"
   ],
-  "includePlatforms": ["Editor"],
+  "includePlatforms": [
+    "Editor"
+  ],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

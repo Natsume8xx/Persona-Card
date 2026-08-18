@@ -7,6 +7,7 @@ using PersonaCards.Battle.Bosses;
 using PersonaCards.Battle.Personas;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
+using PersonaCards.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,6 +73,8 @@ namespace PersonaCards.UI
         [SerializeField] private Button[] forgeCandidateButtons;
         [SerializeField] private Button forgeConfirmButton;
         [SerializeField] private BattlePrototypeController battleController;
+        /// <summary>整局路线表资产（P0-1 数据驱动）：Awake 时注入 RunRoute；未配置时回落内置默认路线。</summary>
+        [SerializeField] private RunRouteAsset runRoute;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -82,6 +85,8 @@ namespace PersonaCards.UI
         private readonly List<PersonaCardDefinition> _personaCollection = new List<PersonaCardDefinition>();
         private PrototypeSaveStore _saveStore;
         private bool _rewardClaimed;
+        /// <summary>本局种子：场次种子 = _runSeed + 节点序号 + 1，保证同局存档恢复后手牌顺序一致。</summary>
+        private uint _runSeed;
         private int _selectedJourneyCardIndex;
         private bool _collectionOpen;
         private int _collectionPage;
@@ -108,7 +113,7 @@ namespace PersonaCards.UI
             Text[] battlePersonaNames, Text[] battlePersonaRules,
             Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtonsValue,
             Button forgeConfirm,
-            BattlePrototypeController battlePrototype)
+            BattlePrototypeController battlePrototype, RunRouteAsset routeAsset)
         {
             mainMenuScreen = mainMenu;
             collectionScreen = collection;
@@ -168,10 +173,15 @@ namespace PersonaCards.UI
             forgeCandidateButtons = forgeCandidateButtonsValue;
             forgeConfirmButton = forgeConfirm;
             battleController = battlePrototype;
+            runRoute = routeAsset;
         }
 
         private void Awake()
         {
+            // 路线资产注入：null 时 RunRoute 回落内置默认路线，流程仍可跑（P0-1 数据驱动）
+            if (runRoute == null)
+                Debug.LogWarning("[Flow] runRoute 路线资产未配置：使用内置默认路线（6 战 5 店）。");
+            RunRoute.Configure(runRoute);
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
             startButton.onClick.AddListener(StartNewRun);
@@ -335,25 +345,41 @@ namespace PersonaCards.UI
             }
         }
 
+        /// <summary>开始新局：人格装备保留（_personaLoadout 沿用上局选择），其余旅程状态全部重建。</summary>
         private void StartNewRun()
         {
             if (!_flow.StartNewRun()) return;
-            _journeyDeck = new JourneyDeckState(StandardDeckFactory.Create());
             _personaLoadout ??= new PersonaLoadoutState();
-            _behaviorTracker = new RunBehaviorTracker();
             EnsureInitialCollection();
+            InitializeRun();
+            Render();
+            SaveActiveRun();
+        }
+
+        /// <summary>初始化一局新旅程：重建 52 张牌库、重置金币/奖励状态、生成局种子。新开局与"返回准备"重开共用。</summary>
+        private void InitializeRun()
+        {
+            _journeyDeck = new JourneyDeckState(StandardDeckFactory.Create());
+            _behaviorTracker = new RunBehaviorTracker();
             _forgeState = null;
             _selectedForgeCandidate = -1;
             _rewardClaimed = false;
             _selectedJourneyCardIndex = 0;
-            Render();
-            SaveActiveRun();
+            _runSeed = unchecked((uint)System.Environment.TickCount);
+            Debug.Log($"[Flow] 新旅程初始化：牌库 {_journeyDeck.Cards.Count} 张，金币 {_journeyDeck.Coins}，局种子 {_runSeed}。");
         }
 
         private void ConfirmPersonaSetup()
         {
             if (!_flow.ConfirmPersonaSetup()) return;
-            StartCurrentBattle();
+            if (_flow.Stage == PrototypeFlowStage.Battle)
+            {
+                StartCurrentBattle(); // 新局：进第 0 节点（内部会存档）
+            }
+            else
+            {
+                SaveActiveRun(); // 装备检查完毕回 Boss 揭示：战斗未开始，仅保存装备变化
+            }
             Render();
         }
 
@@ -364,31 +390,46 @@ namespace PersonaCards.UI
             Render();
         }
 
+        /// <summary>领取奖励强化：所选牌获得筹码强化后进入商店（奖励之后固定接商店，不再直接开战）。</summary>
         private void ContinueFromReward()
         {
             if (_journeyDeck == null || _rewardClaimed || !_journeyDeck.GrantRewardEnhancement(SelectedJourneyCard.Id)) return;
             _rewardClaimed = true;
             if (!_flow.ContinueFromReward()) return;
-            StartCurrentBattle();
+            Debug.Log($"[Flow] 已领取节点 {_flow.NodeIndex} 的奖励强化（{SelectedJourneyCard.Id}），进入商店。");
+            SaveActiveRun();
             Render();
         }
 
+        /// <summary>离开商店：推进到下一节点；普通战直接开战，Boss 战先进入揭示界面。</summary>
         private void ContinueFromShop()
         {
-            if (_flow.ContinueFromShop())
+            if (!_flow.ContinueFromShop()) return;
+            if (_flow.Stage == PrototypeFlowStage.Battle)
             {
-                SaveActiveRun();
-                Render();
+                StartCurrentBattle(); // 下一场是普通战：直接开战（内部会存档）
             }
+            else
+            {
+                SaveActiveRun(); // 下一场是 Boss 战：停留在揭示界面
+            }
+            Render();
         }
 
+        /// <summary>按路线表启动当前节点战斗：目标分、场次种子、Boss 均来自 RunRoute 与局种子。</summary>
         private void StartCurrentBattle()
         {
-            var target = _flow.BattleNumber switch { 1 => 260L, 2 => 330L, _ => 420L };
-            var seed = (uint)(20260810 + _flow.BattleNumber);
-            var bossEncounter = _flow.BattleNumber == 3 ? BossEncounterCatalog.CreateMirrorKeeper() : null;
-            battleController.BeginBattle(target, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), bossEncounter);
-            battleProgressText.text = $"旅程 {_flow.BattleNumber} / 3";
+            var node = RunRoute.GetNode(_flow.NodeIndex);
+            var seed = unchecked(_runSeed + (uint)(node.Index + 1)); // 场次种子由局种子派生，保证同局可复现
+            var boss = node.kind == RunNodeKind.BossBattle
+                ? BossEncounterCatalog.CreateFromPool(node.bossPoolId) // TODO(P0-3)：按池出 Boss，当前临时统一返回镜厅守门人
+                : null;
+            if (node.kind == RunNodeKind.BossBattle)
+                Debug.LogWarning($"[Boss] 节点 {node.Index} 难度池 {node.bossPoolId} 尚未落地（TODO P0-3），临时返回镜厅守门人。");
+            battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss);
+            battleProgressText.text = $"旅程 {node.Index + 1} / {RunRoute.BattleCount}";
+            Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，场次种子 {seed}" +
+                      (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));
             SaveActiveRun();
         }
 
@@ -400,10 +441,11 @@ namespace PersonaCards.UI
             Render();
         }
 
+        /// <summary>Boss 揭示界面"返回检查装备"：保留本局（牌库/种子/节点不变），回装备界面；确认装备后回到揭示界面。</summary>
         private void ReturnToPersonaSetup()
         {
-            _flow.ReturnToMainMenu();
-            _flow.StartNewRun();
+            if (!_flow.ReturnToPersonaSetup()) return;
+            Debug.Log($"[Flow] 从 Boss 揭示返回装备检查：本局保留，节点 {_flow.NodeIndex}。");
             SaveActiveRun();
             Render();
         }
@@ -458,6 +500,7 @@ namespace PersonaCards.UI
         {
             var won = status == BattleStatus.Won;
             if (!_flow.CompleteBattle(won)) return;
+            Debug.Log($"[Flow] 战斗结算：{(won ? "胜利" : "失败")}，得分 {score} / 目标 {target}，进入阶段 {_flow.Stage}。");
 
             if (!won)
             {
@@ -469,14 +512,11 @@ namespace PersonaCards.UI
                 var report = _behaviorTracker.CreateReport();
                 reportSummaryText.text = $"{report.Title}\n\n主导牌型：{HandName(report.DominantHand)}\n牌型集中度：{report.Focus}%    筛选倾向：{report.Restraint}%    得分效率：{report.Efficiency}%\n\n有效出牌 {report.Plays} 次 · 弃牌 {report.Discards} 次 · 累计得分 {report.Score}";
             }
-            else if (_flow.Stage == PrototypeFlowStage.Reward)
+            else
             {
+                // 胜利且非最终节点 → 奖励阶段：重置选牌与领取状态（每场胜利都会经过这里，必须在每次进入时重置）
                 _selectedJourneyCardIndex = 0;
-            }
-            else if (_flow.Stage == PrototypeFlowStage.Shop)
-            {
-                _selectedJourneyCardIndex = 0;
-                shopStatusText.text = "请选择一张牌和一项服务";
+                _rewardClaimed = false;
             }
             SaveActiveRun();
             Render();
@@ -605,21 +645,33 @@ namespace PersonaCards.UI
                     data.behavior.cardsDiscarded, data.behavior.score, handCounts);
                 _selectedJourneyCardIndex = Mathf.Clamp(data.selectedJourneyCardIndex, 0, _journeyDeck.Cards.Count - 1);
                 _rewardClaimed = data.rewardClaimed;
+                _runSeed = data.runSeed; // 旧档无该字段时为 0：场次种子退化为 节点序号+1，仍可复现
                 var stage = (PrototypeFlowStage)data.stage;
-                _flow.Restore(stage, data.battleNumber);
+                _flow.Restore(stage, data.battleNumber, data.personaSetupReturnsToBossReveal); // JSON 字段名沿用 battleNumber，语义为节点索引（P0-8 重命名）
+                Debug.Log($"[Flow] 恢复存档：阶段 {stage}，节点 {data.battleNumber}，局种子 {_runSeed}，金币 {_journeyDeck.Coins}。");
                 if (stage == PrototypeFlowStage.PersonaForge)
                     _forgeState = new PersonaForgeState(_behaviorTracker.CreateReport(), 20260820u);
                 if (stage == PrototypeFlowStage.Battle && data.battle != null && data.battle.hasSnapshot)
+                {
                     battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout());
+                    // 快照恢复不经过 StartCurrentBattle，进度文案需在此显式刷新（走查反馈修复：否则残留场景默认文案）
+                    battleProgressText.text = $"旅程 {_flow.NodeIndex + 1} / {RunRoute.BattleCount}";
+                }
                 else if (stage == PrototypeFlowStage.Battle)
+                {
                     StartCurrentBattle();
+                }
                 Render();
                 RefreshPersonaLoadout();
                 RefreshForge();
             }
             catch (Exception exception)
             {
+                // 恢复失败：回到干净的主菜单，避免玩家卡在残缺界面；存档保留原样，新开一局会整体覆盖
                 Debug.LogWarning($"活动旅程恢复失败：{exception.Message}");
+                _flow.ReturnToMainMenu();
+                continueButton.interactable = false;
+                Render();
             }
         }
 
@@ -683,7 +735,9 @@ namespace PersonaCards.UI
             {
                 hasActiveRun = hasActiveRun,
                 stage = (int)_flow.Stage,
-                battleNumber = _flow.BattleNumber,
+                battleNumber = _flow.NodeIndex, // JSON 字段名沿用 battleNumber（P0-8 升 schema v4 时重命名为 nodeIndex），语义为节点索引
+                personaSetupReturnsToBossReveal = _flow.PersonaSetupReturnsToBossReveal,
+                runSeed = _runSeed,
                 coins = _journeyDeck.Coins,
                 selectedJourneyCardIndex = _selectedJourneyCardIndex,
                 rewardClaimed = _rewardClaimed,
@@ -824,8 +878,11 @@ namespace PersonaCards.UI
             bossRevealScreen.SetActive(_flow.Stage == PrototypeFlowStage.BossReveal);
             if (_flow.Stage == PrototypeFlowStage.BossReveal && bossRevealRuleText != null)
             {
-                var encounter = BossEncounterCatalog.CreateMirrorKeeper().Definition;
-                bossRevealRuleText.text = $"主规则 · {encounter.RuleName}\n{encounter.RuleDescription}\n\n介入事件 · {encounter.InterventionName}\n{encounter.InterventionDescription}\n\n目标分数：420　出牌：4　弃牌：3";
+                var node = RunRoute.GetNode(_flow.NodeIndex);
+                // TODO(P0-3/P0-9)：Boss 名称与规则文本应按难度池数据驱动；当前临时统一展示镜厅守门人。
+                // TODO(P0-2)：出牌/弃牌次数将参数化，当前沿用固定值 4/3。
+                var encounter = BossEncounterCatalog.CreateFromPool(node.bossPoolId).Definition;
+                bossRevealRuleText.text = $"主规则 · {encounter.RuleName}\n{encounter.RuleDescription}\n\n介入事件 · {encounter.InterventionName}\n{encounter.InterventionDescription}\n\n目标分数：{node.targetScore}　出牌：4　弃牌：3";
             }
             battleScreen.SetActive(_flow.Stage == PrototypeFlowStage.Battle);
             rewardScreen.SetActive(_flow.Stage == PrototypeFlowStage.Reward);
