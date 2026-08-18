@@ -1,4 +1,5 @@
 using System;
+using PersonaCards.Data;
 
 namespace PersonaCards.Battle.Bosses
 {
@@ -21,6 +22,14 @@ namespace PersonaCards.Battle.Bosses
         public static BossEncounterRuntime CreateMirrorKeeper()
         {
             return new BossEncounterRuntime(MirrorKeeper);
+        }
+
+        /// <summary>按难度池创建 Boss 遭遇（P0-3 前临时实现：任意池一律返回镜厅守门人；本程序集为无引擎依赖的纯逻辑层，日志由 UI 层调用方负责）。</summary>
+        /// <param name="poolId">难度池 id，来自路线表节点配置。</param>
+        public static BossEncounterRuntime CreateFromPool(BossPoolId poolId)
+        {
+            // TODO(P0-3)：按 Primary/Intermediate/Advanced 三池落地 Boss 定义与规则抽取
+            return CreateMirrorKeeper();
         }
 
         public static BossEncounterRuntime Restore(BossEncounterSnapshot snapshot)

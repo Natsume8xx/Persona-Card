@@ -14810,7 +14810,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u65C5\u7A0B 1 / 3"
+  m_Text: "\u65C5\u7A0B 1 / 6"
 --- !u!1 &828866006
 GameObject:
   m_ObjectHideFlags: 0
@@ -25351,6 +25351,7 @@ MonoBehaviour:
   - {fileID: 1865189689}
   forgeConfirmButton: {fileID: 1295235912}
   battleController: {fileID: 1325361179}
+  runRoute: {fileID: 11400000, guid: ed977cb8a71304a1b816a9994439b9d4, type: 2}
 --- !u!4 &1401831761
 Transform:
   m_ObjectHideFlags: 0
