@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PersonaCards.Battle;
 using PersonaCards.Data;
 using UnityEngine;
 
@@ -7,28 +8,40 @@ namespace PersonaCards.UI
 {
     /// <summary>
     /// 整局流程的唯一权威访问口（状态机与控制器只通过这里读取路线）。
-    /// 数据来自 RunRouteAsset（Inspector 可编辑）；资产缺失或校验失败时回落内置默认路线（GDD 2.6 白盒表），保证任何情况下流程可跑。
+    /// 数据来自 RunRouteAsset（Inspector 可编辑或由 xlsx 导入命令写入）；资产缺失或校验失败时回落内置默认路线（= 配表白盒），保证任何情况下流程可跑。
     /// </summary>
     public static class RunRoute
     {
-        /// <summary>内置默认路线（GDD 2.6 白盒初值）：6 场战斗、5 次商店，Boss 在节点 1/3/5。与 RunRoute.asset 初值保持一致。</summary>
-        private static readonly IReadOnlyList<RunBattleNode> DefaultNodes = new List<RunBattleNode>
-        {
-            new RunBattleNode(RunNodeKind.NormalBattle, 350, BossPoolId.None, true),
-            new RunBattleNode(RunNodeKind.BossBattle, 550, BossPoolId.Primary, true),
-            new RunBattleNode(RunNodeKind.NormalBattle, 1000, BossPoolId.None, true),
-            new RunBattleNode(RunNodeKind.BossBattle, 1500, BossPoolId.Intermediate, true),
-            new RunBattleNode(RunNodeKind.NormalBattle, 2800, BossPoolId.None, true),
-            new RunBattleNode(RunNodeKind.BossBattle, 4200, BossPoolId.Advanced, false)
-        };
+        /// <summary>出牌次数默认值：节点配置为 0（未指定）时回落此值；引用 BattleStateMachine.StartingPlays 保证单一来源。</summary>
+        public const int DefaultPlaysLimit = BattleStateMachine.StartingPlays;
+
+        /// <summary>弃牌次数默认值：节点配置为 0（未指定）时回落此值；引用 BattleStateMachine.StartingDiscards 保证单一来源。</summary>
+        public const int DefaultDiscardsLimit = BattleStateMachine.StartingDiscards;
+
+        /// <summary>内置默认路线（= 配表"关卡流程"当前初值，与 RunRouteAsset.CreateDefaultNodes() 同源）：13 个阶段 = 10 场战斗 + 3 个人格牌生成节点（顺序 4/8/12）。</summary>
+        private static readonly IReadOnlyList<RunBattleNode> DefaultNodes = RunRouteAsset.CreateDefaultNodes();
 
         private static IReadOnlyList<RunBattleNode> _nodes = DefaultNodes;
 
-        /// <summary>当前生效的战斗节点列表（资产注入或默认路线）。</summary>
+        /// <summary>当前生效的节点列表（资产注入或默认路线）。</summary>
         public static IReadOnlyList<RunBattleNode> BattleNodes => _nodes;
 
-        /// <summary>单局战斗总数（= 当前路线节点数，从列表推导，策划无需维护数字）。</summary>
-        public static int BattleCount => _nodes.Count;
+        /// <summary>单局阶段总数（= 当前路线节点数：战斗 + 人格牌生成节点，从列表推导，策划无需维护数字）。</summary>
+        public static int StageCount => _nodes.Count;
+
+        /// <summary>单局战斗场数（= 战斗类节点数；进度文案"旅程 x / N"的分母，生成节点不计入）。</summary>
+        public static int BattleCount
+        {
+            get
+            {
+                var count = 0;
+                foreach (var node in _nodes)
+                {
+                    if (RunRouteAsset.IsBattleKind(node.kind)) count++;
+                }
+                return count;
+            }
+        }
 
         /// <summary>单局商店次数（= hasShopAfter 为 true 的节点数）。</summary>
         public static int ShopCount
@@ -64,7 +77,7 @@ namespace PersonaCards.UI
 
             AssignIndices(asset.battleNodes);
             _nodes = asset.battleNodes;
-            Debug.Log($"[RunRoute] 已加载路线资产 {asset.name}：{BattleCount} 场战斗、{ShopCount} 次商店。");
+            Debug.Log($"[RunRoute] 已加载路线资产 {asset.name}：{StageCount} 个阶段（{BattleCount} 场战斗、{StageCount - BattleCount} 个人格牌生成节点）、{ShopCount} 次商店。");
         }
 
         /// <summary>节点序号按列表位置写入（0 起），不信任手填值。</summary>
@@ -83,10 +96,42 @@ namespace PersonaCards.UI
             return _nodes[index];
         }
 
-        /// <summary>是否为最终战斗节点（胜利后进局终报告而非商店）。</summary>
+        /// <summary>是否为最终节点（胜利后进局终报告而非商店）。</summary>
         public static bool IsFinalNode(int index) => index == _nodes.Count - 1;
 
-        /// <summary>下一战斗是否为 Boss 战（决定商店结束后的去向）。</summary>
-        public static bool NextNodeIsBoss(int index) => GetNode(index + 1).kind == RunNodeKind.BossBattle;
+        /// <summary>下一节点的类型（商店结束后或生成节点完成后的去向）。最终节点没有下一节点，越界抛 ArgumentOutOfRangeException。</summary>
+        public static RunNodeKind NextNodeKindOf(int index) => GetNode(index + 1).kind;
+
+        /// <summary>节点的战斗序号（1 起，只计战斗类节点；人格牌生成节点没有战斗序号，抛 InvalidOperationException）。</summary>
+        public static int BattleOrdinalOf(int index)
+        {
+            var node = GetNode(index);
+            if (!RunRouteAsset.IsBattleKind(node.kind))
+                throw new InvalidOperationException($"节点 {index} 是人格牌生成节点，没有战斗序号。");
+            var ordinal = 0;
+            for (var i = 0; i <= index; i++)
+            {
+                if (RunRouteAsset.IsBattleKind(_nodes[i].kind)) ordinal++;
+            }
+            return ordinal;
+        }
+
+        /// <summary>节点的出牌次数上限（配置为 0 时回落默认值）；人格牌生成节点无此概念，抛 InvalidOperationException。</summary>
+        public static int PlaysLimitOf(int index)
+        {
+            var node = GetNode(index);
+            if (!RunRouteAsset.IsBattleKind(node.kind))
+                throw new InvalidOperationException($"节点 {index} 是人格牌生成节点，没有出牌限制。");
+            return node.playsLimit > 0 ? node.playsLimit : DefaultPlaysLimit;
+        }
+
+        /// <summary>节点的弃牌次数上限（配置为 0 时回落默认值）；人格牌生成节点无此概念，抛 InvalidOperationException。</summary>
+        public static int DiscardsLimitOf(int index)
+        {
+            var node = GetNode(index);
+            if (!RunRouteAsset.IsBattleKind(node.kind))
+                throw new InvalidOperationException($"节点 {index} 是人格牌生成节点，没有弃牌限制。");
+            return node.discardsLimit > 0 ? node.discardsLimit : DefaultDiscardsLimit;
+        }
     }
 }

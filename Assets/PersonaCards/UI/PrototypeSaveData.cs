@@ -67,6 +67,10 @@ namespace PersonaCards.UI
         public long totalScore;
         public int playsRemaining;
         public int discardsRemaining;
+        /// <summary>本场出牌上限（快照自记；旧档缺字段为 0，恢复时回落默认值）。</summary>
+        public int playsLimit;
+        /// <summary>本场弃牌上限（快照自记；旧档缺字段为 0，恢复时回落默认值）。</summary>
+        public int discardsLimit;
         public int status;
         public string bossEncounterId;
         public int bossHandsPlayed;

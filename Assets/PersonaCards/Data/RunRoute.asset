@@ -14,26 +14,93 @@ MonoBehaviour:
   m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.RunRouteAsset
   battleNodes:
   - kind: 0
-    targetScore: 100
+    targetScore: 1
     bossPoolId: 0
     hasShopAfter: 1
-  - kind: 1
-    targetScore: 150
-    bossPoolId: 1
-    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
   - kind: 0
-    targetScore: 200
+    targetScore: 1
     bossPoolId: 0
     hasShopAfter: 1
-  - kind: 1
-    targetScore: 250
-    bossPoolId: 2
-    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
   - kind: 0
-    targetScore: 300
+    targetScore: 1
     bossPoolId: 0
     hasShopAfter: 1
-  - kind: 1
-    targetScore: 350
-    bossPoolId: 3
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 2
+    targetScore: 0
+    bossPoolId: 0
     hasShopAfter: 0
+    playsLimit: 0
+    discardsLimit: 0
+    genCount: 1
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 2
+    targetScore: 0
+    bossPoolId: 0
+    hasShopAfter: 0
+    playsLimit: 0
+    discardsLimit: 0
+    genCount: 1
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 2
+    targetScore: 0
+    bossPoolId: 0
+    hasShopAfter: 0
+    playsLimit: 0
+    discardsLimit: 0
+    genCount: 1
+  - kind: 0
+    targetScore: 1
+    bossPoolId: 0
+    hasShopAfter: 0
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0

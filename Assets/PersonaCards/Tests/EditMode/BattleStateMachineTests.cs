@@ -139,6 +139,77 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(restored.Deck.DrawPile.Select(card => card.Id), Is.EqualTo(original.Deck.DrawPile.Select(card => card.Id)));
         }
 
+        [Test]
+        public void CustomLimitsAreHonored()
+        {
+            var battle = new BattleStateMachine(StandardDeckFactory.Create(), 12345u, 350, playsLimit: 5, discardsLimit: 2);
+
+            Assert.That(battle.PlaysLimit, Is.EqualTo(5));
+            Assert.That(battle.DiscardsLimit, Is.EqualTo(2));
+            Assert.That(battle.PlaysRemaining, Is.EqualTo(5));
+            Assert.That(battle.DiscardsRemaining, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void LimitsBelowOneAreRejected()
+        {
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+                new BattleStateMachine(StandardDeckFactory.Create(), 12345u, 350, playsLimit: 0));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+                new BattleStateMachine(StandardDeckFactory.Create(), 12345u, 350, discardsLimit: -1));
+        }
+
+        [Test]
+        public void SnapshotRestoreRejectsPlaysAboveSnapshotLimit()
+        {
+            // 快照记录了本场上限 2，但剩余出牌写成 3：恢复构造器必须按快照自身 limit 校验并拒绝
+            var original = CreateBattle(long.MaxValue);
+            var snapshot = new BattleStateSnapshot(original.Deck.DrawPile, original.Deck.Hand,
+                original.Deck.Played, original.Deck.Discarded, original.SelectedCardIds,
+                original.TargetScore, original.TotalScore, playsRemaining: 3,
+                discardsRemaining: 1, status: original.Status, playsLimit: 2, discardsLimit: 2);
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => new BattleStateMachine(snapshot));
+        }
+
+        [Test]
+        public void SnapshotWithoutLimitsDefaultsToConstants()
+        {
+            // 旧式快照（未记录 limit 字段）回落默认 4/3，并保持原有行为
+            var original = CreateBattle(long.MaxValue);
+            var snapshot = new BattleStateSnapshot(original.Deck.DrawPile, original.Deck.Hand,
+                original.Deck.Played, original.Deck.Discarded, original.SelectedCardIds,
+                original.TargetScore, original.TotalScore, original.PlaysRemaining,
+                original.DiscardsRemaining, original.Status);
+
+            var restored = new BattleStateMachine(snapshot);
+
+            Assert.That(restored.PlaysLimit, Is.EqualTo(BattleStateMachine.StartingPlays));
+            Assert.That(restored.DiscardsLimit, Is.EqualTo(BattleStateMachine.StartingDiscards));
+        }
+
+        [Test]
+        public void SnapshotWithCustomLimitsRestoresThem()
+        {
+            // 自定义上限的存档恢复后，上限与剩余值都来自快照
+            var original = new BattleStateMachine(StandardDeckFactory.Create(), 12345u, long.MaxValue,
+                playsLimit: 6, discardsLimit: 1);
+            original.TryToggleSelection(original.Deck.Hand[0].Id);
+            original.TryDiscardSelected();
+            var snapshot = new BattleStateSnapshot(original.Deck.DrawPile, original.Deck.Hand,
+                original.Deck.Played, original.Deck.Discarded, original.SelectedCardIds,
+                original.TargetScore, original.TotalScore, original.PlaysRemaining,
+                original.DiscardsRemaining, original.Status, playsLimit: original.PlaysLimit,
+                discardsLimit: original.DiscardsLimit);
+
+            var restored = new BattleStateMachine(snapshot);
+
+            Assert.That(restored.PlaysLimit, Is.EqualTo(6));
+            Assert.That(restored.DiscardsLimit, Is.EqualTo(1));
+            Assert.That(restored.PlaysRemaining, Is.EqualTo(6));
+            Assert.That(restored.DiscardsRemaining, Is.EqualTo(0));
+        }
+
         private static BattleStateMachine CreateBattle(long target)
         {
             return new BattleStateMachine(StandardDeckFactory.Create(), 12345u, target);

@@ -92,6 +92,8 @@ namespace PersonaCards.UI
         private int _collectionPage;
         private int _selectedCollectionIndex;
         private int _selectedEquipmentSlot;
+        /// <summary>商店继续按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
+        private Text _shopContinueLabel;
 
         public PrototypeFlowStage Stage => _flow.Stage;
 
@@ -180,7 +182,7 @@ namespace PersonaCards.UI
         {
             // 路线资产注入：null 时 RunRoute 回落内置默认路线，流程仍可跑（P0-1 数据驱动）
             if (runRoute == null)
-                Debug.LogWarning("[Flow] runRoute 路线资产未配置：使用内置默认路线（6 战 5 店）。");
+                Debug.LogWarning("[Flow] runRoute 路线资产未配置：使用内置默认路线（13 阶段白盒）。");
             RunRoute.Configure(runRoute);
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
@@ -376,6 +378,11 @@ namespace PersonaCards.UI
             {
                 StartCurrentBattle(); // 新局：进第 0 节点（内部会存档）
             }
+            else if (_flow.Stage == PrototypeFlowStage.PersonaGen)
+            {
+                BeginMidRunForge(); // 节点 0 是生成节点：初始化铸牌并保存
+                SaveActiveRun();
+            }
             else
             {
                 SaveActiveRun(); // 装备检查完毕回 Boss 揭示：战斗未开始，仅保存装备变化
@@ -390,45 +397,67 @@ namespace PersonaCards.UI
             Render();
         }
 
-        /// <summary>领取奖励强化：所选牌获得筹码强化后进入商店（奖励之后固定接商店，不再直接开战）。</summary>
+        /// <summary>领取奖励强化：所选牌获得筹码强化后，按节点配置进商店或直接推进到下一节点。</summary>
         private void ContinueFromReward()
         {
             if (_journeyDeck == null || _rewardClaimed || !_journeyDeck.GrantRewardEnhancement(SelectedJourneyCard.Id)) return;
             _rewardClaimed = true;
             if (!_flow.ContinueFromReward()) return;
-            Debug.Log($"[Flow] 已领取节点 {_flow.NodeIndex} 的奖励强化（{SelectedJourneyCard.Id}），进入商店。");
-            SaveActiveRun();
+            Debug.Log($"[Flow] 已领取节点 {_flow.NodeIndex} 的奖励强化（{SelectedJourneyCard.Id}），去向 {_flow.Stage}。");
+            HandleStageEntry(); // 商店 / Boss 揭示 / 铸牌 / 直接开战，按去向分别处理
             Render();
         }
 
-        /// <summary>离开商店：推进到下一节点；普通战直接开战，Boss 战先进入揭示界面。</summary>
+        /// <summary>离开商店：推进到下一节点；普通战直接开战，Boss 战先进入揭示界面，生成节点进铸牌。</summary>
         private void ContinueFromShop()
         {
             if (!_flow.ContinueFromShop()) return;
-            if (_flow.Stage == PrototypeFlowStage.Battle)
-            {
-                StartCurrentBattle(); // 下一场是普通战：直接开战（内部会存档）
-            }
-            else
-            {
-                SaveActiveRun(); // 下一场是 Boss 战：停留在揭示界面
-            }
+            HandleStageEntry();
             Render();
         }
 
-        /// <summary>按路线表启动当前节点战斗：目标分、场次种子、Boss 均来自 RunRoute 与局种子。</summary>
+        /// <summary>节点推进后的入场处理：普通战直接开战；Boss 战停留在揭示界面；生成节点初始化铸牌。</summary>
+        private void HandleStageEntry()
+        {
+            if (_flow.Stage == PrototypeFlowStage.Battle)
+            {
+                StartCurrentBattle(); // 内部会存档
+                return;
+            }
+            if (_flow.Stage == PrototypeFlowStage.PersonaGen)
+            {
+                BeginMidRunForge();
+            }
+            SaveActiveRun(); // Boss 揭示 / 铸牌：战斗未开始，仅保存流程位置与牌库
+        }
+
+        /// <summary>进入人格牌生成节点：按节点派生种子初始化铸牌状态（+1000 与战斗种子错开；存档恢复后同种子重建，骰值可复现）。</summary>
+        private void BeginMidRunForge()
+        {
+            var node = RunRoute.GetNode(_flow.NodeIndex);
+            var seed = unchecked(_runSeed + (uint)(node.Index + 1000));
+            _forgeState = new PersonaForgeState(_behaviorTracker.CreateReport(), seed);
+            _selectedForgeCandidate = -1;
+            RefreshForge();
+            Debug.Log($"[Flow] 人格牌生成节点 {node.Index}：铸牌候选已生成，派生种子 {seed}。");
+        }
+
+        /// <summary>按路线表启动当前节点战斗：目标分、出牌/弃牌限制、场次种子、Boss 均来自 RunRoute 与局种子。</summary>
         private void StartCurrentBattle()
         {
             var node = RunRoute.GetNode(_flow.NodeIndex);
+            var playsLimit = RunRoute.PlaysLimitOf(_flow.NodeIndex); // 每关独立出牌/弃牌限制（配表驱动，0 回落默认）
+            var discardsLimit = RunRoute.DiscardsLimitOf(_flow.NodeIndex);
             var seed = unchecked(_runSeed + (uint)(node.Index + 1)); // 场次种子由局种子派生，保证同局可复现
             var boss = node.kind == RunNodeKind.BossBattle
                 ? BossEncounterCatalog.CreateFromPool(node.bossPoolId) // TODO(P0-3)：按池出 Boss，当前临时统一返回镜厅守门人
                 : null;
             if (node.kind == RunNodeKind.BossBattle)
                 Debug.LogWarning($"[Boss] 节点 {node.Index} 难度池 {node.bossPoolId} 尚未落地（TODO P0-3），临时返回镜厅守门人。");
-            battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss);
-            battleProgressText.text = $"旅程 {node.Index + 1} / {RunRoute.BattleCount}";
-            Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，场次种子 {seed}" +
+            battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss,
+                playsLimit, discardsLimit);
+            battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}"; // 进度只计战斗，生成节点不计入
+            Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，出牌 {playsLimit} 弃牌 {discardsLimit}，场次种子 {seed}" +
                       (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));
             SaveActiveRun();
         }
@@ -486,6 +515,16 @@ namespace PersonaCards.UI
                 ? $"已获得 {candidate.DisplayName}，装备至 0{slotIndex + 1} 槽"
                 : $"已获得 {candidate.DisplayName}，装备已满，请选择替换槽位";
             RefreshPersonaLoadout();
+            if (_flow.Stage == PrototypeFlowStage.PersonaGen)
+            {
+                // 中局铸牌：入收藏+装备后直接推进到下一节点，不回主菜单、不打开收藏（本局仍在进行）
+                if (!_flow.CompletePersonaGen()) return;
+                Debug.Log($"[Flow] 中局铸牌确认：获得 {candidate.DisplayName}，推进到节点 {_flow.NodeIndex}。");
+                HandleStageEntry();
+                Render();
+                return;
+            }
+            // 局终铸造：回主菜单并打开收藏页定位新牌
             _flow.ReturnToMainMenu();
             _collectionOpen = true;
             _selectedCollectionIndex = _personaCollection.Count - 1;
@@ -648,14 +687,26 @@ namespace PersonaCards.UI
                 _runSeed = data.runSeed; // 旧档无该字段时为 0：场次种子退化为 节点序号+1，仍可复现
                 var stage = (PrototypeFlowStage)data.stage;
                 _flow.Restore(stage, data.battleNumber, data.personaSetupReturnsToBossReveal); // JSON 字段名沿用 battleNumber，语义为节点索引（P0-8 重命名）
+                var nodeKind = RunRoute.GetNode(data.battleNumber).kind;
+                if (nodeKind == RunNodeKind.PersonaGen &&
+                    (stage == PrototypeFlowStage.Battle || stage == PrototypeFlowStage.BossReveal ||
+                     (stage == PrototypeFlowStage.PersonaSetup && data.personaSetupReturnsToBossReveal)))
+                {
+                    // 旧档守卫：新路线下该节点序号落在人格牌生成节点上，战斗/揭示/装备回程语义不适用，改按铸牌阶段恢复
+                    Debug.LogWarning($"[Flow] 旧档节点 {data.battleNumber} 在新路线中是人格牌生成节点：改为铸牌阶段恢复。");
+                    stage = PrototypeFlowStage.PersonaGen;
+                    _flow.Restore(PrototypeFlowStage.PersonaGen, data.battleNumber);
+                }
                 Debug.Log($"[Flow] 恢复存档：阶段 {stage}，节点 {data.battleNumber}，局种子 {_runSeed}，金币 {_journeyDeck.Coins}。");
                 if (stage == PrototypeFlowStage.PersonaForge)
                     _forgeState = new PersonaForgeState(_behaviorTracker.CreateReport(), 20260820u);
+                else if (stage == PrototypeFlowStage.PersonaGen)
+                    BeginMidRunForge(); // 同种子派生重建铸牌：骰值与退出前一致
                 if (stage == PrototypeFlowStage.Battle && data.battle != null && data.battle.hasSnapshot)
                 {
                     battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout());
                     // 快照恢复不经过 StartCurrentBattle，进度文案需在此显式刷新（走查反馈修复：否则残留场景默认文案）
-                    battleProgressText.text = $"旅程 {_flow.NodeIndex + 1} / {RunRoute.BattleCount}";
+                    battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}";
                 }
                 else if (stage == PrototypeFlowStage.Battle)
                 {
@@ -805,6 +856,8 @@ namespace PersonaCards.UI
             totalScore = battle.TotalScore,
             playsRemaining = battle.PlaysRemaining,
             discardsRemaining = battle.DiscardsRemaining,
+            playsLimit = battle.PlaysLimit,
+            discardsLimit = battle.DiscardsLimit,
             status = (int)battle.Status,
             drawPile = battle.Deck.DrawPile.Select(ToSavedCard).ToList(),
             hand = battle.Deck.Hand.Select(ToSavedCard).ToList(),
@@ -829,7 +882,10 @@ namespace PersonaCards.UI
             return new BattleStateSnapshot(battle.drawPile.Select(FromSavedCard), battle.hand.Select(FromSavedCard),
                 battle.played.Select(FromSavedCard), battle.discarded.Select(FromSavedCard),
                 battle.selectedCardIds ?? new List<string>(), battle.targetScore, battle.totalScore,
-                battle.playsRemaining, battle.discardsRemaining, (BattleStatus)battle.status, bossSnapshot);
+                battle.playsRemaining, battle.discardsRemaining, (BattleStatus)battle.status, bossSnapshot,
+                // JsonUtility 旧档缺字段为 0（非默认值），必须显式回落默认
+                playsLimit: battle.playsLimit > 0 ? battle.playsLimit : BattleStateMachine.StartingPlays,
+                discardsLimit: battle.discardsLimit > 0 ? battle.discardsLimit : BattleStateMachine.StartingDiscards);
         }
 
         private void RefreshJourneyCardText()
@@ -870,6 +926,9 @@ namespace PersonaCards.UI
             _ => "无"
         };
 
+        /// <summary>商店继续按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
+        private Text ShopContinueLabel => _shopContinueLabel ??= shopContinueButton.GetComponentInChildren<Text>(true);
+
         private void Render()
         {
             mainMenuScreen.SetActive(_flow.Stage == PrototypeFlowStage.MainMenu && !_collectionOpen);
@@ -880,15 +939,23 @@ namespace PersonaCards.UI
             {
                 var node = RunRoute.GetNode(_flow.NodeIndex);
                 // TODO(P0-3/P0-9)：Boss 名称与规则文本应按难度池数据驱动；当前临时统一展示镜厅守门人。
-                // TODO(P0-2)：出牌/弃牌次数将参数化，当前沿用固定值 4/3。
                 var encounter = BossEncounterCatalog.CreateFromPool(node.bossPoolId).Definition;
-                bossRevealRuleText.text = $"主规则 · {encounter.RuleName}\n{encounter.RuleDescription}\n\n介入事件 · {encounter.InterventionName}\n{encounter.InterventionDescription}\n\n目标分数：{node.targetScore}　出牌：4　弃牌：3";
+                // 出牌/弃牌限制按节点配置展示（配表驱动）
+                bossRevealRuleText.text = $"主规则 · {encounter.RuleName}\n{encounter.RuleDescription}\n\n介入事件 · {encounter.InterventionName}\n{encounter.InterventionDescription}\n\n目标分数：{node.targetScore}　出牌：{RunRoute.PlaysLimitOf(_flow.NodeIndex)}　弃牌：{RunRoute.DiscardsLimitOf(_flow.NodeIndex)}";
             }
             battleScreen.SetActive(_flow.Stage == PrototypeFlowStage.Battle);
             rewardScreen.SetActive(_flow.Stage == PrototypeFlowStage.Reward);
             shopScreen.SetActive(_flow.Stage == PrototypeFlowStage.Shop);
+            if (_flow.Stage == PrototypeFlowStage.Shop && ShopContinueLabel != null)
+            {
+                // 商店继续按钮文案按下一节点类型提示去向（配表可指定任意后续节点）
+                var nextKind = RunRoute.NextNodeKindOf(_flow.NodeIndex);
+                ShopContinueLabel.text = nextKind == RunNodeKind.BossBattle ? "离开商店 · 前往 Boss"
+                    : nextKind == RunNodeKind.PersonaGen ? "离开商店 · 前往铸牌"
+                    : "离开商店 · 继续旅程";
+            }
             runReportScreen.SetActive(_flow.Stage == PrototypeFlowStage.RunReport);
-            personaForgeScreen.SetActive(_flow.Stage == PrototypeFlowStage.PersonaForge);
+            personaForgeScreen.SetActive(_flow.Stage == PrototypeFlowStage.PersonaForge || _flow.Stage == PrototypeFlowStage.PersonaGen); // 中局铸牌复用铸牌界面
             failureResultScreen.SetActive(_flow.Stage == PrototypeFlowStage.FailureResult);
             if (_flow.Stage == PrototypeFlowStage.Reward || _flow.Stage == PrototypeFlowStage.Shop)
             {
