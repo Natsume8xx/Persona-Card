@@ -168,10 +168,12 @@ namespace PersonaCards.UI
         }
 
         public void BeginBattle(long targetScore, uint seed, IEnumerable<PlayingCardInstance> cards = null,
-            PersonaLoadout personaLoadout = null, BossEncounterRuntime bossEncounter = null)
+            PersonaLoadout personaLoadout = null, BossEncounterRuntime bossEncounter = null,
+            int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards)
         {
             _battle = new BattleStateMachine(cards ?? StandardDeckFactory.Create(), seed, targetScore,
-                personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(), bossEncounter: bossEncounter);
+                personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(), bossEncounter: bossEncounter,
+                playsLimit: playsLimit, discardsLimit: discardsLimit);
             _completionRaised = false;
             _modalOpen = false;
             deckViewerOverlay.SetActive(false);
@@ -221,7 +223,7 @@ namespace PersonaCards.UI
             }
 
             scoreText.text = $"当前得分\n<size=46>{_battle.TotalScore}</size>\n\n目标分数\n<size=38>{_battle.TargetScore}</size>";
-            resourceText.text = $"剩余出牌：{_battle.PlaysRemaining} / 4\n\n剩余弃牌：{_battle.DiscardsRemaining} / 3\n\n牌堆：{_battle.Deck.DrawPile.Count}";
+            resourceText.text = $"剩余出牌：{_battle.PlaysRemaining} / {_battle.PlaysLimit}\n\n剩余弃牌：{_battle.DiscardsRemaining} / {_battle.DiscardsLimit}\n\n牌堆：{_battle.Deck.DrawPile.Count}";
             var playerCanInspect = _battle.Status == BattleStatus.PlayerTurn && !_battle.IsPresentationLocked && !_modalOpen;
             var canAct = playerCanInspect && _battle.SelectedCardIds.Count > 0;
             playButton.interactable = canAct && _battle.PlaysRemaining > 0;

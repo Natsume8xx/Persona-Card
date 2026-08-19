@@ -44,7 +44,7 @@ namespace PersonaCards.UI.Editor
                 var scene = SceneManager.GetActiveScene();
                 if (scene.path != ScenePath) return;
                 if (GameObject.Find("Prototype Schema - Boss Rules Pass") == null) Build();
-                ValidateSixBattleJourney();
+                ValidateRunRouteJourney();
             };
         }
 
@@ -206,8 +206,8 @@ namespace PersonaCards.UI.Editor
             return asset;
         }
 
-        [MenuItem("Persona Cards/Validate Six Battle Journey %#v")]
-        public static void ValidateSixBattleJourney()
+        [MenuItem("Persona Cards/Validate Run Route Journey %#v")]
+        public static void ValidateRunRouteJourney()
         {
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             var requiredObjects = new[]
@@ -302,9 +302,25 @@ namespace PersonaCards.UI.Editor
             {
                 throw new System.InvalidOperationException("Journey validation failed: happy path state transitions are invalid.");
             }
-            for (var node = 0; node < RunRoute.BattleCount; node++)
+            for (var node = 0; node < RunRoute.StageCount; node++)
             {
-                if (flow.Stage != PrototypeFlowStage.Battle || !flow.CompleteBattle(true))
+                // 入场阶段按节点类型分派：Boss 战先揭示、生成节点先铸牌、普通战直接开战
+                var kind = RunRoute.GetNode(node).kind;
+                var entryStage = kind == RunNodeKind.BossBattle ? PrototypeFlowStage.BossReveal
+                    : kind == RunNodeKind.PersonaGen ? PrototypeFlowStage.PersonaGen
+                    : PrototypeFlowStage.Battle;
+                if (flow.Stage != entryStage)
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node} ({kind}) entry stage is invalid.");
+                if (kind == RunNodeKind.PersonaGen)
+                {
+                    // 生成节点无战斗：确认获得后直接推进到下一节点
+                    if (!flow.CompletePersonaGen() || flow.NodeIndex != node + 1)
+                        throw new System.InvalidOperationException($"Journey validation failed: node {node} persona gen transition is invalid.");
+                    continue;
+                }
+                if (kind == RunNodeKind.BossBattle && !flow.BeginBossBattle())
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node} boss reveal transition is invalid.");
+                if (!flow.CompleteBattle(true))
                     throw new System.InvalidOperationException($"Journey validation failed: node {node} battle transition is invalid.");
                 if (RunRoute.IsFinalNode(node))
                 {
@@ -312,17 +328,22 @@ namespace PersonaCards.UI.Editor
                         throw new System.InvalidOperationException("Journey validation failed: final node did not reach run report.");
                     continue;
                 }
-                if (!flow.ContinueFromReward() || !flow.ContinueFromShop() || flow.NodeIndex != node + 1)
-                    throw new System.InvalidOperationException($"Journey validation failed: node {node} reward/shop transition is invalid.");
-                if (RunRoute.NextNodeIsBoss(node) && !flow.BeginBossBattle())
-                    throw new System.InvalidOperationException($"Journey validation failed: node {node + 1} boss reveal transition is invalid.");
+                if (!flow.ContinueFromReward())
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node} reward transition is invalid.");
+                if (RunRoute.GetNode(node).hasShopAfter)
+                {
+                    if (flow.Stage != PrototypeFlowStage.Shop || !flow.ContinueFromShop())
+                        throw new System.InvalidOperationException($"Journey validation failed: node {node} shop transition is invalid.");
+                }
+                if (flow.NodeIndex != node + 1)
+                    throw new System.InvalidOperationException($"Journey validation failed: node {node} did not advance to node {node + 1}.");
             }
             if (!flow.ContinueToForge() || flow.Stage != PrototypeFlowStage.PersonaForge)
             {
                 throw new System.InvalidOperationException("Journey validation failed: forge transition is invalid.");
             }
 
-            Debug.Log("Six-battle journey validation passed: scene bindings and full route are valid.");
+            Debug.Log($"Run route journey validation passed: scene bindings and {RunRoute.StageCount}-stage route are valid.");
         }
 
         private static GameObject FindInScene(Scene scene, string name)
@@ -471,7 +492,7 @@ namespace PersonaCards.UI.Editor
             var shopReforge = CreateButton(shopCard.transform, "Shop Reforge Button", "重刻 · 费用 2", new Vector2(0.385f, 0.35f), new Vector2(0.615f, 0.49f), new Color32(62, 58, 50, 255));
             var shopEnhance = CreateButton(shopCard.transform, "Shop Enhance Button", "强化 · 费用 2", new Vector2(0.69f, 0.35f), new Vector2(0.92f, 0.49f), Gold);
             var shopStatus = CreateText(shopCard.transform, "Shop Status", "请选择一张牌和一项服务", 18, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.23f), new Vector2(0.92f, 0.31f), Color.gray);
-            var shopContinue = CreateButton(shopCard.transform, "Shop Continue Button", "离开商店 · 前往 Boss", new Vector2(0.30f, 0.07f), new Vector2(0.70f, 0.19f), Gold);
+            var shopContinue = CreateButton(shopCard.transform, "Shop Continue Button", "离开商店", new Vector2(0.30f, 0.07f), new Vector2(0.70f, 0.19f), Gold); // 运行时按下一节点类型改写文案
 
             var report = CreateScreenRoot(canvas, "08 Run Report Screen");
             CreateBackground(report.transform);
@@ -502,7 +523,7 @@ namespace PersonaCards.UI.Editor
             var forgeConfirm = CreateButton(forgeCard.transform, "Forge Confirm Button", "确认获得", new Vector2(0.32f, 0.07f), new Vector2(0.68f, 0.19f), Gold);
             forgeConfirm.interactable = false;
 
-            var battleProgress = CreateText(battleScreen.transform, "Journey Progress", "旅程 1 / 6", 20, TextAnchor.MiddleCenter, new Vector2(0.43f, 0.955f), new Vector2(0.57f, 0.995f), Gold, FontStyle.Bold);
+            var battleProgress = CreateText(battleScreen.transform, "Journey Progress", $"旅程 1 / {RunRoute.BattleCount}", 20, TextAnchor.MiddleCenter, new Vector2(0.43f, 0.955f), new Vector2(0.57f, 0.995f), Gold, FontStyle.Bold); // 分母=战斗场数（生成节点不计入）
 
             battleScreen.SetActive(false);
             collection.gameObject.SetActive(false);

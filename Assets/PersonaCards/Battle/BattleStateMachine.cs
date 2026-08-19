@@ -28,17 +28,25 @@ namespace PersonaCards.Battle
             long targetScore,
             PersonaLoadout personaLoadout = null,
             ScoringPipeline scoringPipeline = null,
-            BossEncounterRuntime bossEncounter = null)
+            BossEncounterRuntime bossEncounter = null,
+            int playsLimit = StartingPlays,
+            int discardsLimit = StartingDiscards)
         {
             if (targetScore < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(targetScore));
             }
+            if (playsLimit < 1 || discardsLimit < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(playsLimit), "出牌/弃牌上限必须至少为 1（配置为 0 表示使用默认值，调用方应已解析）。");
+            }
 
             Deck = new DeckState(cards ?? throw new ArgumentNullException(nameof(cards)));
             TargetScore = targetScore;
-            PlaysRemaining = StartingPlays;
-            DiscardsRemaining = StartingDiscards;
+            PlaysLimit = playsLimit;      // 本场限制由路线节点配置（0 已在 RunRoute 门面解析为默认值）
+            DiscardsLimit = discardsLimit;
+            PlaysRemaining = playsLimit;
+            DiscardsRemaining = discardsLimit;
             Status = BattleStatus.PlayerTurn;
             _personaLoadout = personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout();
             _scoringPipeline = scoringPipeline ?? new ScoringPipeline();
@@ -53,8 +61,9 @@ namespace PersonaCards.Battle
         {
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
             if (snapshot.TargetScore < 1) throw new ArgumentOutOfRangeException(nameof(snapshot));
-            if (snapshot.TotalScore < 0 || snapshot.PlaysRemaining < 0 || snapshot.PlaysRemaining > StartingPlays ||
-                snapshot.DiscardsRemaining < 0 || snapshot.DiscardsRemaining > StartingDiscards)
+            if (snapshot.PlaysLimit < 1 || snapshot.DiscardsLimit < 1 ||
+                snapshot.TotalScore < 0 || snapshot.PlaysRemaining < 0 || snapshot.PlaysRemaining > snapshot.PlaysLimit ||
+                snapshot.DiscardsRemaining < 0 || snapshot.DiscardsRemaining > snapshot.DiscardsLimit)
                 throw new ArgumentOutOfRangeException(nameof(snapshot), "Battle resources are invalid.");
             if (!Enum.IsDefined(typeof(BattleStatus), snapshot.Status))
                 throw new ArgumentOutOfRangeException(nameof(snapshot), "Battle status is invalid.");
@@ -62,6 +71,8 @@ namespace PersonaCards.Battle
             Deck = new DeckState(snapshot.DrawPile, snapshot.Hand, snapshot.Played, snapshot.Discarded);
             TargetScore = snapshot.TargetScore;
             TotalScore = snapshot.TotalScore;
+            PlaysLimit = snapshot.PlaysLimit;        // 恢复时以快照记录的场次上限为准（旧档缺字段回落默认值）
+            DiscardsLimit = snapshot.DiscardsLimit;
             PlaysRemaining = snapshot.PlaysRemaining;
             DiscardsRemaining = snapshot.DiscardsRemaining;
             Status = snapshot.Status;
@@ -81,6 +92,10 @@ namespace PersonaCards.Battle
         public DeckState Deck { get; }
         public long TargetScore { get; }
         public long TotalScore { get; private set; }
+        /// <summary>本场出牌次数上限（由路线节点配置；未指定时为 StartingPlays）。</summary>
+        public int PlaysLimit { get; }
+        /// <summary>本场弃牌次数上限（由路线节点配置；未指定时为 StartingDiscards）。</summary>
+        public int DiscardsLimit { get; }
         public int PlaysRemaining { get; private set; }
         public int DiscardsRemaining { get; private set; }
         public BattleStatus Status { get; private set; }
@@ -232,7 +247,8 @@ namespace PersonaCards.Battle
         public BattleStateSnapshot(IEnumerable<PlayingCardInstance> drawPile, IEnumerable<PlayingCardInstance> hand,
             IEnumerable<PlayingCardInstance> played, IEnumerable<PlayingCardInstance> discarded,
             IEnumerable<string> selectedCardIds, long targetScore, long totalScore, int playsRemaining,
-            int discardsRemaining, BattleStatus status, BossEncounterSnapshot bossEncounter = null)
+            int discardsRemaining, BattleStatus status, BossEncounterSnapshot bossEncounter = null,
+            int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards)
         {
             DrawPile = (drawPile ?? throw new ArgumentNullException(nameof(drawPile))).ToArray();
             Hand = (hand ?? throw new ArgumentNullException(nameof(hand))).ToArray();
@@ -245,6 +261,8 @@ namespace PersonaCards.Battle
             DiscardsRemaining = discardsRemaining;
             Status = status;
             BossEncounter = bossEncounter;
+            PlaysLimit = playsLimit;          // 快照自记本场上限，恢复构造器据此校验（旧档缺字段回落默认值）
+            DiscardsLimit = discardsLimit;
         }
 
         public IReadOnlyList<PlayingCardInstance> DrawPile { get; }
@@ -256,6 +274,10 @@ namespace PersonaCards.Battle
         public long TotalScore { get; }
         public int PlaysRemaining { get; }
         public int DiscardsRemaining { get; }
+        /// <summary>本场出牌次数上限（快照自记；供恢复构造器校验与 HUD 显示）。</summary>
+        public int PlaysLimit { get; }
+        /// <summary>本场弃牌次数上限（快照自记；同上）。</summary>
+        public int DiscardsLimit { get; }
         public BattleStatus Status { get; }
         public BossEncounterSnapshot BossEncounter { get; }
     }
