@@ -10,7 +10,7 @@ namespace PersonaCards.UI.Editor
 {
     /// <summary>
     /// 配表导入命令：读取 Docs/人格牌.xlsx 的「关卡流程」sheet，映射并覆写 RunRoute.asset。
-    /// 策划改表后点菜单 "Persona Cards/Import Run Route From Xlsx" 一键完成；
+    /// 策划改表后点菜单 "Persona Cards/导入关卡配表数据" 一键完成；
     /// 任一行校验失败则整体中止（资产零改动），错误全部输出到 Console。
     /// </summary>
     public static class RunRouteImportCommand
@@ -19,7 +19,7 @@ namespace PersonaCards.UI.Editor
         public static string XlsxPath =>
             Path.Combine(Directory.GetParent(Application.dataPath).FullName, "Docs", "人格牌.xlsx");
 
-        [MenuItem("Persona Cards/Import Run Route From Xlsx")]
+        [MenuItem("Persona Cards/导入关卡配表数据")]
         public static void Import()
         {
             // 双重守卫：Play Mode 下域重载会破坏资产引用，菜单置灰 + 方法内拦截
@@ -94,7 +94,7 @@ namespace PersonaCards.UI.Editor
         }
 
         /// <summary>菜单校验：Play Mode 时置灰。</summary>
-        [MenuItem("Persona Cards/Import Run Route From Xlsx", true)]
+        [MenuItem("Persona Cards/导入关卡配表数据", true)]
         private static bool ValidateImport() => !EditorApplication.isPlayingOrWillChangePlaymode;
 
         /// <summary>生成导入摘要日志：阶段/战斗/生成节点/商店/Boss 计数（直接数映射结果，不依赖门面状态）。</summary>
