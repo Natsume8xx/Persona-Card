@@ -12,11 +12,11 @@ namespace PersonaCards.UI
     /// </summary>
     public static class RunRoute
     {
-        /// <summary>出牌次数默认值：节点配置为 0（未指定）时回落此值；引用 BattleStateMachine.StartingPlays 保证单一来源。</summary>
-        public const int DefaultPlaysLimit = BattleStateMachine.StartingPlays;
+        /// <summary>出牌次数默认值：节点配置为 0（未指定）时回落此值；单一来源 = GlobalConfig 门面（RULE_001，白盒回落 BattleStateMachine.StartingPlays）。</summary>
+        public static int DefaultPlaysLimit => GlobalConfig.StartingPlays;
 
-        /// <summary>弃牌次数默认值：节点配置为 0（未指定）时回落此值；引用 BattleStateMachine.StartingDiscards 保证单一来源。</summary>
-        public const int DefaultDiscardsLimit = BattleStateMachine.StartingDiscards;
+        /// <summary>弃牌次数默认值：节点配置为 0（未指定）时回落此值；单一来源 = GlobalConfig 门面（RULE_002，白盒回落 BattleStateMachine.StartingDiscards）。</summary>
+        public static int DefaultDiscardsLimit => GlobalConfig.StartingDiscards;
 
         /// <summary>内置默认路线（= 配表"关卡流程"当前初值，与 RunRouteAsset.CreateDefaultNodes() 同源）：13 个阶段 = 10 场战斗 + 3 个人格牌生成节点（顺序 4/8/12）。</summary>
         private static readonly IReadOnlyList<RunBattleNode> DefaultNodes = RunRouteAsset.CreateDefaultNodes();

@@ -6,7 +6,8 @@
     "PersonaCards.Data",
     "PersonaCards.Cards",
     "PersonaCards.Battle",
-    "PersonaCards.UI"
+    "PersonaCards.UI",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [
     "Editor"

@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e50b46487b71742a4a4043fb976f23f7, type: 3}
+  m_Name: HandTypeCatalog
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.HandTypeAsset
+  entries:
+  - handType: 1
+    displayName: "\u9AD8\u724C"
+    baseChips: 55
+    baseMultiplier: 1
+    displayOrder: 1
+    cardId: CARD_053
+  - handType: 2
+    displayName: "\u5BF9\u5B50"
+    baseChips: 48
+    baseMultiplier: 2
+    displayOrder: 2
+    cardId: CARD_054
+  - handType: 3
+    displayName: "\u4E24\u961F"
+    baseChips: 52
+    baseMultiplier: 2.5
+    displayOrder: 3
+    cardId: CARD_055
+  - handType: 4
+    displayName: "\u4E09\u6761"
+    baseChips: 57
+    baseMultiplier: 3
+    displayOrder: 4
+    cardId: CARD_056
+  - handType: 5
+    displayName: "\u987A\u5B50"
+    baseChips: 60
+    baseMultiplier: 4
+    displayOrder: 5
+    cardId: CARD_057
+  - handType: 6
+    displayName: "\u540C\u82B1"
+    baseChips: 65
+    baseMultiplier: 4
+    displayOrder: 6
+    cardId: CARD_058
+  - handType: 7
+    displayName: "\u846B\u82A6"
+    baseChips: 74
+    baseMultiplier: 5
+    displayOrder: 7
+    cardId: CARD_059
+  - handType: 8
+    displayName: "\u56DB\u6761"
+    baseChips: 100
+    baseMultiplier: 6
+    displayOrder: 8
+    cardId: CARD_060
+  - handType: 9
+    displayName: "\u540C\u82B1\u987A"
+    baseChips: 95
+    baseMultiplier: 10
+    displayOrder: 9
+    cardId: CARD_061
+  - handType: 11
+    displayName: "\u540C\u82B1\u846B\u82A6"
+    baseChips: 70
+    baseMultiplier: 12
+    displayOrder: 10
+    cardId: CARD_062

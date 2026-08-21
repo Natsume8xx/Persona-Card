@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PersonaCards.Core;
 
 namespace PersonaCards.Cards.Hands
 {
@@ -29,7 +30,7 @@ namespace PersonaCards.Cards.Hands
 
         public int BaseChips => Definition.BaseChips;
 
-        public int BaseMultiplier => Definition.BaseMultiplier;
+        public decimal BaseMultiplier => Definition.BaseMultiplier;
 
         public IReadOnlyList<string> ScoringCardIds => _scoringCardIds;
     }

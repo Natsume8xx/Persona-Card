@@ -6,6 +6,7 @@ using PersonaCards.Battle.Personas;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
+using PersonaCards.Core;
 
 namespace PersonaCards.Tests.EditMode
 {
@@ -22,7 +23,8 @@ namespace PersonaCards.Tests.EditMode
             var preview = battle.PreviewSelected();
             var result = battle.TryPlaySelected();
 
-            Assert.That(preview.Chips, Is.EqualTo(56m));
+            // P0-1C 新表：对子基础 48 + 牌面 16 + 首手鼓励 30 = 94
+            Assert.That(preview.Chips, Is.EqualTo(94m));
             Assert.That(result.ScoringResult.FinalScore, Is.EqualTo(preview.FinalScore));
             Assert.That(result.ScoringResult.Events.Any(e =>
                 e.SourceId == BossEncounterCatalog.FirstHandEncouragementId &&

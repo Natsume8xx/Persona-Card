@@ -10,6 +10,7 @@ using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
 using UnityEngine;
 using UnityEngine.UI;
+using PersonaCards.Core;
 
 namespace PersonaCards.UI
 {
@@ -30,7 +31,6 @@ namespace PersonaCards.UI
         [SerializeField] private BattleCardView cardPrefab;
         [SerializeField] private RectTransform playedSlotsRoot;
         [SerializeField] private Text scoringLogText;
-        [SerializeField] private Toggle reduceMotionToggle;
         [SerializeField] private Button deckViewerButton;
         [SerializeField] private Button handReferenceButton;
         [SerializeField] private GameObject deckViewerOverlay;
@@ -44,6 +44,12 @@ namespace PersonaCards.UI
         [SerializeField] private GameObject handReferenceOverlay;
         [SerializeField] private Button handReferenceCloseButton;
         [SerializeField] private Text[] handReferenceRows;
+        // P0-1I 战斗体验对齐：手牌显示排序切换按钮 + 得分进度条填充图
+        [SerializeField] private Button handSortButton;
+        [SerializeField] private Image scoreProgressFill;
+        private RectTransform _scoreProgressFillRect; // 进度条填充 rect：anchorMax.x 驱动宽度（从左向右增长）
+        private float _progressFillLeftX = 0.02f;     // 填充条左右缘（Awake 时从场景 rect 读取，锚点改布局无需改代码）
+        private float _progressFillRightX = 0.98f;
         [SerializeField] private bool externalFlowManaged;
 
         private BattleStateMachine _battle;
@@ -53,6 +59,10 @@ namespace PersonaCards.UI
         private bool _modalOpen;
         private int _deckViewerPage;
         private DeckViewerZone _deckViewerZone;
+        // P0-1I：手牌显示排序模式（战斗内临时状态，不落档）；当前金币（由 FlowController 注入）与本场获得金币（预留 P0-6，恒 0）
+        private HandSortMode _handSortMode = HandSortMode.RankFirst;
+        private int _journeyCoins;
+        private int _battleCoinsGained;
 
         public event Action<BattleStatus, long, long> BattleCompleted;
         public event Action<HandType, int, long> HandPlayed;
@@ -81,7 +91,6 @@ namespace PersonaCards.UI
             BattleCardView cardViewPrefab,
             RectTransform playedArea,
             Text scoringLog,
-            Toggle reduceMotion,
             Button openDeckViewer,
             Button openHandReference,
             GameObject deckViewer,
@@ -94,7 +103,9 @@ namespace PersonaCards.UI
             Text deckViewerPageLabel,
             GameObject handReference,
             Button handReferenceClose,
-            Text[] handReferenceRowTexts)
+            Text[] handReferenceRowTexts,
+            Button handSort,
+            Image scoreProgress)
         {
             handRoot = handArea;
             scoreText = score;
@@ -110,7 +121,6 @@ namespace PersonaCards.UI
             cardPrefab = cardViewPrefab;
             playedSlotsRoot = playedArea;
             scoringLogText = scoringLog;
-            reduceMotionToggle = reduceMotion;
             deckViewerButton = openDeckViewer;
             handReferenceButton = openHandReference;
             deckViewerOverlay = deckViewer;
@@ -124,6 +134,8 @@ namespace PersonaCards.UI
             handReferenceOverlay = handReference;
             handReferenceCloseButton = handReferenceClose;
             handReferenceRows = handReferenceRowTexts;
+            handSortButton = handSort;
+            scoreProgressFill = scoreProgress;
         }
 
         private void Awake()
@@ -143,6 +155,14 @@ namespace PersonaCards.UI
             handReferenceCloseButton.onClick.AddListener(CloseModal);
             deckViewerPreviousButton.onClick.AddListener(() => ChangeDeckViewerPage(-1));
             deckViewerNextButton.onClick.AddListener(() => ChangeDeckViewerPage(1));
+            handSortButton.onClick.AddListener(ToggleHandSortMode);
+            // P0-1I 进度条：记录填充条 rect 与左右缘（anchorMax.x 驱动宽度，避免 Filled+9-slice 从中间起步）
+            if (scoreProgressFill != null)
+            {
+                _scoreProgressFillRect = scoreProgressFill.rectTransform;
+                _progressFillLeftX = _scoreProgressFillRect.anchorMin.x;
+                _progressFillRightX = _scoreProgressFillRect.anchorMax.x;
+            }
             for (var index = 0; index < deckViewerZoneButtons.Length; index++)
             {
                 var zoneIndex = index;
@@ -169,13 +189,20 @@ namespace PersonaCards.UI
 
         public void BeginBattle(long targetScore, uint seed, IEnumerable<PlayingCardInstance> cards = null,
             PersonaLoadout personaLoadout = null, BossEncounterRuntime bossEncounter = null,
-            int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards)
+            int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards,
+            int journeyCoins = 0)
         {
             _battle = new BattleStateMachine(cards ?? StandardDeckFactory.Create(), seed, targetScore,
                 personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(), bossEncounter: bossEncounter,
                 playsLimit: playsLimit, discardsLimit: discardsLimit);
             _completionRaised = false;
             _modalOpen = false;
+            // P0-1I：新战斗开局重置手牌显示排序为默认「大小」（排序偏好不落档），并刷新按钮文案
+            _handSortMode = HandSortMode.RankFirst;
+            RefreshHandSortButtonLabel();
+            // P0-1I：当前金币由 FlowController 注入（来源 JourneyDeckState）；本场获得金币预留 P0-6 接入
+            _journeyCoins = journeyCoins;
+            _battleCoinsGained = 0;
             deckViewerOverlay.SetActive(false);
             handReferenceOverlay.SetActive(false);
             resultOverlay.SetActive(false);
@@ -185,7 +212,7 @@ namespace PersonaCards.UI
             RefreshBossRule();
         }
 
-        public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout)
+        public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout, int journeyCoins = 0)
         {
             _battle = new BattleStateMachine(snapshot, personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout());
             _completionRaised = false;
@@ -193,6 +220,11 @@ namespace PersonaCards.UI
             resultOverlay.SetActive(false);
             deckViewerOverlay.SetActive(false);
             handReferenceOverlay.SetActive(false);
+            // P0-1I：读档恢复默认「大小」排序；金币与 BeginBattle 同源注入
+            _handSortMode = HandSortMode.RankFirst;
+            RefreshHandSortButtonLabel();
+            _journeyCoins = journeyCoins;
+            _battleCoinsGained = 0;
             scoringLogText.text = "战斗已从存档恢复";
             messageText.text = _battle.SelectedCardIds.Count > 0 ? "已恢复上次选择" : "选择 1—5 张牌，然后出牌或弃牌";
             RefreshAll();
@@ -223,7 +255,19 @@ namespace PersonaCards.UI
             }
 
             scoreText.text = $"当前得分\n<size=46>{_battle.TotalScore}</size>\n\n目标分数\n<size=38>{_battle.TargetScore}</size>";
-            resourceText.text = $"剩余出牌：{_battle.PlaysRemaining} / {_battle.PlaysLimit}\n\n剩余弃牌：{_battle.DiscardsRemaining} / {_battle.DiscardsLimit}\n\n牌堆：{_battle.Deck.DrawPile.Count}";
+            // P0-1I 进度条（策划案 3.3.9）：当前得分与目标分数的完成比例，防御除零。
+            // 用 anchorMax.x 驱动宽度（从左向右增长）：Filled 类型挂带 border 的 sprite 会因 9-slice 边界从中间起步，弃用
+            if (_scoreProgressFillRect != null)
+            {
+                var progressRatio = _battle.TargetScore > 0
+                    ? Mathf.Clamp01((float)_battle.TotalScore / _battle.TargetScore)
+                    : 0f;
+                _scoreProgressFillRect.anchorMax = new Vector2(
+                    Mathf.Lerp(_progressFillLeftX, _progressFillRightX, progressRatio),
+                    _scoreProgressFillRect.anchorMax.y);
+            }
+            // P0-1I 金币两行（3.3.9）：获得金币=本场累计（P0-6 接入前恒 +0），当前金币=旅程持有总量
+            resourceText.text = $"剩余出牌：{_battle.PlaysRemaining} / {_battle.PlaysLimit}\n\n剩余弃牌：{_battle.DiscardsRemaining} / {_battle.DiscardsLimit}\n\n牌堆：{_battle.Deck.DrawPile.Count}\n\n获得金币：+{_battleCoinsGained}\n\n当前金币：{_journeyCoins}";
             var playerCanInspect = _battle.Status == BattleStatus.PlayerTurn && !_battle.IsPresentationLocked && !_modalOpen;
             var canAct = playerCanInspect && _battle.SelectedCardIds.Count > 0;
             playButton.interactable = canAct && _battle.PlaysRemaining > 0;
@@ -254,7 +298,9 @@ namespace PersonaCards.UI
             }
             _cardViews.Clear();
 
-            var cards = _battle.Deck.Hand;
+            // P0-1I 手牌排序（策划案 3.3.10）：只按显示顺序渲染，Deck.Hand 本身不动——
+            // 抽牌顺序、选中状态（按 card.Id 查询）均不受影响，index 只决定扇形排布位置
+            var cards = HandDisplaySorter.Sort(_battle.Deck.Hand, _handSortMode);
             for (var index = 0; index < cards.Count; index++)
             {
                 var card = cards[index];
@@ -262,6 +308,27 @@ namespace PersonaCards.UI
                 view.Configure(card, _battle.SelectedCardIds.Contains(card.Id), index, cards.Count, _runtimeFont, OnCardClicked);
                 view.SetInteractable(!_battle.IsPresentationLocked && !_modalOpen);
                 _cardViews[card.Id] = view;
+            }
+        }
+
+        /// <summary>P0-1I 手牌排序切换：大小 ↔ 花色 轮换，只改显示顺序（3.3.10）。</summary>
+        private void ToggleHandSortMode()
+        {
+            _handSortMode = _handSortMode == HandSortMode.RankFirst ? HandSortMode.SuitGrouped : HandSortMode.RankFirst;
+            RefreshHandSortButtonLabel();
+            RefreshHand();
+        }
+
+        /// <summary>同步排序切换按钮文案，反映当前显示模式。</summary>
+        private void RefreshHandSortButtonLabel()
+        {
+            if (handSortButton == null) return;
+            var label = handSortButton.transform.Find("Label");
+            if (label == null) return;
+            var text = label.GetComponent<Text>();
+            if (text != null)
+            {
+                text.text = _handSortMode == HandSortMode.RankFirst ? "排序：大小" : "排序：花色";
             }
         }
 
@@ -274,7 +341,8 @@ namespace PersonaCards.UI
             if (result.Succeeded) StableStateChanged?.Invoke();
         }
 
-        private void OnPlay()
+        /// <summary>出牌入口：UI 按钮与快捷键（P0-1H 空格，可改键）共用此方法。</summary>
+        public void OnPlay()
         {
             if (!_battle.IsPresentationLocked && !_modalOpen)
             {
@@ -282,7 +350,8 @@ namespace PersonaCards.UI
             }
         }
 
-        private void OnDiscard()
+        /// <summary>弃牌入口：UI 按钮与快捷键（P0-1H D，可改键）共用此方法。</summary>
+        public void OnDiscard()
         {
             if (!_battle.IsPresentationLocked && !_modalOpen)
             {
@@ -438,7 +507,9 @@ namespace PersonaCards.UI
 
         private float PresentationDuration(float normalDuration)
         {
-            return reduceMotionToggle != null && reduceMotionToggle.isOn ? 0f : normalDuration;
+            // P0-1H：动效统一归口到设置系统的「界面动效」开关（GameSettings.AnimationsEnabled），
+            // 战斗屏不再自带「减少动效」Toggle；未来手牌与整体画面动效同样读此门面。
+            return GameSettings.AnimationsEnabled ? normalDuration : 0f;
         }
 
         private void ClearPlayedCards()
@@ -519,8 +590,17 @@ namespace PersonaCards.UI
             var pageSize = deckViewerCardTexts.Length;
             var maximumPage = Math.Max(0, (cards.Count - 1) / pageSize);
             _deckViewerPage = Mathf.Clamp(_deckViewerPage, 0, maximumPage);
-            deckViewerSummaryText.text = $"总数 {_battle.Deck.TotalCardCount} · 手牌 {_battle.Deck.Hand.Count} · 抽牌堆 {_battle.Deck.DrawPile.Count} · 已出 {_battle.Deck.Played.Count} · 已弃 {_battle.Deck.Discarded.Count}";
-            deckViewerPageText.text = $"{ZoneName(_deckViewerZone)}  ·  第 {_deckViewerPage + 1} / {maximumPage + 1} 页";
+            // P0-1I 牌库查看页签对齐（UI-04「总数 / 当前可选数」）：
+            // 可选数 = 还能打出的牌（手牌+抽牌堆），只对 全部牌 / 抽牌堆 页签有意义；空页签显示「（空）」
+            var available = _deckViewerZone is DeckViewerZone.All or DeckViewerZone.DrawPile
+                ? _battle.Deck.DrawPile.Count + _battle.Deck.Hand.Count
+                : 0;
+            deckViewerSummaryText.text = cards.Count == 0
+                ? "（空）"
+                : $"总数 {cards.Count} · 可选 {available}";
+            deckViewerPageText.text = cards.Count == 0
+                ? $"{ZoneName(_deckViewerZone)} · （空）"
+                : $"{ZoneName(_deckViewerZone)}  ·  第 {_deckViewerPage + 1} / {maximumPage + 1} 页";
             deckViewerPreviousButton.interactable = _deckViewerPage > 0;
             deckViewerNextButton.interactable = _deckViewerPage < maximumPage;
             for (var index = 0; index < deckViewerZoneButtons.Length; index++)
@@ -557,7 +637,8 @@ namespace PersonaCards.UI
 
         private void RefreshHandReference()
         {
-            var definitions = HandTypeCatalog.All.OrderBy(definition => definition.HandType).ToArray();
+            // All 已按显示顺序（配表「显示顺序」列）排列，直接按序渲染，不再按枚举序
+            var definitions = HandTypeCatalog.All.ToArray();
             for (var index = 0; index < handReferenceRows.Length; index++)
             {
                 var hasDefinition = index < definitions.Length;

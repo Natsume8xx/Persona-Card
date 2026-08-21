@@ -46,10 +46,11 @@ namespace PersonaCards.Tests.EditMode
                 "persona.initial.executor",
                 "persona.initial.ambitious"
             }));
-            Assert.That(result.Chips, Is.EqualTo(41m));
+            // P0-1C 新表：对子基础 48/2，牌面 16，人格 +15 筹码 +2 倍率 → 79m × 4 × 1.10 = 347.6 → 348
+            Assert.That(result.Chips, Is.EqualTo(79m));
             Assert.That(result.Multiplier, Is.EqualTo(4m));
             Assert.That(result.FinalMultiplier, Is.EqualTo(1.10m));
-            Assert.That(result.FinalScore, Is.EqualTo(180));
+            Assert.That(result.FinalScore, Is.EqualTo(348));
         }
 
         [Test]
@@ -63,7 +64,8 @@ namespace PersonaCards.Tests.EditMode
                 scoringEvent.SourceId == "persona.initial.ambitious");
             Assert.That(ambitious.Operation, Is.EqualTo(ScoringOperation.Skip));
             Assert.That(ambitious.DisplayTextKey, Is.EqualTo("persona.condition_not_met"));
-            Assert.That(result.FinalScore, Is.EqualTo(93));
+            // P0-1C 新表：高牌基础 55/1，A 面值 11，积累者 +15 筹码、执行者 +2 倍率、野心者条件未满足 Skip → 81 × 3 = 243
+            Assert.That(result.FinalScore, Is.EqualTo(243));
         }
 
         [Test]

@@ -4,6 +4,7 @@ using NUnit.Framework;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
+using PersonaCards.Core;
 
 namespace PersonaCards.Tests.EditMode
 {
@@ -28,9 +29,10 @@ namespace PersonaCards.Tests.EditMode
                 Card("kicker", Suit.Clubs, Rank.Ace)
             });
 
-            Assert.That(result.Chips, Is.EqualTo(26m));
+            // P0-1C 新表：对子基础 48/2，计分牌两张 8 面值 16 → 64m × 2 = 128
+            Assert.That(result.Chips, Is.EqualTo(64m));
             Assert.That(result.Multiplier, Is.EqualTo(2m));
-            Assert.That(result.FinalScore, Is.EqualTo(52));
+            Assert.That(result.FinalScore, Is.EqualTo(128));
             Assert.That(result.Events.Count(e => e.DisplayTextKey == "card.face_chips"), Is.EqualTo(2));
         }
 
@@ -43,9 +45,10 @@ namespace PersonaCards.Tests.EditMode
                 Card("junk", Suit.Hearts, Rank.Four, CardEnhancement.ChipBoost)
             });
 
-            Assert.That(result.Chips, Is.EqualTo(16m));
+            // P0-1C 新表：单 A + 杂牌 4 是高牌（基础 55/1），计分牌 A 面值 11 + 倍率强化 3 → 66m × 4 = 264
+            Assert.That(result.Chips, Is.EqualTo(66m));
             Assert.That(result.Multiplier, Is.EqualTo(4m));
-            Assert.That(result.FinalScore, Is.EqualTo(64));
+            Assert.That(result.FinalScore, Is.EqualTo(264));
             Assert.That(result.Events.Any(e => e.SourceId == "junk"), Is.False);
         }
 
@@ -58,8 +61,9 @@ namespace PersonaCards.Tests.EditMode
                 Card("eight-b", Suit.Hearts, Rank.Eight)
             });
 
-            Assert.That(result.Chips, Is.EqualTo(46m));
-            Assert.That(result.FinalScore, Is.EqualTo(92));
+            // P0-1C 新表：对子基础 48，两张 8 面值 16 + 筹码强化 20 → 84m × 2 = 168
+            Assert.That(result.Chips, Is.EqualTo(84m));
+            Assert.That(result.FinalScore, Is.EqualTo(168));
         }
 
         [Test]
@@ -79,7 +83,8 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(
                 result.Events.Where(e => e.Phase == ScoringPhase.Persona).Select(e => e.SourceId),
                 Is.EqualTo(new[] { "persona-1", "persona-2" }));
-            Assert.That(result.FinalScore, Is.EqualTo(32));
+            // P0-1C 新表：高牌基础 55/1，A 面值 11，+3+2 筹码、+2 倍率 → (55+11+5) × 3 × 0.5 = 106.5 → 107
+            Assert.That(result.FinalScore, Is.EqualTo(107));
         }
 
         [Test]
@@ -92,8 +97,9 @@ namespace PersonaCards.Tests.EditMode
                 new[] { Card("ace", Suit.Spades, Rank.Ace) },
                 new[] { Effect(ScoringPhase.BossFinal, 0, "boss", c => c.MultiplyFinal(0m, "boss.zero")) });
 
-            Assert.That(rounded.RawScore, Is.EqualTo(3.5m));
-            Assert.That(rounded.FinalScore, Is.EqualTo(4));
+            // P0-1C 新表：高牌基础 55/1，2 面值 2 → (55+2) × 0.5 = 28.5 → 四舍五入 29
+            Assert.That(rounded.RawScore, Is.EqualTo(28.5m));
+            Assert.That(rounded.FinalScore, Is.EqualTo(29));
             Assert.That(clamped.FinalScore, Is.EqualTo(1));
         }
 

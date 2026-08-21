@@ -1,5 +1,6 @@
 using System;
 using PersonaCards.Cards.Hands;
+using PersonaCards.Core;
 
 namespace PersonaCards.Battle.Personas
 {
