@@ -4,6 +4,7 @@
   "references": [
     "PersonaCards.UI",
     "PersonaCards.Data",
+    "PersonaCards.Cards",
     "PersonaCards.Core",
     "Unity.InputSystem",
     "Unity.ugui"

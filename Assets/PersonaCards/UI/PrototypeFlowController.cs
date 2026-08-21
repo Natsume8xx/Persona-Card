@@ -78,6 +78,8 @@ namespace PersonaCards.UI
         [SerializeField] private RunRouteAsset runRoute;
         /// <summary>牌型配置资产（P0-1C 数据驱动）：Awake 时注入 HandTypeCatalog；未配置或校验失败时回落白盒（= 配表当前初值）。</summary>
         [SerializeField] private HandTypeAsset handTypes;
+        /// <summary>卡牌配置资产（P0-1D 数据驱动）：Awake 时注入 PlayingCardRules；未配置或校验失败时回落白盒（= 配表当前初值）。</summary>
+        [SerializeField] private CardConfigAsset cardConfig;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -118,7 +120,8 @@ namespace PersonaCards.UI
             Text[] battlePersonaNames, Text[] battlePersonaRules,
             Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtonsValue,
             Button forgeConfirm,
-            BattlePrototypeController battlePrototype, RunRouteAsset routeAsset, HandTypeAsset handTypeAsset)
+            BattlePrototypeController battlePrototype, RunRouteAsset routeAsset, HandTypeAsset handTypeAsset,
+            CardConfigAsset cardConfigAsset)
         {
             mainMenuScreen = mainMenu;
             collectionScreen = collection;
@@ -180,6 +183,7 @@ namespace PersonaCards.UI
             battleController = battlePrototype;
             runRoute = routeAsset;
             handTypes = handTypeAsset;
+            cardConfig = cardConfigAsset;
         }
 
         private void Awake()
@@ -206,6 +210,25 @@ namespace PersonaCards.UI
                 var summary = HandTypeCatalog.LastConfiguredSummary;
                 if (!string.IsNullOrEmpty(summary))
                     Debug.Log($"[HandType] 牌型目录已注入：{summary}。");
+            }
+
+            // 卡牌规则注入（P0-1D 数据驱动）：null 或校验失败 → 门面回落白盒（= 配表当前初值），计分始终可用
+            if (cardConfig == null)
+            {
+                Debug.LogWarning("[Card] cardConfig 卡牌配置资产未配置：使用白盒卡牌配置（52 张）。");
+                PlayingCardRules.Configure(null);
+            }
+            else if (!cardConfig.Validate(out var cardConfigError))
+            {
+                Debug.LogWarning($"[Card] cardConfig 卡牌配置资产校验失败（{cardConfigError}）：使用白盒卡牌配置。");
+                PlayingCardRules.Configure(null);
+            }
+            else
+            {
+                PlayingCardRules.Configure(cardConfig.BuildEntries());
+                var summary = PlayingCardRules.LastConfiguredSummary;
+                if (!string.IsNullOrEmpty(summary))
+                    Debug.Log($"[Card] 卡牌规则已注入：{summary}。");
             }
             _saveStore = new PrototypeSaveStore();
             LoadProfile();

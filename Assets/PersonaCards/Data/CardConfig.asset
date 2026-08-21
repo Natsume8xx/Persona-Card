@@ -1,0 +1,379 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c499e76fa264948a9bb5b768df997c5d, type: 3}
+  m_Name: CardConfig
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.CardConfigAsset
+  entries:
+  - cardId: CARD_001
+    displayName: "\u9ED1\u6843A"
+    cardKind: 1
+    suit: 3
+    rank: 14
+    paramType: 1
+    paramValue: 11
+  - cardId: CARD_002
+    displayName: "\u9ED1\u68432"
+    cardKind: 1
+    suit: 3
+    rank: 2
+    paramType: 1
+    paramValue: 2
+  - cardId: CARD_003
+    displayName: "\u9ED1\u68433"
+    cardKind: 1
+    suit: 3
+    rank: 3
+    paramType: 1
+    paramValue: 3
+  - cardId: CARD_004
+    displayName: "\u9ED1\u68434"
+    cardKind: 1
+    suit: 3
+    rank: 4
+    paramType: 1
+    paramValue: 4
+  - cardId: CARD_005
+    displayName: "\u9ED1\u68435"
+    cardKind: 1
+    suit: 3
+    rank: 5
+    paramType: 1
+    paramValue: 5
+  - cardId: CARD_006
+    displayName: "\u9ED1\u68436"
+    cardKind: 1
+    suit: 3
+    rank: 6
+    paramType: 1
+    paramValue: 6
+  - cardId: CARD_007
+    displayName: "\u9ED1\u68437"
+    cardKind: 1
+    suit: 3
+    rank: 7
+    paramType: 1
+    paramValue: 7
+  - cardId: CARD_008
+    displayName: "\u9ED1\u68438"
+    cardKind: 1
+    suit: 3
+    rank: 8
+    paramType: 1
+    paramValue: 8
+  - cardId: CARD_009
+    displayName: "\u9ED1\u68439"
+    cardKind: 1
+    suit: 3
+    rank: 9
+    paramType: 1
+    paramValue: 9
+  - cardId: CARD_010
+    displayName: "\u9ED1\u684310"
+    cardKind: 1
+    suit: 3
+    rank: 10
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_011
+    displayName: "\u9ED1\u6843J"
+    cardKind: 1
+    suit: 3
+    rank: 11
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_012
+    displayName: "\u9ED1\u6843Q"
+    cardKind: 1
+    suit: 3
+    rank: 12
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_013
+    displayName: "\u9ED1\u6843K"
+    cardKind: 1
+    suit: 3
+    rank: 13
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_014
+    displayName: "\u7EA2\u6843A"
+    cardKind: 1
+    suit: 2
+    rank: 14
+    paramType: 1
+    paramValue: 11
+  - cardId: CARD_015
+    displayName: "\u7EA2\u68432"
+    cardKind: 1
+    suit: 2
+    rank: 2
+    paramType: 1
+    paramValue: 2
+  - cardId: CARD_016
+    displayName: "\u7EA2\u68433"
+    cardKind: 1
+    suit: 2
+    rank: 3
+    paramType: 1
+    paramValue: 3
+  - cardId: CARD_017
+    displayName: "\u7EA2\u68434"
+    cardKind: 1
+    suit: 2
+    rank: 4
+    paramType: 1
+    paramValue: 4
+  - cardId: CARD_018
+    displayName: "\u7EA2\u68435"
+    cardKind: 1
+    suit: 2
+    rank: 5
+    paramType: 1
+    paramValue: 5
+  - cardId: CARD_019
+    displayName: "\u7EA2\u68436"
+    cardKind: 1
+    suit: 2
+    rank: 6
+    paramType: 1
+    paramValue: 6
+  - cardId: CARD_020
+    displayName: "\u7EA2\u68437"
+    cardKind: 1
+    suit: 2
+    rank: 7
+    paramType: 1
+    paramValue: 7
+  - cardId: CARD_021
+    displayName: "\u7EA2\u68438"
+    cardKind: 1
+    suit: 2
+    rank: 8
+    paramType: 1
+    paramValue: 8
+  - cardId: CARD_022
+    displayName: "\u7EA2\u68439"
+    cardKind: 1
+    suit: 2
+    rank: 9
+    paramType: 1
+    paramValue: 9
+  - cardId: CARD_023
+    displayName: "\u7EA2\u684310"
+    cardKind: 1
+    suit: 2
+    rank: 10
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_024
+    displayName: "\u7EA2\u6843J"
+    cardKind: 1
+    suit: 2
+    rank: 11
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_025
+    displayName: "\u7EA2\u6843Q"
+    cardKind: 1
+    suit: 2
+    rank: 12
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_026
+    displayName: "\u7EA2\u6843K"
+    cardKind: 1
+    suit: 2
+    rank: 13
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_027
+    displayName: "\u6885\u82B1A"
+    cardKind: 1
+    suit: 0
+    rank: 14
+    paramType: 1
+    paramValue: 11
+  - cardId: CARD_028
+    displayName: "\u6885\u82B12"
+    cardKind: 1
+    suit: 0
+    rank: 2
+    paramType: 1
+    paramValue: 2
+  - cardId: CARD_029
+    displayName: "\u6885\u82B13"
+    cardKind: 1
+    suit: 0
+    rank: 3
+    paramType: 1
+    paramValue: 3
+  - cardId: CARD_030
+    displayName: "\u6885\u82B14"
+    cardKind: 1
+    suit: 0
+    rank: 4
+    paramType: 1
+    paramValue: 4
+  - cardId: CARD_031
+    displayName: "\u6885\u82B15"
+    cardKind: 1
+    suit: 0
+    rank: 5
+    paramType: 1
+    paramValue: 5
+  - cardId: CARD_032
+    displayName: "\u6885\u82B16"
+    cardKind: 1
+    suit: 0
+    rank: 6
+    paramType: 1
+    paramValue: 6
+  - cardId: CARD_033
+    displayName: "\u6885\u82B17"
+    cardKind: 1
+    suit: 0
+    rank: 7
+    paramType: 1
+    paramValue: 7
+  - cardId: CARD_034
+    displayName: "\u6885\u82B18"
+    cardKind: 1
+    suit: 0
+    rank: 8
+    paramType: 1
+    paramValue: 8
+  - cardId: CARD_035
+    displayName: "\u6885\u82B19"
+    cardKind: 1
+    suit: 0
+    rank: 9
+    paramType: 1
+    paramValue: 9
+  - cardId: CARD_036
+    displayName: "\u6885\u82B110"
+    cardKind: 1
+    suit: 0
+    rank: 10
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_037
+    displayName: "\u6885\u82B1J"
+    cardKind: 1
+    suit: 0
+    rank: 11
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_038
+    displayName: "\u6885\u82B1Q"
+    cardKind: 1
+    suit: 0
+    rank: 12
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_039
+    displayName: "\u6885\u82B1K"
+    cardKind: 1
+    suit: 0
+    rank: 13
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_040
+    displayName: "\u65B9\u5757A"
+    cardKind: 1
+    suit: 1
+    rank: 14
+    paramType: 1
+    paramValue: 11
+  - cardId: CARD_041
+    displayName: "\u65B9\u57572"
+    cardKind: 1
+    suit: 1
+    rank: 2
+    paramType: 1
+    paramValue: 2
+  - cardId: CARD_042
+    displayName: "\u65B9\u57573"
+    cardKind: 1
+    suit: 1
+    rank: 3
+    paramType: 1
+    paramValue: 3
+  - cardId: CARD_043
+    displayName: "\u65B9\u57574"
+    cardKind: 1
+    suit: 1
+    rank: 4
+    paramType: 1
+    paramValue: 4
+  - cardId: CARD_044
+    displayName: "\u65B9\u57575"
+    cardKind: 1
+    suit: 1
+    rank: 5
+    paramType: 1
+    paramValue: 5
+  - cardId: CARD_045
+    displayName: "\u65B9\u57576"
+    cardKind: 1
+    suit: 1
+    rank: 6
+    paramType: 1
+    paramValue: 6
+  - cardId: CARD_046
+    displayName: "\u65B9\u57577"
+    cardKind: 1
+    suit: 1
+    rank: 7
+    paramType: 1
+    paramValue: 7
+  - cardId: CARD_047
+    displayName: "\u65B9\u57578"
+    cardKind: 1
+    suit: 1
+    rank: 8
+    paramType: 1
+    paramValue: 8
+  - cardId: CARD_048
+    displayName: "\u65B9\u57579"
+    cardKind: 1
+    suit: 1
+    rank: 9
+    paramType: 1
+    paramValue: 9
+  - cardId: CARD_049
+    displayName: "\u65B9\u575710"
+    cardKind: 1
+    suit: 1
+    rank: 10
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_050
+    displayName: "\u65B9\u5757J"
+    cardKind: 1
+    suit: 1
+    rank: 11
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_051
+    displayName: "\u65B9\u5757Q"
+    cardKind: 1
+    suit: 1
+    rank: 12
+    paramType: 1
+    paramValue: 10
+  - cardId: CARD_052
+    displayName: "\u65B9\u5757K"
+    cardKind: 1
+    suit: 1
+    rank: 13
+    paramType: 1
+    paramValue: 10

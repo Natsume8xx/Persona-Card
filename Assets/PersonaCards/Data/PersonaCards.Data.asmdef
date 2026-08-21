@@ -2,7 +2,8 @@
   "name": "PersonaCards.Data",
   "rootNamespace": "PersonaCards.Data",
   "references": [
-    "PersonaCards.Core"
+    "PersonaCards.Core",
+    "PersonaCards.Cards"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

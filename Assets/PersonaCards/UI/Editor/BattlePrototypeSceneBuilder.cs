@@ -183,7 +183,8 @@ namespace PersonaCards.UI.Editor
                 flowReferences.ForgeConfirm,
                 controller,
                 EnsureRunRouteAsset(),
-                EnsureHandTypeAsset());
+                EnsureHandTypeAsset(),
+                EnsureCardConfigAsset());
 
             var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
@@ -216,6 +217,19 @@ namespace PersonaCards.UI.Editor
                 HandTypeImportCommand.CreateOrReset();
                 asset = AssetDatabase.LoadAssetAtPath<HandTypeAsset>(HandTypeImportCommand.AssetPath);
                 Debug.Log("[HandType] 场景重建时发现牌型配置资产缺失，已按配表当前初值自动创建。");
+            }
+            return asset;
+        }
+
+        /// <summary>确保卡牌配置资产存在并返回引用：缺失时按配表当前初值白盒创建（场景重建时自动挂接）。</summary>
+        private static CardConfigAsset EnsureCardConfigAsset()
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<CardConfigAsset>(CardConfigImportCommand.AssetPath);
+            if (asset == null)
+            {
+                CardConfigImportCommand.CreateOrReset();
+                asset = AssetDatabase.LoadAssetAtPath<CardConfigAsset>(CardConfigImportCommand.AssetPath);
+                Debug.Log("[Card] 场景重建时发现卡牌配置资产缺失，已按配表当前初值自动创建。");
             }
             return asset;
         }
@@ -262,7 +276,7 @@ namespace PersonaCards.UI.Editor
                 "rewardPreviousButton", "rewardNextButton", "shopPreviousButton", "shopNextButton",
                 "shopDeleteButton", "shopReforgeButton", "shopEnhanceButton",
                 "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController", "runRoute",
-                "handTypes"
+                "handTypes", "cardConfig"
             })
             {
                 var property = serializedFlow.FindProperty(propertyName);

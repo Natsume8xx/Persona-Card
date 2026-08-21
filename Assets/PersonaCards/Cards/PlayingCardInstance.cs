@@ -45,6 +45,7 @@ namespace PersonaCards.Cards
 
         public CardEnhancement Enhancement { get; }
 
-        public int FaceChipValue => PlayingCardRules.GetFaceChipValue(Rank);
+        // P0-1D 数据驱动：牌面筹码按 (花色,点数) 从配表门面查（配表当前同点数四花色同值，与旧公式行为零差异）
+        public int FaceChipValue => PlayingCardRules.GetFaceChipValue(Suit, Rank);
     }
 }
