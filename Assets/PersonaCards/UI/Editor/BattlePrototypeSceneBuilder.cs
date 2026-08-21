@@ -115,7 +115,9 @@ namespace PersonaCards.UI.Editor
                 modalReferences.DeckViewerPage,
                 modalReferences.HandReference,
                 modalReferences.HandReferenceClose,
-                modalReferences.HandReferenceRows);
+                modalReferences.HandReferenceRows,
+                centerReferences.HandSort,
+                rightReferences.ScoreProgressFill);
             controller.SetExternalFlowManaged(true);
 
             var flowReferences = BuildPrototypeFlow(canvasObject.transform, battleScreen.gameObject);
@@ -219,6 +221,12 @@ namespace PersonaCards.UI.Editor
                 flowReferences.Settings.Cancel,
                 flowReferences.Settings.Save,
                 flowReferences.Settings.Dim);
+            // P0-1I 图鉴占位屏 + 退出游戏接线（Configure 签名已满，独立注入）
+            flow.ConfigureCompendium(
+                flowReferences.Compendium.Overlay,
+                flowReferences.Compendium.MainMenuEntry,
+                flowReferences.Compendium.Back,
+                flowReferences.Compendium.Quit);
 
             var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
@@ -316,6 +324,9 @@ namespace PersonaCards.UI.Editor
                 // P0-1H 设置系统：界面 + 遮罩 + dim 层 + 主菜单入口（其余设置控件由 serializedFlow 字段绑定校验兜底）
                 , "05 Settings Screen", "Settings Card", "Settings Mask", "Screen Dim Layer",
                 "Settings Button", "Settings Save Button", "Brightness Slider", "Master Volume Slider"
+                // P0-1I 战斗体验对齐：图鉴占位屏 + 退出按钮 + 排序按钮 + 得分进度条
+                , "11 Compendium Screen", "Compendium Button", "Compendium Back Button", "Quit Button",
+                "Hand Sort Button", "Score Progress Bar", "Score Progress Fill"
             };
             foreach (var objectName in requiredObjects)
             {
@@ -348,7 +359,9 @@ namespace PersonaCards.UI.Editor
                 "animationToggle", "shakeToggle", "playKeyButton", "playKeyLabel", "discardKeyButton", "discardKeyLabel",
                 "settingsKeyButton", "settingsKeyLabel", "settingsTutorialReplayButton", "settingsTutorialReplayLabel",
                 "settingsBackButton", "settingsReturnButton", "settingsRestoreDefaultsButton", "settingsCancelButton",
-                "settingsSaveButton", "dimImage"
+                "settingsSaveButton", "dimImage",
+                // P0-1I 图鉴/退出 4 个绑定字段
+                "compendiumScreen", "compendiumEntryButton", "compendiumBackButton", "quitGameButton"
             })
             {
                 var property = serializedFlow.FindProperty(propertyName);
@@ -364,7 +377,9 @@ namespace PersonaCards.UI.Editor
             {
                 "deckViewerButton", "handReferenceButton", "deckViewerOverlay", "deckViewerCloseButton",
                 "deckViewerPreviousButton", "deckViewerNextButton", "deckViewerSummaryText", "deckViewerPageText",
-                "handReferenceOverlay", "handReferenceCloseButton"
+                "handReferenceOverlay", "handReferenceCloseButton",
+                // P0-1I 战斗体验对齐：手牌排序按钮 + 得分进度条填充图
+                "handSortButton", "scoreProgressFill"
             })
             {
                 var property = serializedBattle.FindProperty(propertyName);
@@ -463,19 +478,24 @@ namespace PersonaCards.UI.Editor
         {
             var main = CreateScreenRoot(canvas, "01 Main Menu Screen");
             CreateBackground(main.transform);
-            var mainCard = CreatePanel(main.transform, "Main Menu Card", new Vector2(0.32f, 0.12f), new Vector2(0.68f, 0.88f), new Color32(17, 18, 20, 242));
-            CreateText(mainCard.transform, "Game Title", "人格牌", 74, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.73f), new Vector2(0.92f, 0.96f), PaleGold, FontStyle.Bold);
-            CreateText(mainCard.transform, "Subtitle", "用牌局，认识人格", 26, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.66f), new Vector2(0.92f, 0.75f), Color.gray);
-            var start = CreateButton(mainCard.transform, "Start Game Button", "开始游戏", new Vector2(0.17f, 0.50f), new Vector2(0.83f, 0.61f), Gold);
-            var continueButton = CreateButton(mainCard.transform, "Continue Game Button", "继续游戏", new Vector2(0.17f, 0.37f), new Vector2(0.83f, 0.48f), new Color32(80, 68, 45, 255));
+            // P0-1I 主菜单四入口（人格牌/图鉴/设置/退出游戏）：卡片加高容纳 7 个按钮（一行一个全宽），标题副标题压缩上移
+            var mainCard = CreatePanel(main.transform, "Main Menu Card", new Vector2(0.30f, 0.06f), new Vector2(0.70f, 0.94f), new Color32(17, 18, 20, 242));
+            CreateText(mainCard.transform, "Game Title", "人格牌", 68, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.84f), new Vector2(0.92f, 0.95f), PaleGold, FontStyle.Bold);
+            CreateText(mainCard.transform, "Subtitle", "用牌局，认识人格", 24, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.78f), new Vector2(0.92f, 0.84f), Color.gray);
+            var start = CreateButton(mainCard.transform, "Start Game Button", "开始游戏", new Vector2(0.17f, 0.644f), new Vector2(0.83f, 0.734f), Gold);
+            var continueButton = CreateButton(mainCard.transform, "Continue Game Button", "继续游戏", new Vector2(0.17f, 0.54f), new Vector2(0.83f, 0.63f), new Color32(80, 68, 45, 255));
             continueButton.interactable = false;
-            var collectionButton = CreateButton(mainCard.transform, "Collection Button", "人格收藏 / 装备", new Vector2(0.17f, 0.24f), new Vector2(0.83f, 0.35f), new Color32(55, 55, 57, 255));
-            // P0-1H 设置入口：一行一个全宽按钮（用户 2026-08-21），占原「战斗教学」行
-            var settings = CreateButton(mainCard.transform, "Settings Button", "设置", new Vector2(0.17f, 0.135f), new Vector2(0.83f, 0.225f), new Color32(55, 55, 57, 255));
+            var collectionButton = CreateButton(mainCard.transform, "Collection Button", "人格收藏 / 装备", new Vector2(0.17f, 0.436f), new Vector2(0.83f, 0.526f), new Color32(55, 55, 57, 255));
+            // P0-1I 四入口之图鉴：打开占位屏（内容待策划确认 B5）
+            var compendium = CreateButton(mainCard.transform, "Compendium Button", "图鉴", new Vector2(0.17f, 0.332f), new Vector2(0.83f, 0.422f), new Color32(55, 55, 57, 255));
+            // P0-1H 设置入口：一行一个全宽按钮（用户 2026-08-21）
+            var settings = CreateButton(mainCard.transform, "Settings Button", "设置", new Vector2(0.17f, 0.228f), new Vector2(0.83f, 0.318f), new Color32(55, 55, 57, 255));
+            // P0-1I 四入口之退出游戏：Editor 下反射停 Play，真机走 Application.Quit（见 FlowController.QuitApplication）
+            var quit = CreateButton(mainCard.transform, "Quit Button", "退出游戏", new Vector2(0.17f, 0.124f), new Vector2(0.83f, 0.214f), new Color32(55, 55, 57, 255));
             // P0-1G 教程重播入口：点击标记重播请求，下一次进入战斗自动播放（P0-1H 设置界面有同款入口，文案同步）
-            var tutorialReplay = CreateButton(mainCard.transform, "Tutorial Replay Button", "战斗教学", new Vector2(0.17f, 0.03f), new Vector2(0.83f, 0.12f), new Color32(55, 55, 57, 255));
+            var tutorialReplay = CreateButton(mainCard.transform, "Tutorial Replay Button", "战斗教学", new Vector2(0.17f, 0.02f), new Vector2(0.83f, 0.11f), new Color32(55, 55, 57, 255));
             var tutorialReplayLabel = tutorialReplay.transform.Find("Label").GetComponent<Text>();
-            // P0-1H：卡片内已放满 5 个按钮，版本文本移出卡片挂主菜单屏底部
+            // P0-1H：卡片内已放满按钮，版本文本移出卡片挂主菜单屏底部
             CreateText(main.transform, "Version", "MVP 可玩闭环", 18, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.015f), new Vector2(0.92f, 0.06f), Color.gray);
 
             var collection = CreateScreenRoot(canvas, "10 Persona Collection Screen");
@@ -647,6 +667,8 @@ namespace PersonaCards.UI.Editor
             // P0-1H 设置界面：Canvas 根独立屏（非 MainMenu 子对象），仅主菜单阶段可打开，遮罩拦截主菜单点击；
             // dim 层在 BuildSettingsScreen 内部最后创建（Canvas 根最上层 sibling）
             var settingsReferences = BuildSettingsScreen(canvas, settings);
+            // P0-1I 图鉴占位屏：Canvas 根独立屏，初始隐藏；返回按钮回主菜单
+            var compendiumReferences = BuildCompendiumScreen(canvas, compendium, quit);
 
             battleScreen.SetActive(false);
             collection.gameObject.SetActive(false);
@@ -672,7 +694,21 @@ namespace PersonaCards.UI.Editor
                 forgeRolls, forgeStatus, forgeCandidateTexts.ToArray(), forgeCandidateButtons.ToArray(), forgeConfirm,
                 tutorialOverlay, tutorialStep, tutorialTitle, tutorialBody, tutorialNext, tutorialSkip, tutorialNextLabel,
                 tutorialReplay, tutorialReplayLabel,
-                settingsReferences);
+                settingsReferences,
+                compendiumReferences);
+        }
+
+        /// <summary>P0-1I 图鉴占位屏：主菜单覆盖屏（内容待策划确认 B5），仅标题 + 占位说明 + 返回按钮，初始隐藏。</summary>
+        private static CompendiumReferences BuildCompendiumScreen(Transform canvas, Button mainMenuEntry, Button quitEntry)
+        {
+            var screen = CreateScreenRoot(canvas, "11 Compendium Screen");
+            CreateBackground(screen.transform);
+            var card = CreatePanel(screen.transform, "Compendium Card", new Vector2(0.30f, 0.12f), new Vector2(0.70f, 0.88f), new Color32(17, 18, 20, 248));
+            CreateText(card.transform, "Compendium Title", "图鉴", 48, TextAnchor.MiddleCenter, new Vector2(0.05f, 0.80f), new Vector2(0.95f, 0.95f), PaleGold, FontStyle.Bold);
+            CreateText(card.transform, "Compendium Placeholder", "牌型规则 / 基础计分 / 人格图鉴\n\n内容待策划确认（B5）", 22, TextAnchor.MiddleCenter, new Vector2(0.10f, 0.40f), new Vector2(0.90f, 0.75f), Color.gray);
+            var back = CreateButton(card.transform, "Compendium Back Button", "← 返回", new Vector2(0.20f, 0.10f), new Vector2(0.80f, 0.24f), Gold);
+            screen.gameObject.SetActive(false);
+            return new CompendiumReferences(screen.gameObject, mainMenuEntry, back, quitEntry);
         }
 
         /// <summary>P0-1H 设置界面：Canvas 根独立屏（非 MainMenu 子对象，初始隐藏）。全屏遮罩拦截主菜单点击；卡片内 画面/声音/操作 三区 + 底部四按钮。</summary>
@@ -813,9 +849,15 @@ namespace PersonaCards.UI.Editor
             var discard = CreateButton(parent, "Discard Button", "弃牌", new Vector2(0.52f, 0.03f), new Vector2(0.77f, 0.13f), new Color32(85, 63, 51, 255));
             AddButtonIcon(play, "♠", PaleGold);
             AddButtonIcon(discard, "×", new Color32(224, 175, 156, 255));
+            // P0-1I 手牌排序切换（策划案 3.3.10）：大小 ↔ 花色 轮换，只改显示顺序；文案由 Controller 刷新
+            // 尺寸减半（0.20×0.10 → 0.10×0.05），与出牌/弃牌按钮垂直居中，字号缩到 15
+            var handSort = CreateButton(parent, "Hand Sort Button", "排序：大小", new Vector2(0.88f, 0.055f), new Vector2(0.98f, 0.105f), new Color32(55, 55, 57, 255));
+            var handSortLabel = handSort.transform.Find("Label").GetComponent<Text>();
+            handSortLabel.fontSize = 15;
+            handSortLabel.resizeTextMaxSize = 15;
             // P0-1H：战斗屏「减少动效」Toggle 已归口到设置系统的「界面动效」开关（GameSettings.AnimationsEnabled），不再创建
             return new CenterReferences(hand.GetComponent<RectTransform>(), preview, message, play, discard,
-                played.GetComponent<RectTransform>(), scoringLog);
+                played.GetComponent<RectTransform>(), scoringLog, handSort);
         }
 
         private static RightReferences BuildRightPanel(Transform parent)
@@ -824,15 +866,33 @@ namespace PersonaCards.UI.Editor
             CreateText(parent, "Observer Name", "镜厅守门人", 30, TextAnchor.MiddleLeft, new Vector2(0.47f, 0.84f), new Vector2(0.96f, 0.96f), Gold, FontStyle.Bold);
             CreateText(parent, "Observer Line", "“让我看看你的选择。”", 18, TextAnchor.MiddleLeft, new Vector2(0.47f, 0.72f), new Vector2(0.94f, 0.85f), Color.gray, FontStyle.Italic);
             var bossRule = CreateText(parent, "Boss Active Rule", "观察者未施加特殊规则", 16, TextAnchor.UpperLeft, new Vector2(0.08f, 0.58f), new Vector2(0.92f, 0.72f), new Color32(212, 192, 145, 255), FontStyle.Bold);
-            var score = CreateText(parent, "Score and Target", "当前得分\n0\n\n目标分数\n350", 25, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.40f), new Vector2(0.92f, 0.58f), Color.white, FontStyle.Bold);
-            var resources = CreateText(parent, "Battle Resources", "剩余出牌：4 / 4\n剩余弃牌：3 / 3\n牌堆：44", 20, TextAnchor.UpperLeft, new Vector2(0.25f, 0.25f), new Vector2(0.90f, 0.39f), PaleGold);
-            CreateResourceIcon(parent, "Play Resource Icon", "♠", 0.350f);
-            CreateResourceIcon(parent, "Discard Resource Icon", "×", 0.305f, new Color32(190, 120, 103, 255));
-            CreateResourceIcon(parent, "Deck Resource Icon", "▣", 0.260f);
-            var deckViewer = CreateButton(parent, "Deck Viewer Button", "牌库查看", new Vector2(0.08f, 0.13f), new Vector2(0.47f, 0.22f), new Color32(55, 55, 57, 255));
-            var handReference = CreateButton(parent, "Hand Reference Button", "牌型规则", new Vector2(0.53f, 0.13f), new Vector2(0.92f, 0.22f), new Color32(55, 55, 57, 255));
+            // P0-1I 得分上移，下方留出进度条位置（3.3.9：当前得分与目标分数的完成比例）
+            var score = CreateText(parent, "Score and Target", "当前得分\n0\n\n目标分数\n350", 25, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.43f), new Vector2(0.92f, 0.58f), Color.white, FontStyle.Bold);
+            var progressBar = CreatePanel(parent, "Score Progress Bar", new Vector2(0.08f, 0.395f), new Vector2(0.92f, 0.425f), new Color32(30, 30, 32, 255));
+            // 填充条用 Simple + anchorMax.x 驱动（Controller 按得分比例 Lerp 左右缘，从左向右增长）：
+            // Filled 类型挂带 border 的 sprite 会因 9-slice 边界从中间起步，弃用
+            var progressFill = CreatePanel(progressBar.transform, "Score Progress Fill", new Vector2(0.02f, 0.14f), new Vector2(0.98f, 0.86f), Gold);
+            var progressFillImage = progressFill.GetComponent<Image>();
+            progressFillImage.raycastTarget = false;
+            // P0-1I 金币两行（3.3.9）：获得金币（P0-6 接入前恒 +0）+ 当前金币；资源区扩为 5 行
+            // 20 号字行高 20px/1080≈0.01852：五行行中心 0.3757/0.3572/0.3387/0.3201/0.3016，图标徽章与其逐行对齐
+            var resources = CreateText(parent, "Battle Resources", "剩余出牌：4 / 4\n剩余弃牌：3 / 3\n牌堆：44\n获得金币：+0\n当前金币：3", 20, TextAnchor.UpperLeft, new Vector2(0.25f, 0.215f), new Vector2(0.90f, 0.385f), PaleGold);
+            CreateResourceIcon(parent, "Play Resource Icon", "♠", 0.3757f);
+            CreateResourceIcon(parent, "Discard Resource Icon", "×", 0.3572f, new Color32(190, 120, 103, 255));
+            CreateResourceIcon(parent, "Deck Resource Icon", "▣", 0.3387f);
+            CreateResourceIcon(parent, "Coins Gained Resource Icon", "◉", 0.3201f, new Color32(212, 192, 145, 255));
+            CreateResourceIcon(parent, "Coins Total Resource Icon", "◉", 0.3016f, new Color32(212, 192, 145, 255));
+            // 缩小（高 0.09→0.075、宽 0.39→0.30）并水平居中，字号缩到 24
+            var deckViewer = CreateButton(parent, "Deck Viewer Button", "牌库查看", new Vector2(0.15f, 0.135f), new Vector2(0.45f, 0.21f), new Color32(55, 55, 57, 255));
+            var handReference = CreateButton(parent, "Hand Reference Button", "牌型规则", new Vector2(0.55f, 0.135f), new Vector2(0.85f, 0.21f), new Color32(55, 55, 57, 255));
+            foreach (var smallButton in new[] { deckViewer, handReference })
+            {
+                var smallLabel = smallButton.transform.Find("Label").GetComponent<Text>();
+                smallLabel.fontSize = 24;
+                smallLabel.resizeTextMaxSize = 24;
+            }
             CreateText(parent, "Rules", "规则 · 选择 1—5 张 · 达到目标分立即胜利", 16, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.04f), new Vector2(0.92f, 0.12f), Color.gray);
-            return new RightReferences(score, resources, bossRule, deckViewer, handReference);
+            return new RightReferences(score, resources, bossRule, deckViewer, handReference, progressFillImage);
         }
 
         private static BattleModalReferences BuildBattleModals(Transform parent)
@@ -927,7 +987,7 @@ namespace PersonaCards.UI.Editor
             return name is "Left - Persona Slots" or "Center - Table" or "Right - Battle Info" or
                 "Main Menu Card" or "Persona Setup Card" or "Boss Reveal Card" or "Run Result Card" or
                 "Reward Card" or "Shop Card" or "Run Report Card" or "Persona Forge Card" or "Result Overlay" or
-                "Settings Card";
+                "Settings Card" or "Compendium Card";
         }
 
         private static bool IsInsetFrame(string name)
@@ -1022,12 +1082,13 @@ namespace PersonaCards.UI.Editor
         {
             var badge = new GameObject(name + " Badge", typeof(RectTransform), typeof(Image));
             badge.transform.SetParent(parent, false);
-            Stretch(badge.GetComponent<RectTransform>(), new Vector2(0.10f, centerY - 0.032f), new Vector2(0.20f, centerY + 0.032f));
+            // 徽章缩到贴近行高（高 0.04、宽 0.085），centerY 传文本行中心即可与行对齐
+            Stretch(badge.GetComponent<RectTransform>(), new Vector2(0.1075f, centerY - 0.02f), new Vector2(0.1925f, centerY + 0.02f));
             var image = badge.GetComponent<Image>();
             image.color = new Color32(35, 31, 24, 235);
             image.raycastTarget = false;
             AddOutline(badge, SubtleGold, new Vector2(1f, -1f));
-            CreateText(badge.transform, name, symbol, 22, TextAnchor.MiddleCenter, Vector2.zero, Vector2.one, color ?? Gold, FontStyle.Bold);
+            CreateText(badge.transform, name, symbol, 20, TextAnchor.MiddleCenter, Vector2.zero, Vector2.one, color ?? Gold, FontStyle.Bold);
         }
 
         private static RawImage CreateArtwork(Transform parent, string name, string assetPath, Vector2 min, Vector2 max)
@@ -1161,9 +1222,9 @@ namespace PersonaCards.UI.Editor
         private readonly struct CenterReferences
         {
             public CenterReferences(RectTransform handRoot, Text preview, Text message, Button play, Button discard,
-                RectTransform playedSlots, Text scoringLog)
+                RectTransform playedSlots, Text scoringLog, Button handSort)
             { HandRoot = handRoot; Preview = preview; Message = message; Play = play; Discard = discard;
-                PlayedSlots = playedSlots; ScoringLog = scoringLog; }
+                PlayedSlots = playedSlots; ScoringLog = scoringLog; HandSort = handSort; }
             public RectTransform HandRoot { get; }
             public Text Preview { get; }
             public Text Message { get; }
@@ -1171,17 +1232,20 @@ namespace PersonaCards.UI.Editor
             public Button Discard { get; }
             public RectTransform PlayedSlots { get; }
             public Text ScoringLog { get; }
+            public Button HandSort { get; }
         }
 
         private readonly struct RightReferences
         {
-            public RightReferences(Text score, Text resources, Text bossRule, Button deckViewer, Button handReference)
-            { Score = score; Resources = resources; BossRule = bossRule; DeckViewer = deckViewer; HandReference = handReference; }
+            public RightReferences(Text score, Text resources, Text bossRule, Button deckViewer, Button handReference, Image scoreProgressFill)
+            { Score = score; Resources = resources; BossRule = bossRule; DeckViewer = deckViewer;
+                HandReference = handReference; ScoreProgressFill = scoreProgressFill; }
             public Text Score { get; }
             public Text Resources { get; }
             public Text BossRule { get; }
             public Button DeckViewer { get; }
             public Button HandReference { get; }
+            public Image ScoreProgressFill { get; }
         }
 
         private readonly struct BattleModalReferences
@@ -1250,7 +1314,8 @@ namespace PersonaCards.UI.Editor
                 Button forgeConfirm,
                 GameObject tutorialOverlay, Text tutorialStep, Text tutorialTitle, Text tutorialBody,
                 Button tutorialNext, Button tutorialSkip, Text tutorialNextLabel, Button tutorialReplay, Text tutorialReplayLabel,
-                SettingsReferences settings)
+                SettingsReferences settings,
+                CompendiumReferences compendium)
             {
                 MainMenu = mainMenu;
                 Collection = collection;
@@ -1316,6 +1381,7 @@ namespace PersonaCards.UI.Editor
                 TutorialReplay = tutorialReplay;
                 TutorialReplayLabel = tutorialReplayLabel;
                 Settings = settings;
+                Compendium = compendium;
             }
 
             public GameObject MainMenu { get; }
@@ -1382,6 +1448,24 @@ namespace PersonaCards.UI.Editor
             public Button TutorialReplay { get; }
             public Text TutorialReplayLabel { get; }
             public SettingsReferences Settings { get; }
+            public CompendiumReferences Compendium { get; }
+        }
+
+        /// <summary>图鉴占位屏引用集合（P0-1I）：独立 struct，与 SettingsReferences 同惯例（ConfigureCompendium 注入）。</summary>
+        private readonly struct CompendiumReferences
+        {
+            public CompendiumReferences(GameObject overlay, Button mainMenuEntry, Button back, Button quit)
+            {
+                Overlay = overlay;
+                MainMenuEntry = mainMenuEntry;
+                Back = back;
+                Quit = quit;
+            }
+
+            public GameObject Overlay { get; }
+            public Button MainMenuEntry { get; }
+            public Button Back { get; }
+            public Button Quit { get; }
         }
 
         /// <summary>设置界面引用集合（P0-1H）：独立 struct 收编 22 个引用，避免 FlowReferences 构造器继续膨胀。</summary>

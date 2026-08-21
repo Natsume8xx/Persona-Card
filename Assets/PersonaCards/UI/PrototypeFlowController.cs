@@ -102,6 +102,15 @@ namespace PersonaCards.UI
         // —— P0-1H 设置系统（ConfigureSettings 注入）——
         /// <summary>主菜单卡片内的「设置」入口按钮：点击打开设置界面（仅主菜单阶段）。</summary>
         [SerializeField] private Button settingsEntryButton;
+        // —— P0-1I 主菜单四入口（ConfigureCompendium 注入）——
+        /// <summary>图鉴占位屏根（Canvas 下独立屏）：主菜单覆盖屏，内容待策划确认（B5）。</summary>
+        [SerializeField] private GameObject compendiumScreen;
+        /// <summary>主菜单卡片内的「图鉴」入口按钮。</summary>
+        [SerializeField] private Button compendiumEntryButton;
+        /// <summary>图鉴屏「← 返回」按钮。</summary>
+        [SerializeField] private Button compendiumBackButton;
+        /// <summary>主菜单卡片内的「退出游戏」按钮。</summary>
+        [SerializeField] private Button quitGameButton;
         /// <summary>设置界面根（Canvas 下独立屏）：主菜单 overlay，遮罩拦截下层点击。</summary>
         [SerializeField] private GameObject settingsOverlay;
         /// <summary>亮度/主音量滑条与百分比文本（策划 12.3.1：百分比立即预览）。</summary>
@@ -157,6 +166,8 @@ namespace PersonaCards.UI
         private const string TutorialSeenKey = "PersonaCards.TutorialSeen";
         /// <summary>设置界面是否打开（P0-1H）：主菜单 overlay，不进入流程状态机。</summary>
         private bool _settingsOpen;
+        /// <summary>图鉴占位屏是否打开（P0-1I）：主菜单覆盖屏，与设置互斥（ESC 优先关图鉴）。</summary>
+        private bool _compendiumOpen;
         /// <summary>进入设置时的快照：「取消/返回主界面」回滚到此（12.3.1「未保存修改不生效」）。</summary>
         private GameSettingsData _settingsSnapshot;
         /// <summary>正在改键的目标（None = 未在改键；再点同一条目退出改键态）。</summary>
@@ -303,6 +314,18 @@ namespace PersonaCards.UI
             settingsCancelButton = cancel;
             settingsSaveButton = save;
             dimImage = dim;
+        }
+
+        /// <summary>
+        /// 图鉴占位与退出按钮引用注入（P0-1I）：同 ConfigureSettings 惯例独立注入，不膨胀主 Configure 签名。
+        /// SceneBuilder 构建 Compendium Screen 后调用；字段名同样进 journey validation 校验列表。
+        /// </summary>
+        public void ConfigureCompendium(GameObject overlay, Button mainMenuEntry, Button back, Button quitGame)
+        {
+            compendiumScreen = overlay;
+            compendiumEntryButton = mainMenuEntry;
+            compendiumBackButton = back;
+            quitGameButton = quitGame;
         }
 
         private void Awake()
@@ -454,6 +477,11 @@ namespace PersonaCards.UI
             settingsRestoreDefaultsButton.onClick.AddListener(RestoreDefaults);
             settingsCancelButton.onClick.AddListener(CancelAndCloseSettings);
             settingsSaveButton.onClick.AddListener(SaveSettings);
+            // P0-1I 主菜单四入口绑定：图鉴占位屏开关 + 退出游戏
+            compendiumEntryButton.onClick.AddListener(OpenCompendium);
+            compendiumBackButton.onClick.AddListener(CloseCompendium);
+            quitGameButton.onClick.AddListener(QuitApplication);
+            compendiumScreen.SetActive(false);
             RefreshAppliedSettings();
             RefreshSettingsUi();
             battleController.BattleCompleted += OnBattleCompleted;
@@ -682,7 +710,7 @@ namespace PersonaCards.UI
             if (node.kind == RunNodeKind.BossBattle)
                 Debug.LogWarning($"[Boss] 节点 {node.Index} 难度池 {node.bossPoolId} 尚未落地（TODO P0-3），临时返回镜厅守门人。");
             battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss,
-                playsLimit, discardsLimit);
+                playsLimit, discardsLimit, journeyCoins: _journeyDeck.Coins); // P0-1I：当前金币注入战斗信息显示（3.3.9）
             battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}"; // 进度只计战斗，生成节点不计入
             Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，出牌 {playsLimit} 弃牌 {discardsLimit}，场次种子 {seed}" +
                       (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));
@@ -782,9 +810,11 @@ namespace PersonaCards.UI
             if (_tutorial.IsActive) return;
 
             // 设置键：设置界面 ↔ 主菜单；其余阶段（含战斗）不响应 ESC（原型无暂停系统，见 P0-1H 拍板）
+            // P0-1I：图鉴占位屏打开时 ESC 优先关图鉴（与设置互斥，图鉴覆盖屏在最上层）
             if (keyboard[GameSettings.SettingsKey].wasPressedThisFrame)
             {
-                if (_settingsOpen) CloseSettings();
+                if (_compendiumOpen) CloseCompendium();
+                else if (_settingsOpen) CloseSettings();
                 else if (_flow.Stage == PrototypeFlowStage.MainMenu) OpenSettings();
             }
 
@@ -802,11 +832,46 @@ namespace PersonaCards.UI
         private void OpenSettings()
         {
             if (_flow.Stage != PrototypeFlowStage.MainMenu || _settingsOpen) return;
+            _compendiumOpen = false; // P0-1I 防御：设置与图鉴互斥，同屏不可双开
             _settingsOpen = true;
             _settingsSnapshot = GameSettings.Current.Clone(); // 回滚基线（12.3.1「取消：返回修改前状态」）
             _rebinding = RebindingTarget.None;
             Render();
             RefreshSettingsUi();
+        }
+
+        // —— P0-1I 主菜单四入口：图鉴占位屏 + 退出游戏 ——
+
+        /// <summary>打开图鉴占位屏（仅主菜单阶段；内容待策划确认 B5 后替换）。</summary>
+        private void OpenCompendium()
+        {
+            if (_flow.Stage != PrototypeFlowStage.MainMenu || _compendiumOpen) return;
+            _compendiumOpen = true;
+            Render();
+        }
+
+        /// <summary>关闭图鉴占位屏（返回主菜单）。</summary>
+        private void CloseCompendium()
+        {
+            _compendiumOpen = false;
+            Render();
+        }
+
+        /// <summary>
+        /// 退出游戏：编辑器 Play 模式下 Application.Quit 无效，故反射 EditorApplication.isPlaying = false
+        /// （UI 程序集不引用 UnityEditor，反射避免 asmdef 改动）；真机走 Application.Quit()。
+        /// </summary>
+        private void QuitApplication()
+        {
+            var editorApplication = System.Type.GetType("UnityEditor.EditorApplication, UnityEditor");
+            var isPlaying = editorApplication?.GetProperty(
+                "isPlaying", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            if (isPlaying != null && (bool)isPlaying.GetValue(null, null))
+            {
+                isPlaying.SetValue(null, false, null);
+                return;
+            }
+            Application.Quit();
         }
 
         /// <summary>关闭设置界面（仅隐藏；修改回滚由 CancelAndCloseSettings 负责）。</summary>
@@ -1243,7 +1308,7 @@ namespace PersonaCards.UI
                     BeginMidRunForge(); // 同种子派生重建铸牌：骰值与退出前一致
                 if (stage == PrototypeFlowStage.Battle && data.battle != null && data.battle.hasSnapshot)
                 {
-                    battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout());
+                    battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout(), journeyCoins: _journeyDeck.Coins); // P0-1I：读档同步当前金币显示
                     // 快照恢复不经过 StartCurrentBattle，进度文案需在此显式刷新（走查反馈修复：否则残留场景默认文案）
                     battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}";
                 }
@@ -1473,6 +1538,7 @@ namespace PersonaCards.UI
             mainMenuScreen.SetActive(_flow.Stage == PrototypeFlowStage.MainMenu && !_collectionOpen);
             collectionScreen.SetActive(_flow.Stage == PrototypeFlowStage.MainMenu && _collectionOpen);
             settingsOverlay.SetActive(_settingsOpen && _flow.Stage == PrototypeFlowStage.MainMenu); // P0-1H：设置 overlay 仅主菜单阶段
+            compendiumScreen.SetActive(_compendiumOpen && _flow.Stage == PrototypeFlowStage.MainMenu); // P0-1I：图鉴覆盖屏仅主菜单阶段（主菜单屏保持可见）
             personaSetupScreen.SetActive(_flow.Stage == PrototypeFlowStage.PersonaSetup);
             bossRevealScreen.SetActive(_flow.Stage == PrototypeFlowStage.BossReveal);
             if (_flow.Stage == PrototypeFlowStage.BossReveal && bossRevealRuleText != null)
