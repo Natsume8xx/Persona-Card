@@ -7,6 +7,7 @@ using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
 using PersonaCards.Core.Random;
+using PersonaCards.Core;
 
 namespace PersonaCards.Battle
 {

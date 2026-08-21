@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
+using PersonaCards.Core;
 
 namespace PersonaCards.Battle.Bosses
 {

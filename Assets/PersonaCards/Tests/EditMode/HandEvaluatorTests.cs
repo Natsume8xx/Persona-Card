@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
+using PersonaCards.Core;
 
 namespace PersonaCards.Tests.EditMode
 {
@@ -142,20 +143,21 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
-        public void CatalogMatchesFrozenGddValues()
+        public void CatalogFallbackMatchesTableValues()
         {
-            AssertValues(HandType.HighCard, 5, 1);
-            AssertValues(HandType.Pair, 10, 2);
-            AssertValues(HandType.TwoPair, 20, 2);
-            AssertValues(HandType.ThreeOfAKind, 30, 3);
-            AssertValues(HandType.Straight, 30, 4);
-            AssertValues(HandType.Flush, 35, 4);
-            AssertValues(HandType.FullHouse, 40, 4);
-            AssertValues(HandType.FourOfAKind, 60, 7);
-            AssertValues(HandType.StraightFlush, 100, 8);
-            AssertValues(HandType.FiveOfAKind, 100, 8);
-            AssertValues(HandType.FlushHouse, 100, 8);
-            AssertValues(HandType.FlushFive, 100, 8);
+            // P0-1C 白盒回落 = 配表「牌型配置」当前初值（策划案 5.2.2 正文 10 行 + 五条/同花五条占位 100/8）
+            AssertValues(HandType.HighCard, 55, 1m);
+            AssertValues(HandType.Pair, 48, 2m);
+            AssertValues(HandType.TwoPair, 52, 2.5m);
+            AssertValues(HandType.ThreeOfAKind, 57, 3m);
+            AssertValues(HandType.Straight, 60, 4m);
+            AssertValues(HandType.Flush, 65, 4m);
+            AssertValues(HandType.FullHouse, 74, 5m);
+            AssertValues(HandType.FourOfAKind, 100, 6m);
+            AssertValues(HandType.StraightFlush, 95, 10m);
+            AssertValues(HandType.FiveOfAKind, 100, 8m);
+            AssertValues(HandType.FlushHouse, 70, 12m);
+            AssertValues(HandType.FlushFive, 100, 8m);
         }
 
         [Test]
@@ -183,7 +185,7 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(Evaluate(cards).HandType, Is.EqualTo(expected), expected.ToString());
         }
 
-        private static void AssertValues(HandType handType, int chips, int multiplier)
+        private static void AssertValues(HandType handType, int chips, decimal multiplier)
         {
             var definition = HandTypeCatalog.Get(handType);
             Assert.That(definition.BaseChips, Is.EqualTo(chips), $"{handType} chips");

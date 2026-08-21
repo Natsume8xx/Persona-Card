@@ -10,6 +10,7 @@ using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
 using UnityEngine;
 using UnityEngine.UI;
+using PersonaCards.Core;
 
 namespace PersonaCards.UI
 {
@@ -557,7 +558,8 @@ namespace PersonaCards.UI
 
         private void RefreshHandReference()
         {
-            var definitions = HandTypeCatalog.All.OrderBy(definition => definition.HandType).ToArray();
+            // All 已按显示顺序（配表「显示顺序」列）排列，直接按序渲染，不再按枚举序
+            var definitions = HandTypeCatalog.All.ToArray();
             for (var index = 0; index < handReferenceRows.Length; index++)
             {
                 var hasDefinition = index < definitions.Length;

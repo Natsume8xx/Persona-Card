@@ -3,6 +3,7 @@ using NUnit.Framework;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
 using PersonaCards.UI;
+using PersonaCards.Core;
 
 namespace PersonaCards.Tests.EditMode
 {

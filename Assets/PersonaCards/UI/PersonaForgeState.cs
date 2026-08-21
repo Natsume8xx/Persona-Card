@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PersonaCards.Battle.Personas;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Core.Random;
+using PersonaCards.Core;
 
 namespace PersonaCards.UI
 {

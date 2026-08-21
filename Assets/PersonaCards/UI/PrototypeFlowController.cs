@@ -10,6 +10,7 @@ using PersonaCards.Cards.Hands;
 using PersonaCards.Data;
 using UnityEngine;
 using UnityEngine.UI;
+using PersonaCards.Core;
 
 namespace PersonaCards.UI
 {
@@ -75,6 +76,8 @@ namespace PersonaCards.UI
         [SerializeField] private BattlePrototypeController battleController;
         /// <summary>整局路线表资产（P0-1 数据驱动）：Awake 时注入 RunRoute；未配置时回落内置默认路线。</summary>
         [SerializeField] private RunRouteAsset runRoute;
+        /// <summary>牌型配置资产（P0-1C 数据驱动）：Awake 时注入 HandTypeCatalog；未配置或校验失败时回落白盒（= 配表当前初值）。</summary>
+        [SerializeField] private HandTypeAsset handTypes;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -115,7 +118,7 @@ namespace PersonaCards.UI
             Text[] battlePersonaNames, Text[] battlePersonaRules,
             Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtonsValue,
             Button forgeConfirm,
-            BattlePrototypeController battlePrototype, RunRouteAsset routeAsset)
+            BattlePrototypeController battlePrototype, RunRouteAsset routeAsset, HandTypeAsset handTypeAsset)
         {
             mainMenuScreen = mainMenu;
             collectionScreen = collection;
@@ -176,6 +179,7 @@ namespace PersonaCards.UI
             forgeConfirmButton = forgeConfirm;
             battleController = battlePrototype;
             runRoute = routeAsset;
+            handTypes = handTypeAsset;
         }
 
         private void Awake()
@@ -184,6 +188,25 @@ namespace PersonaCards.UI
             if (runRoute == null)
                 Debug.LogWarning("[Flow] runRoute 路线资产未配置：使用内置默认路线（13 阶段白盒）。");
             RunRoute.Configure(runRoute);
+
+            // 牌型目录注入（P0-1C 数据驱动）：null 或校验失败 → 目录回落白盒（= 配表当前初值），判定层始终可用
+            if (handTypes == null)
+            {
+                Debug.LogWarning("[HandType] handTypes 牌型资产未配置：使用白盒牌型配置（12 个牌型）。");
+                HandTypeCatalog.Configure(null);
+            }
+            else if (!handTypes.Validate(out var handTypeError))
+            {
+                Debug.LogWarning($"[HandType] handTypes 牌型资产校验失败（{handTypeError}）：使用白盒牌型配置。");
+                HandTypeCatalog.Configure(null);
+            }
+            else
+            {
+                HandTypeCatalog.Configure(handTypes.BuildEntries());
+                var summary = HandTypeCatalog.LastConfiguredSummary;
+                if (!string.IsNullOrEmpty(summary))
+                    Debug.Log($"[HandType] 牌型目录已注入：{summary}。");
+            }
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
             startButton.onClick.AddListener(StartNewRun);
@@ -479,7 +502,7 @@ namespace PersonaCards.UI
             Render();
         }
 
-        private void OnHandPlayed(Cards.Hands.HandType handType, int cardCount, long score)
+        private void OnHandPlayed(HandType handType, int cardCount, long score)
         {
             _behaviorTracker?.RecordPlay(handType, cardCount, score);
         }
@@ -625,16 +648,16 @@ namespace PersonaCards.UI
             };
         }
 
-        private static string HandName(Cards.Hands.HandType handType) => handType switch
+        private static string HandName(HandType handType) => handType switch
         {
-            Cards.Hands.HandType.Pair => "对子",
-            Cards.Hands.HandType.TwoPair => "两对",
-            Cards.Hands.HandType.ThreeOfAKind => "三条",
-            Cards.Hands.HandType.Straight => "顺子",
-            Cards.Hands.HandType.Flush => "同花",
-            Cards.Hands.HandType.FullHouse => "葫芦",
-            Cards.Hands.HandType.FourOfAKind => "四条",
-            Cards.Hands.HandType.StraightFlush => "同花顺",
+            HandType.Pair => "对子",
+            HandType.TwoPair => "两对",
+            HandType.ThreeOfAKind => "三条",
+            HandType.Straight => "顺子",
+            HandType.Flush => "同花",
+            HandType.FullHouse => "葫芦",
+            HandType.FourOfAKind => "四条",
+            HandType.StraightFlush => "同花顺",
             _ => "高牌"
         };
 
