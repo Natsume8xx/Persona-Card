@@ -186,7 +186,16 @@ namespace PersonaCards.UI.Editor
                 EnsureHandTypeAsset(),
                 EnsureCardConfigAsset(),
                 EnsurePersonaConfigAsset(),
-                EnsureGlobalConfigAsset());
+                EnsureGlobalConfigAsset(),
+                flowReferences.TutorialOverlay,
+                flowReferences.TutorialStep,
+                flowReferences.TutorialTitle,
+                flowReferences.TutorialBody,
+                flowReferences.TutorialNext,
+                flowReferences.TutorialSkip,
+                flowReferences.TutorialNextLabel,
+                flowReferences.TutorialReplay,
+                flowReferences.TutorialReplayLabel);
 
             var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
@@ -280,6 +289,7 @@ namespace PersonaCards.UI.Editor
                 "Forge Rolls", "Forge Candidate 1", "Forge Candidate 2", "Forge Candidate 3",
                 "Forge Confirm Button", "Collection Card 1", "Collection Equipment Slot 1"
                 , "Deck Viewer Button", "Hand Reference Button", "Deck Viewer Overlay", "Hand Reference Overlay"
+                , "Tutorial Overlay", "Tutorial Next Button", "Tutorial Skip Button", "Tutorial Replay Button"
             };
             foreach (var objectName in requiredObjects)
             {
@@ -304,7 +314,9 @@ namespace PersonaCards.UI.Editor
                 "rewardPreviousButton", "rewardNextButton", "shopPreviousButton", "shopNextButton",
                 "shopDeleteButton", "shopReforgeButton", "shopEnhanceButton",
                 "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController", "runRoute",
-                "handTypes", "cardConfig", "personaConfig", "globalConfig"
+                "handTypes", "cardConfig", "personaConfig", "globalConfig",
+                "tutorialOverlay", "tutorialStepText", "tutorialTitleText", "tutorialBodyText",
+                "tutorialNextButton", "tutorialSkipButton", "tutorialNextLabel", "tutorialReplayButton", "tutorialReplayLabel"
             })
             {
                 var property = serializedFlow.FindProperty(propertyName);
@@ -426,6 +438,9 @@ namespace PersonaCards.UI.Editor
             var continueButton = CreateButton(mainCard.transform, "Continue Game Button", "继续游戏", new Vector2(0.17f, 0.37f), new Vector2(0.83f, 0.48f), new Color32(80, 68, 45, 255));
             continueButton.interactable = false;
             var collectionButton = CreateButton(mainCard.transform, "Collection Button", "人格收藏 / 装备", new Vector2(0.17f, 0.24f), new Vector2(0.83f, 0.35f), new Color32(55, 55, 57, 255));
+            // P0-1G 教程重播入口：点击标记重播请求，下一次进入战斗自动播放（P0-1H 设置界面将加同款入口）
+            var tutorialReplay = CreateButton(mainCard.transform, "Tutorial Replay Button", "战斗教学", new Vector2(0.17f, 0.135f), new Vector2(0.83f, 0.225f), new Color32(55, 55, 57, 255));
+            var tutorialReplayLabel = tutorialReplay.transform.Find("Label").GetComponent<Text>();
             CreateText(mainCard.transform, "Version", "MVP 可玩闭环", 18, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.05f), new Vector2(0.92f, 0.13f), Color.gray);
 
             var collection = CreateScreenRoot(canvas, "10 Persona Collection Screen");
@@ -582,6 +597,18 @@ namespace PersonaCards.UI.Editor
 
             var battleProgress = CreateText(battleScreen.transform, "Journey Progress", $"旅程 1 / {RunRoute.BattleCount}", 20, TextAnchor.MiddleCenter, new Vector2(0.43f, 0.955f), new Vector2(0.57f, 0.995f), Gold, FontStyle.Bold); // 分母=战斗场数（生成节点不计入）
 
+            // P0-1G 教程遮罩：最后创建 = 战斗屏最上层 sibling；全屏 Image raycastTarget 拦截下层战斗按钮点击（策划 11.3.1 遮罩外不响应战斗操作）
+            // 面板内字号暂时自定（标题 30 / 正文·步骤 22 / 按钮全局 28）；TODO(美术)：待美术字体与字号规范导入后统一调整（用户 2026-08-21 提醒）
+            var tutorialOverlay = CreatePanel(battleScreen.transform, "Tutorial Overlay", new Vector2(0f, 0f), new Vector2(1f, 1f), new Color(0f, 0f, 0f, 0.78f));
+            var tutorialPanel = CreatePanel(tutorialOverlay.transform, "Tutorial Panel", new Vector2(0.18f, 0.25f), new Vector2(0.82f, 0.75f), new Color32(24, 25, 27, 252));
+            var tutorialStep = CreateText(tutorialPanel.transform, "Tutorial Step", "教学 1 / 5", 22, TextAnchor.MiddleCenter, new Vector2(0.60f, 0.84f), new Vector2(0.94f, 0.94f), Color.gray);
+            var tutorialTitle = CreateText(tutorialPanel.transform, "Tutorial Title", "得分与目标", 30, TextAnchor.MiddleCenter, new Vector2(0.06f, 0.66f), new Vector2(0.94f, 0.82f), PaleGold, FontStyle.Bold);
+            var tutorialBody = CreateText(tutorialPanel.transform, "Tutorial Body", "等待教学", 22, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.30f), new Vector2(0.92f, 0.62f), Color.white);
+            var tutorialNext = CreateButton(tutorialPanel.transform, "Tutorial Next Button", "下一步", new Vector2(0.34f, 0.08f), new Vector2(0.62f, 0.22f), Gold);
+            var tutorialSkip = CreateButton(tutorialPanel.transform, "Tutorial Skip Button", "跳过教学", new Vector2(0.65f, 0.08f), new Vector2(0.92f, 0.22f), new Color32(70, 70, 72, 255));
+            var tutorialNextLabel = tutorialNext.transform.Find("Label").GetComponent<Text>();
+            tutorialOverlay.SetActive(false); // 初始隐藏：仅教程激活时由 FlowController 打开
+
             battleScreen.SetActive(false);
             collection.gameObject.SetActive(false);
             persona.gameObject.SetActive(false);
@@ -603,7 +630,9 @@ namespace PersonaCards.UI.Editor
                 rewardCardText, shopCardText, shopCoins, shopStatus, rewardPrevious, rewardNext,
                 shopPrevious, shopNext, shopDelete, shopReforge, shopEnhance,
                 personaSlotButtons.ToArray(), personaNameTexts.ToArray(), personaRuleTexts.ToArray(),
-                forgeRolls, forgeStatus, forgeCandidateTexts.ToArray(), forgeCandidateButtons.ToArray(), forgeConfirm);
+                forgeRolls, forgeStatus, forgeCandidateTexts.ToArray(), forgeCandidateButtons.ToArray(), forgeConfirm,
+                tutorialOverlay, tutorialStep, tutorialTitle, tutorialBody, tutorialNext, tutorialSkip, tutorialNextLabel,
+                tutorialReplay, tutorialReplayLabel);
         }
 
         private static void CreateBackground(Transform parent)
@@ -1093,7 +1122,9 @@ namespace PersonaCards.UI.Editor
                 Button shopDelete, Button shopReforge, Button shopEnhance,
                 Button[] personaSlots, Text[] personaNames, Text[] personaRules,
                 Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtons,
-                Button forgeConfirm)
+                Button forgeConfirm,
+                GameObject tutorialOverlay, Text tutorialStep, Text tutorialTitle, Text tutorialBody,
+                Button tutorialNext, Button tutorialSkip, Text tutorialNextLabel, Button tutorialReplay, Text tutorialReplayLabel)
             {
                 MainMenu = mainMenu;
                 Collection = collection;
@@ -1149,6 +1180,15 @@ namespace PersonaCards.UI.Editor
                 ForgeCandidates = forgeCandidates;
                 ForgeCandidateButtons = forgeCandidateButtons;
                 ForgeConfirm = forgeConfirm;
+                TutorialOverlay = tutorialOverlay;
+                TutorialStep = tutorialStep;
+                TutorialTitle = tutorialTitle;
+                TutorialBody = tutorialBody;
+                TutorialNext = tutorialNext;
+                TutorialSkip = tutorialSkip;
+                TutorialNextLabel = tutorialNextLabel;
+                TutorialReplay = tutorialReplay;
+                TutorialReplayLabel = tutorialReplayLabel;
             }
 
             public GameObject MainMenu { get; }
@@ -1205,6 +1245,15 @@ namespace PersonaCards.UI.Editor
             public Text[] ForgeCandidates { get; }
             public Button[] ForgeCandidateButtons { get; }
             public Button ForgeConfirm { get; }
+            public GameObject TutorialOverlay { get; }
+            public Text TutorialStep { get; }
+            public Text TutorialTitle { get; }
+            public Text TutorialBody { get; }
+            public Button TutorialNext { get; }
+            public Button TutorialSkip { get; }
+            public Text TutorialNextLabel { get; }
+            public Button TutorialReplay { get; }
+            public Text TutorialReplayLabel { get; }
         }
     }
 }

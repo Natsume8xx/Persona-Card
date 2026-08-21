@@ -9,6 +9,7 @@ using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Data;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using PersonaCards.Core;
 
@@ -84,6 +85,20 @@ namespace PersonaCards.UI
         [SerializeField] private PersonaConfigAsset personaConfig;
         /// <summary>全局配置资产（P0-1F 数据驱动）：Awake 时注入 GlobalConfig；未配置或校验失败时回落白盒（= 空配置，出牌/弃牌回落 4/3）。</summary>
         [SerializeField] private GlobalConfigAsset globalConfig;
+        /// <summary>教程遮罩根（P0-1G，Battle 屏子对象）：仅教程激活时显示，遮罩 Image 拦截下层战斗按钮点击。</summary>
+        [SerializeField] private GameObject tutorialOverlay;
+        /// <summary>教程面板内：步骤文本（右上「教学 n / 5」）/标题/正文。</summary>
+        [SerializeField] private Text tutorialStepText;
+        [SerializeField] private Text tutorialTitleText;
+        [SerializeField] private Text tutorialBodyText;
+        /// <summary>教程面板内按钮：下一步（末步文案「完成」）/跳过教学。</summary>
+        [SerializeField] private Button tutorialNextButton;
+        [SerializeField] private Button tutorialSkipButton;
+        /// <summary>下一步按钮的文案标签（按钮子对象 Label）：末步显示「完成」。</summary>
+        [SerializeField] private Text tutorialNextLabel;
+        /// <summary>主菜单重播入口：按钮 + 文案标签（点击后文案变「✓ 下次战斗播放教学」作为即时反馈）。</summary>
+        [SerializeField] private Button tutorialReplayButton;
+        [SerializeField] private Text tutorialReplayLabel;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -103,6 +118,12 @@ namespace PersonaCards.UI
         private int _selectedEquipmentSlot;
         /// <summary>商店继续按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
         private Text _shopContinueLabel;
+        /// <summary>教程序列状态（P0-1G）：五步推进逻辑在 TutorialSequence 纯类中，本类只做 UI 接线。</summary>
+        private readonly TutorialSequence _tutorial = new TutorialSequence();
+        /// <summary>重播请求标志：主菜单「战斗教学」按钮置位，下一次进入战斗时消耗并自动播放。</summary>
+        private bool _tutorialReplayRequested;
+        /// <summary>教程已看 PlayerPrefs 键（P0-1G）：首次进战斗自动播放判定；重播请求不读写此标志。</summary>
+        private const string TutorialSeenKey = "PersonaCards.TutorialSeen";
 
         public PrototypeFlowStage Stage => _flow.Stage;
 
@@ -125,7 +146,9 @@ namespace PersonaCards.UI
             Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtonsValue,
             Button forgeConfirm,
             BattlePrototypeController battlePrototype, RunRouteAsset routeAsset, HandTypeAsset handTypeAsset,
-            CardConfigAsset cardConfigAsset, PersonaConfigAsset personaConfigAsset, GlobalConfigAsset globalConfigAsset)
+            CardConfigAsset cardConfigAsset, PersonaConfigAsset personaConfigAsset, GlobalConfigAsset globalConfigAsset,
+            GameObject tutorialOverlayRoot, Text tutorialStep, Text tutorialTitle, Text tutorialBody,
+            Button tutorialNext, Button tutorialSkip, Text tutorialNextButtonLabel, Button tutorialReplay, Text tutorialReplayLabelText)
         {
             mainMenuScreen = mainMenu;
             collectionScreen = collection;
@@ -190,6 +213,15 @@ namespace PersonaCards.UI
             cardConfig = cardConfigAsset;
             personaConfig = personaConfigAsset;
             globalConfig = globalConfigAsset;
+            tutorialOverlay = tutorialOverlayRoot;
+            tutorialStepText = tutorialStep;
+            tutorialTitleText = tutorialTitle;
+            tutorialBodyText = tutorialBody;
+            tutorialNextButton = tutorialNext;
+            tutorialSkipButton = tutorialSkip;
+            tutorialNextLabel = tutorialNextButtonLabel;
+            tutorialReplayButton = tutorialReplay;
+            tutorialReplayLabel = tutorialReplayLabelText;
         }
 
         private void Awake()
@@ -317,6 +349,10 @@ namespace PersonaCards.UI
                 forgeCandidateButtons[index].onClick.AddListener(() => SelectForgeCandidate(candidateIndex));
             }
             forgeConfirmButton.onClick.AddListener(ConfirmForgeCandidate);
+            // 教程按钮绑定（P0-1G）：面板内下一步/跳过 + 主菜单重播请求
+            tutorialNextButton.onClick.AddListener(TutorialNext);
+            tutorialSkipButton.onClick.AddListener(TutorialSkip);
+            tutorialReplayButton.onClick.AddListener(ToggleTutorialReplay);
             battleController.BattleCompleted += OnBattleCompleted;
             battleController.HandPlayed += OnHandPlayed;
             battleController.HandDiscarded += OnHandDiscarded;
@@ -548,6 +584,78 @@ namespace PersonaCards.UI
             Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，出牌 {playsLimit} 弃牌 {discardsLimit}，场次种子 {seed}" +
                       (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));
             SaveActiveRun();
+            TryAutoPlayTutorial(); // P0-1G：战斗已进入 Battle 屏，此时可安全弹出教学遮罩
+        }
+
+        /// <summary>教程是否正在展示（P0-1G）：供外部（如快捷键拦截）查询。</summary>
+        public bool TutorialActive => _tutorial.IsActive;
+
+        /// <summary>是否已看过教学（PlayerPrefs 持久标志；未写 = 0 = 未看过）。</summary>
+        private static bool HasSeenTutorial => PlayerPrefs.GetInt(TutorialSeenKey, 0) == 1;
+
+        /// <summary>写入已看标志（首次自动播放后调用；重播请求不读写此标志）。</summary>
+        private static void MarkTutorialSeen()
+        {
+            PlayerPrefs.SetInt(TutorialSeenKey, 1);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// 战斗开始后尝试自动播放教学（P0-1G）：重播请求优先；否则仅首次进战斗（未看过）自动播放。
+        /// 播放即写已看标志，之后同一安装不再自动弹（策划 11.3.1「第一次进入战斗自动播放」）。
+        /// </summary>
+        private void TryAutoPlayTutorial()
+        {
+            if (!TutorialSequence.ShouldAutoPlay(_tutorialReplayRequested, HasSeenTutorial)) return;
+            _tutorial.Start();
+            _tutorialReplayRequested = false; // 重播请求一次性消费
+            MarkTutorialSeen();
+            Debug.Log("[Flow] 开始战斗教学（5 步）。");
+            Render();
+        }
+
+        /// <summary>教学面板「下一步」：末步之后结束（P0-1G）。</summary>
+        private void TutorialNext()
+        {
+            if (!_tutorial.IsActive) return;
+            _tutorial.Next();
+            if (!_tutorial.IsActive)
+                Debug.Log("[Flow] 战斗教学结束。");
+            Render();
+        }
+
+        /// <summary>教学面板「跳过教学」：直接结束（P0-1G）。</summary>
+        private void TutorialSkip()
+        {
+            if (!_tutorial.IsActive) return;
+            _tutorial.Skip();
+            Debug.Log("[Flow] 战斗教学已跳过。");
+            Render();
+        }
+
+        /// <summary>主菜单「战斗教学」按钮：切换重播请求——已标记 ↔ 未标记（再点取消），下一次进入战斗按标记决定是否播放（P0-1G；P0-1H 设置界面将加同款入口）。</summary>
+        private void ToggleTutorialReplay()
+        {
+            _tutorialReplayRequested = !_tutorialReplayRequested;
+            if (tutorialReplayLabel != null)
+                tutorialReplayLabel.text = _tutorialReplayRequested ? "✓ 下次战斗播放教学" : "战斗教学"; // 按钮文案即时反馈当前标记状态
+            Debug.Log(_tutorialReplayRequested
+                ? "[Flow] 已标记：下次进入战斗时播放教学。"
+                : "[Flow] 已取消标记：下次进入战斗不再播放教学。");
+        }
+
+        /// <summary>
+        /// 教程进行中吞掉空格/弃牌快捷键（策划 11.3.1「拦截空格、弃牌快捷键，防止操作穿透」）。
+        /// 项目已切换 Input System（Player Settings），故用 Keyboard.current 而非旧 UnityEngine.Input。
+        /// TODO(P0-1H)：当前原型尚未接入快捷键（设置系统范畴），此拦截为防御性——快捷键接入后由 TutorialActive 统一拦截，本函数即生效。
+        /// </summary>
+        private void Update()
+        {
+            if (_tutorial.IsActive && Keyboard.current != null &&
+                (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.dKey.wasPressedThisFrame))
+            {
+                // 吞键：教学期间不响应出牌/弃牌快捷键（当前无快捷键处理，防御性空拦截）
+            }
         }
 
         private void ReturnToMainMenu()
@@ -1050,6 +1158,17 @@ namespace PersonaCards.UI
                 RefreshJourneyCardText();
             }
             if (_flow.Stage == PrototypeFlowStage.PersonaSetup) RefreshPersonaLoadout();
+            // 教程遮罩（P0-1G）：仅教程激活时显示（Battle 屏子对象，随战斗屏隐藏）；激活时同步刷新面板文案
+            tutorialOverlay.SetActive(_tutorial.IsActive);
+            if (_tutorial.IsActive)
+            {
+                var step = _tutorial.CurrentStep;
+                tutorialStepText.text = $"教学 {step + 1} / {TutorialSequence.StepCount}";
+                tutorialTitleText.text = TutorialSequence.GetTitle(step);
+                tutorialBodyText.text = TutorialSequence.GetBody(step);
+                if (tutorialNextLabel != null)
+                    tutorialNextLabel.text = step == TutorialSequence.StepCount - 1 ? "完成" : "下一步";
+            }
         }
     }
 }
