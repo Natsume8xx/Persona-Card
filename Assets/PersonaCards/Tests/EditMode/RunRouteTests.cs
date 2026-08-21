@@ -8,11 +8,12 @@ namespace PersonaCards.Tests.EditMode
 {
     public sealed class RunRouteTests
     {
-        /// <summary>测试间隔离：RunRoute 是静态门面，自定义资产不能泄漏到其他测试。</summary>
+        /// <summary>测试间隔离：RunRoute 与 GlobalConfig 都是静态门面，自定义资产不能泄漏到其他测试（P0-1F 起门面联动）。</summary>
         [TearDown]
         public void ResetRouteToDefault()
         {
             RunRoute.Configure(null);
+            GlobalConfig.Configure(null);
         }
 
         [Test]
@@ -235,6 +236,32 @@ namespace PersonaCards.Tests.EditMode
 
             RunRoute.Configure(asset);
             Assert.That(RunRoute.PlaysLimitOf(0), Is.EqualTo(5));
+            Assert.That(RunRoute.DiscardsLimitOf(0), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void PlaysLimitOfFallsBackToConfiguredGlobalConfig()
+        {
+            RunRoute.Configure(null);
+
+            // 白盒：未指定限制回落 Battle 编译期常量 4/3
+            Assert.That(RunRoute.PlaysLimitOf(0), Is.EqualTo(4));
+            Assert.That(RunRoute.DiscardsLimitOf(0), Is.EqualTo(3));
+
+            // 配表注入 RULE_001=5/RULE_002=2 → 未指定节点回落门面值（P0-1F 归口）
+            GlobalConfig.Configure(GlobalConfigTests.BuildTableEntries(5, 2));
+
+            Assert.That(RunRoute.PlaysLimitOf(0), Is.EqualTo(5));
+            Assert.That(RunRoute.DiscardsLimitOf(0), Is.EqualTo(2));
+
+            // 节点显式配置优先于全局默认
+            var asset = ScriptableObject.CreateInstance<RunRouteAsset>();
+            asset.battleNodes = new List<RunBattleNode>
+            {
+                new RunBattleNode(RunNodeKind.NormalBattle, 100, BossPoolId.None, false, playsLimit: 6, discardsLimit: 0)
+            };
+            RunRoute.Configure(asset);
+            Assert.That(RunRoute.PlaysLimitOf(0), Is.EqualTo(6));
             Assert.That(RunRoute.DiscardsLimitOf(0), Is.EqualTo(2));
         }
     }

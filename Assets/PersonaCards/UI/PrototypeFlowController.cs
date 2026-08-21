@@ -82,6 +82,8 @@ namespace PersonaCards.UI
         [SerializeField] private CardConfigAsset cardConfig;
         /// <summary>人格牌配置资产（P0-1E 数据驱动）：Awake 时注入 InitialPersonaCatalog；未配置或校验失败时回落白盒（= 空模板目录，教学 3 张）。</summary>
         [SerializeField] private PersonaConfigAsset personaConfig;
+        /// <summary>全局配置资产（P0-1F 数据驱动）：Awake 时注入 GlobalConfig；未配置或校验失败时回落白盒（= 空配置，出牌/弃牌回落 4/3）。</summary>
+        [SerializeField] private GlobalConfigAsset globalConfig;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -123,7 +125,7 @@ namespace PersonaCards.UI
             Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtonsValue,
             Button forgeConfirm,
             BattlePrototypeController battlePrototype, RunRouteAsset routeAsset, HandTypeAsset handTypeAsset,
-            CardConfigAsset cardConfigAsset, PersonaConfigAsset personaConfigAsset)
+            CardConfigAsset cardConfigAsset, PersonaConfigAsset personaConfigAsset, GlobalConfigAsset globalConfigAsset)
         {
             mainMenuScreen = mainMenu;
             collectionScreen = collection;
@@ -187,6 +189,7 @@ namespace PersonaCards.UI
             handTypes = handTypeAsset;
             cardConfig = cardConfigAsset;
             personaConfig = personaConfigAsset;
+            globalConfig = globalConfigAsset;
         }
 
         private void Awake()
@@ -249,7 +252,25 @@ namespace PersonaCards.UI
                 InitialPersonaCatalog.Configure(personaConfig.entries);
                 var summary = InitialPersonaCatalog.LastConfiguredSummary;
                 if (!string.IsNullOrEmpty(summary))
-                    Debug.Log($"[Persona] 人格牌模板目录已注入：{summary}。");
+                    Debug.Log($"[Persona] 人格牌模板目录已注入：{summary}");
+            }
+            // 全局配置注入（P0-1F 数据驱动）：null 或校验失败 → 门面回落空配置（出牌/弃牌回落 4/3，行为零差异）
+            if (globalConfig == null)
+            {
+                Debug.LogWarning("[Global] globalConfig 全局配置资产未配置：使用白盒（出牌 4 / 弃牌 3）。");
+                GlobalConfig.Configure(null);
+            }
+            else if (!globalConfig.Validate(out var globalConfigError))
+            {
+                Debug.LogWarning($"[Global] globalConfig 全局配置资产校验失败（{globalConfigError}）：使用白盒（出牌 4 / 弃牌 3）。");
+                GlobalConfig.Configure(null);
+            }
+            else
+            {
+                GlobalConfig.Configure(globalConfig.entries);
+                var summary = GlobalConfig.LastConfiguredSummary;
+                if (!string.IsNullOrEmpty(summary))
+                    Debug.Log($"[Global] 全局配置已注入：{summary}");
             }
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
@@ -950,9 +971,9 @@ namespace PersonaCards.UI
                 battle.played.Select(FromSavedCard), battle.discarded.Select(FromSavedCard),
                 battle.selectedCardIds ?? new List<string>(), battle.targetScore, battle.totalScore,
                 battle.playsRemaining, battle.discardsRemaining, (BattleStatus)battle.status, bossSnapshot,
-                // JsonUtility 旧档缺字段为 0（非默认值），必须显式回落默认
-                playsLimit: battle.playsLimit > 0 ? battle.playsLimit : BattleStateMachine.StartingPlays,
-                discardsLimit: battle.discardsLimit > 0 ? battle.discardsLimit : BattleStateMachine.StartingDiscards);
+                // JsonUtility 旧档缺字段为 0（非默认值），必须显式回落默认（经 GlobalConfig 门面：读档时用当前全局配置，P0-1F）
+                playsLimit: battle.playsLimit > 0 ? battle.playsLimit : GlobalConfig.StartingPlays,
+                discardsLimit: battle.discardsLimit > 0 ? battle.discardsLimit : GlobalConfig.StartingDiscards);
         }
 
         private void RefreshJourneyCardText()

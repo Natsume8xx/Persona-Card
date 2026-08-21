@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a134b5c19e9f64304a31ec7e16014713, type: 3}
+  m_Name: GlobalConfig
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.GlobalConfigAsset
+  entries:
+  - ruleId: RULE_001
+    ruleName: "\u6BCF\u5173\u57FA\u7840\u51FA\u724C\u6B21\u6570"
+    valueType: "\u6574\u6570"
+    valueText: 4
+  - ruleId: RULE_002
+    ruleName: "\u6BCF\u5173\u57FA\u7840\u5F03\u724C\u6B21\u6570"
+    valueType: "\u6574\u6570"
+    valueText: 3
+  - ruleId: RULE_003
+    ruleName: "\u4EBA\u683C\u751F\u6548\u69FD\u4F4D"
+    valueType: "\u6574\u6570"
+    valueText: 4
+  - ruleId: RULE_004
+    ruleName: "\u57FA\u7840\u4EBA\u683C\u6570\u91CF"
+    valueType: "\u6574\u6570"
+    valueText: 8
+  - ruleId: RULE_005
+    ruleName: "\u6BCF\u5C40AI\u4EBA\u683C\u751F\u6210\u603B\u91CF"
+    valueType: "\u6574\u6570"
+    valueText: 3
+  - ruleId: RULE_006
+    ruleName: "\u6BCF\u5C40AI\u4EBA\u683C\u53EF\u5E26\u51FA\u6570\u91CF"
+    valueType: "\u6574\u6570"
+    valueText: 1
+  - ruleId: RULE_007
+    ruleName: "\u4EBA\u683C\u5E93\u5B58\u4E0A\u9650"
+    valueType: "\u6574\u6570"
+    valueText: 99
+  - ruleId: RULE_008
+    ruleName: "\u4EBA\u683C\u878D\u5408\u6D88\u8017\u6570\u91CF"
+    valueType: "\u6574\u6570"
+    valueText: 3
+  - ruleId: RULE_009
+    ruleName: "\u4EBA\u683C\u878D\u5408\u751F\u6210\u6570\u91CF"
+    valueType: "\u6574\u6570"
+    valueText: 1
+  - ruleId: RULE_010
+    ruleName: "\u6700\u8FD13\u5173\u884C\u4E3A\u6743\u91CD"
+    valueType: "\u5C0F\u6570"
+    valueText: 0.65
+  - ruleId: RULE_011
+    ruleName: "\u672C\u5C40\u7D2F\u8BA1\u884C\u4E3A\u6743\u91CD"
+    valueType: "\u5C0F\u6570"
+    valueText: 0.35
+  - ruleId: RULE_012
+    ruleName: "\u96F7\u540C\u4EBA\u683C\u751F\u6210\u964D\u91CD"
+    valueType: "\u5C0F\u6570"
+    valueText: 0.15

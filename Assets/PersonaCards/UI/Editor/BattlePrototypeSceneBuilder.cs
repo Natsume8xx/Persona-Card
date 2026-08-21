@@ -185,7 +185,8 @@ namespace PersonaCards.UI.Editor
                 EnsureRunRouteAsset(),
                 EnsureHandTypeAsset(),
                 EnsureCardConfigAsset(),
-                EnsurePersonaConfigAsset());
+                EnsurePersonaConfigAsset(),
+                EnsureGlobalConfigAsset());
 
             var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
@@ -248,6 +249,19 @@ namespace PersonaCards.UI.Editor
             return asset;
         }
 
+        /// <summary>确保全局配置资产存在并返回引用：缺失时创建空条目资产（白盒 = 空配置，出牌/弃牌回落 4/3，场景重建时自动挂接）。</summary>
+        private static GlobalConfigAsset EnsureGlobalConfigAsset()
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GlobalConfigAsset>(GlobalConfigImportCommand.AssetPath);
+            if (asset == null)
+            {
+                GlobalConfigImportCommand.CreateOrReset();
+                asset = AssetDatabase.LoadAssetAtPath<GlobalConfigAsset>(GlobalConfigImportCommand.AssetPath);
+                Debug.Log("[Global] 场景重建时发现全局配置资产缺失，已创建空条目资产（白盒）。");
+            }
+            return asset;
+        }
+
         [MenuItem("Persona Cards/Validate Run Route Journey %#v")]
         public static void ValidateRunRouteJourney()
         {
@@ -290,7 +304,7 @@ namespace PersonaCards.UI.Editor
                 "rewardPreviousButton", "rewardNextButton", "shopPreviousButton", "shopNextButton",
                 "shopDeleteButton", "shopReforgeButton", "shopEnhanceButton",
                 "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController", "runRoute",
-                "handTypes", "cardConfig", "personaConfig"
+                "handTypes", "cardConfig", "personaConfig", "globalConfig"
             })
             {
                 var property = serializedFlow.FindProperty(propertyName);
