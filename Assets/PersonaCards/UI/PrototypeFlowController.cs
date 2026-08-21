@@ -80,6 +80,8 @@ namespace PersonaCards.UI
         [SerializeField] private HandTypeAsset handTypes;
         /// <summary>卡牌配置资产（P0-1D 数据驱动）：Awake 时注入 PlayingCardRules；未配置或校验失败时回落白盒（= 配表当前初值）。</summary>
         [SerializeField] private CardConfigAsset cardConfig;
+        /// <summary>人格牌配置资产（P0-1E 数据驱动）：Awake 时注入 InitialPersonaCatalog；未配置或校验失败时回落白盒（= 空模板目录，教学 3 张）。</summary>
+        [SerializeField] private PersonaConfigAsset personaConfig;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -121,7 +123,7 @@ namespace PersonaCards.UI
             Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtonsValue,
             Button forgeConfirm,
             BattlePrototypeController battlePrototype, RunRouteAsset routeAsset, HandTypeAsset handTypeAsset,
-            CardConfigAsset cardConfigAsset)
+            CardConfigAsset cardConfigAsset, PersonaConfigAsset personaConfigAsset)
         {
             mainMenuScreen = mainMenu;
             collectionScreen = collection;
@@ -184,6 +186,7 @@ namespace PersonaCards.UI
             runRoute = routeAsset;
             handTypes = handTypeAsset;
             cardConfig = cardConfigAsset;
+            personaConfig = personaConfigAsset;
         }
 
         private void Awake()
@@ -229,6 +232,24 @@ namespace PersonaCards.UI
                 var summary = PlayingCardRules.LastConfiguredSummary;
                 if (!string.IsNullOrEmpty(summary))
                     Debug.Log($"[Card] 卡牌规则已注入：{summary}。");
+            }
+            // 人格牌模板目录注入（P0-1E 数据驱动）：null 或校验失败 → 门面回落空模板目录（教学 3 张白盒，行为零差异）
+            if (personaConfig == null)
+            {
+                Debug.LogWarning("[Persona] personaConfig 人格牌配置资产未配置：使用教学白盒（3 张）。");
+                InitialPersonaCatalog.Configure(null);
+            }
+            else if (!personaConfig.Validate(out var personaConfigError))
+            {
+                Debug.LogWarning($"[Persona] personaConfig 人格牌配置资产校验失败（{personaConfigError}）：使用教学白盒（3 张）。");
+                InitialPersonaCatalog.Configure(null);
+            }
+            else
+            {
+                InitialPersonaCatalog.Configure(personaConfig.entries);
+                var summary = InitialPersonaCatalog.LastConfiguredSummary;
+                if (!string.IsNullOrEmpty(summary))
+                    Debug.Log($"[Persona] 人格牌模板目录已注入：{summary}。");
             }
             _saveStore = new PrototypeSaveStore();
             LoadProfile();

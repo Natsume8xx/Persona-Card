@@ -1,0 +1,303 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6166d7e1f858466cb3272cef8425d2c, type: 3}
+  m_Name: PersonaConfig
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.PersonaConfigAsset
+  entries:
+  - personaId: PER_001
+    displayName: "111111\uFF08\u6682\u5B9A"
+    quality: "\u57FA\u7840"
+    qualityParam: "\u767D\u8272"
+    behaviorTagId: T01
+    trigger: "\u4E0E\u4E0A\u4E00\u624B\u724C\u578B\u76F8\u540C"
+    comparator: "\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u589E\u52A0\u7B79\u7801"
+    effectParam1: 9
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_002
+    displayName: "111112\uFF08\u6682\u5B9A"
+    quality: "\u57FA\u7840"
+    qualityParam: "\u767D\u8272"
+    behaviorTagId: T02
+    trigger: "\u8BA1\u5206\u724C\u6570\u91CF"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 4
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u589E\u52A0\u500D\u7387"
+    effectParam1: 0.9
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_003
+    displayName: "111113\uFF08\u6682\u5B9A"
+    quality: "\u57FA\u7840"
+    qualityParam: "\u767D\u8272"
+    behaviorTagId: T03
+    trigger: "\u5DF2\u4F7F\u7528\u5F03\u724C\u6B21\u6570"
+    comparator: "\u7B49\u4E8E"
+    threshold: 0
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u589E\u52A0\u7B79\u7801\u548C\u500D\u7387"
+    effectParam1: 5
+    effectParam2: 0.2
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_004
+    displayName: "111114\uFF08\u6682\u5B9A"
+    quality: "\u57FA\u7840"
+    qualityParam: "\u767D\u8272"
+    behaviorTagId: T04
+    trigger: "\u547D\u4E2DAI\u504F\u597D"
+    comparator: "\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u589E\u52A0\u7B79\u7801"
+    effectParam1: 6
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_005
+    displayName: "111115\uFF08\u6682\u5B9A"
+    quality: "\u8FDB\u9636"
+    qualityParam: "\u7EFF\u8272"
+    behaviorTagId: T05
+    trigger: "\u4E0E\u4E0A\u4E00\u624B\u724C\u578B\u76F8\u540C"
+    comparator: "\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u589E\u52A0\u500D\u7387"
+    effectParam1: 1.25
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_006
+    displayName: "111116\uFF08\u6682\u5B9A"
+    quality: "\u8FDB\u9636"
+    qualityParam: "\u7EFF\u8272"
+    behaviorTagId: T06
+    trigger: "\u5269\u4F59\u5F03\u724C\u6B21\u6570"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6BCF\u5355\u4F4D\u589E\u52A0\u500D\u7387"
+    effectParam1: 0.25
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_007
+    displayName: "111117\uFF08\u6682\u5B9A"
+    quality: "\u8FDB\u9636"
+    qualityParam: "\u7EFF\u8272"
+    behaviorTagId: T07
+    trigger: "\u672C\u5C40\u79FB\u9664\u724C\u6570\u91CF"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6BCF\u5355\u4F4D\u589E\u52A0\u500D\u7387"
+    effectParam1: 0.1
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 0.7
+    independentSettlement: 0
+  - personaId: PER_008
+    displayName: "111118\uFF08\u6682\u5B9A"
+    quality: "\u8FDB\u9636"
+    qualityParam: "\u7EFF\u8272"
+    behaviorTagId: T08
+    trigger: "\u672C\u5C40\u65B0\u589E\u724C\u6570\u91CF"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6BCF\u5355\u4F4D\u589E\u52A0\u7B79\u7801"
+    effectParam1: 1
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 8
+    independentSettlement: 0
+  - personaId: PER_009
+    displayName: "111119\uFF08\u6682\u5B9A"
+    quality: "\u7A00\u6709"
+    qualityParam: "\u84DD\u8272"
+    behaviorTagId: T09
+    trigger: "\u8FDE\u7EED\u4F7F\u7528\u76F8\u540C\u724C\u578B\u6B21\u6570"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 3
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 1.42
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
+  - personaId: PER_010
+    displayName: "111120\uFF08\u6682\u5B9A"
+    quality: "\u7A00\u6709"
+    qualityParam: "\u84DD\u8272"
+    behaviorTagId: T10
+    trigger: "\u724C\u5E93\u6570\u91CF"
+    comparator: "\u5C0F\u4E8E"
+    threshold: 40
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u589E\u52A0\u500D\u7387"
+    effectParam1: 0.78
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 0
+  - personaId: PER_011
+    displayName: "111121\uFF08\u6682\u5B9A"
+    quality: "\u7A00\u6709"
+    qualityParam: "\u84DD\u8272"
+    behaviorTagId: T11
+    trigger: "\u5176\u4ED6\u4EBA\u683C\u89E6\u53D1\u6B21\u6570"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 2
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 1.36
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
+  - personaId: PER_012
+    displayName: "111122\uFF08\u6682\u5B9A"
+    quality: "\u7A00\u6709"
+    qualityParam: "\u84DD\u8272"
+    behaviorTagId: T12
+    trigger: "\u8BA1\u5206\u724C\u6570\u91CF"
+    comparator: "\u7B49\u4E8E"
+    threshold: 5
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 1.42
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
+  - personaId: PER_013
+    displayName: "111123\uFF08\u6682\u5B9A"
+    quality: "\u5F02\u8D28"
+    qualityParam: "\u91D1\u8272"
+    behaviorTagId: T13
+    trigger: "\u724C\u5E93\u6570\u91CF"
+    comparator: "\u5C0F\u4E8E\u7B49\u4E8E"
+    threshold: 30
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: "\u53E6\u6709\u8BA1\u5206\u724C\u6570\u91CF\u6761\u4EF6*"
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 2.4500000000000002
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
+  - personaId: PER_014
+    displayName: "111124\uFF08\u6682\u5B9A"
+    quality: "\u5F02\u8D28"
+    qualityParam: "\u91D1\u8272"
+    behaviorTagId: T14
+    trigger: "\u8FDE\u7EED\u4F7F\u7528\u76F8\u540C\u724C\u578B\u6B21\u6570"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 4
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 3
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
+  - personaId: PER_015
+    displayName: "111125\uFF08\u6682\u5B9A"
+    quality: "\u5F02\u8D28"
+    qualityParam: "\u91D1\u8272"
+    behaviorTagId: T15
+    trigger: "\u5269\u4F59\u51FA\u724C\u6B21\u6570"
+    comparator: "\u7B49\u4E8E"
+    threshold: 1
+    extraTrigger: "\u5269\u4F59\u5F03\u724C\u6B21\u6570"
+    extraComparator: "\u7B49\u4E8E"
+    extraThreshold: 0
+    extraConditionRaw: "\u5269\u4F59\u5F03\u724C\u6B21\u6570=0"
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 2.1
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
+  - personaId: PER_016
+    displayName: "111126\uFF08\u6682\u5B9A"
+    quality: "\u5F02\u8D28"
+    qualityParam: "\u91D1\u8272"
+    behaviorTagId: T16
+    trigger: "\u4EBA\u683C\u89E6\u53D1\u6B21\u6570"
+    comparator: "\u5927\u4E8E\u7B49\u4E8E"
+    threshold: 3
+    extraTrigger: 
+    extraComparator: 
+    extraThreshold: 
+    extraConditionRaw: 
+    effect: "\u6700\u7EC8\u500D\u7387\u4E58\u7B97"
+    effectParam1: 2.2000000000000002
+    effectParam2: 0
+    effectRaw: 
+    effectCap: 
+    independentSettlement: 1
