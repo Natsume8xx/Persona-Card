@@ -31,7 +31,6 @@ namespace PersonaCards.UI
         [SerializeField] private BattleCardView cardPrefab;
         [SerializeField] private RectTransform playedSlotsRoot;
         [SerializeField] private Text scoringLogText;
-        [SerializeField] private Toggle reduceMotionToggle;
         [SerializeField] private Button deckViewerButton;
         [SerializeField] private Button handReferenceButton;
         [SerializeField] private GameObject deckViewerOverlay;
@@ -82,7 +81,6 @@ namespace PersonaCards.UI
             BattleCardView cardViewPrefab,
             RectTransform playedArea,
             Text scoringLog,
-            Toggle reduceMotion,
             Button openDeckViewer,
             Button openHandReference,
             GameObject deckViewer,
@@ -111,7 +109,6 @@ namespace PersonaCards.UI
             cardPrefab = cardViewPrefab;
             playedSlotsRoot = playedArea;
             scoringLogText = scoringLog;
-            reduceMotionToggle = reduceMotion;
             deckViewerButton = openDeckViewer;
             handReferenceButton = openHandReference;
             deckViewerOverlay = deckViewer;
@@ -275,7 +272,8 @@ namespace PersonaCards.UI
             if (result.Succeeded) StableStateChanged?.Invoke();
         }
 
-        private void OnPlay()
+        /// <summary>出牌入口：UI 按钮与快捷键（P0-1H 空格，可改键）共用此方法。</summary>
+        public void OnPlay()
         {
             if (!_battle.IsPresentationLocked && !_modalOpen)
             {
@@ -283,7 +281,8 @@ namespace PersonaCards.UI
             }
         }
 
-        private void OnDiscard()
+        /// <summary>弃牌入口：UI 按钮与快捷键（P0-1H D，可改键）共用此方法。</summary>
+        public void OnDiscard()
         {
             if (!_battle.IsPresentationLocked && !_modalOpen)
             {
@@ -439,7 +438,9 @@ namespace PersonaCards.UI
 
         private float PresentationDuration(float normalDuration)
         {
-            return reduceMotionToggle != null && reduceMotionToggle.isOn ? 0f : normalDuration;
+            // P0-1H：动效统一归口到设置系统的「界面动效」开关（GameSettings.AnimationsEnabled），
+            // 战斗屏不再自带「减少动效」Toggle；未来手牌与整体画面动效同样读此门面。
+            return GameSettings.AnimationsEnabled ? normalDuration : 0f;
         }
 
         private void ClearPlayedCards()

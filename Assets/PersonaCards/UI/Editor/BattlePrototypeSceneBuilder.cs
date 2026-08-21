@@ -103,7 +103,6 @@ namespace PersonaCards.UI.Editor
                 cardPrefab,
                 centerReferences.PlayedSlots,
                 centerReferences.ScoringLog,
-                centerReferences.ReduceMotion,
                 rightReferences.DeckViewer,
                 rightReferences.HandReference,
                 modalReferences.DeckViewer,
@@ -196,6 +195,30 @@ namespace PersonaCards.UI.Editor
                 flowReferences.TutorialNextLabel,
                 flowReferences.TutorialReplay,
                 flowReferences.TutorialReplayLabel);
+            // P0-1H 设置系统接线：22 个设置引用独立注入（Configure 签名已满）
+            flow.ConfigureSettings(
+                flowReferences.Settings.MainMenuEntry,
+                flowReferences.Settings.Overlay,
+                flowReferences.Settings.Brightness,
+                flowReferences.Settings.BrightnessValue,
+                flowReferences.Settings.Volume,
+                flowReferences.Settings.VolumeValue,
+                flowReferences.Settings.Animation,
+                flowReferences.Settings.Shake,
+                flowReferences.Settings.PlayKey,
+                flowReferences.Settings.PlayKeyText,
+                flowReferences.Settings.DiscardKey,
+                flowReferences.Settings.DiscardKeyText,
+                flowReferences.Settings.SettingsKey,
+                flowReferences.Settings.SettingsKeyText,
+                flowReferences.Settings.TutorialReplay,
+                flowReferences.Settings.TutorialReplayText,
+                flowReferences.Settings.Back,
+                flowReferences.Settings.ReturnMain,
+                flowReferences.Settings.RestoreDefaults,
+                flowReferences.Settings.Cancel,
+                flowReferences.Settings.Save,
+                flowReferences.Settings.Dim);
 
             var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
@@ -290,6 +313,9 @@ namespace PersonaCards.UI.Editor
                 "Forge Confirm Button", "Collection Card 1", "Collection Equipment Slot 1"
                 , "Deck Viewer Button", "Hand Reference Button", "Deck Viewer Overlay", "Hand Reference Overlay"
                 , "Tutorial Overlay", "Tutorial Next Button", "Tutorial Skip Button", "Tutorial Replay Button"
+                // P0-1H 设置系统：界面 + 遮罩 + dim 层 + 主菜单入口（其余设置控件由 serializedFlow 字段绑定校验兜底）
+                , "05 Settings Screen", "Settings Card", "Settings Mask", "Screen Dim Layer",
+                "Settings Button", "Settings Save Button", "Brightness Slider", "Master Volume Slider"
             };
             foreach (var objectName in requiredObjects)
             {
@@ -316,7 +342,13 @@ namespace PersonaCards.UI.Editor
                 "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController", "runRoute",
                 "handTypes", "cardConfig", "personaConfig", "globalConfig",
                 "tutorialOverlay", "tutorialStepText", "tutorialTitleText", "tutorialBodyText",
-                "tutorialNextButton", "tutorialSkipButton", "tutorialNextLabel", "tutorialReplayButton", "tutorialReplayLabel"
+                "tutorialNextButton", "tutorialSkipButton", "tutorialNextLabel", "tutorialReplayButton", "tutorialReplayLabel",
+                // P0-1H 设置系统 22 个绑定字段
+                "settingsEntryButton", "settingsOverlay", "brightnessSlider", "brightnessValueText", "volumeSlider", "volumeValueText",
+                "animationToggle", "shakeToggle", "playKeyButton", "playKeyLabel", "discardKeyButton", "discardKeyLabel",
+                "settingsKeyButton", "settingsKeyLabel", "settingsTutorialReplayButton", "settingsTutorialReplayLabel",
+                "settingsBackButton", "settingsReturnButton", "settingsRestoreDefaultsButton", "settingsCancelButton",
+                "settingsSaveButton", "dimImage"
             })
             {
                 var property = serializedFlow.FindProperty(propertyName);
@@ -438,10 +470,13 @@ namespace PersonaCards.UI.Editor
             var continueButton = CreateButton(mainCard.transform, "Continue Game Button", "继续游戏", new Vector2(0.17f, 0.37f), new Vector2(0.83f, 0.48f), new Color32(80, 68, 45, 255));
             continueButton.interactable = false;
             var collectionButton = CreateButton(mainCard.transform, "Collection Button", "人格收藏 / 装备", new Vector2(0.17f, 0.24f), new Vector2(0.83f, 0.35f), new Color32(55, 55, 57, 255));
-            // P0-1G 教程重播入口：点击标记重播请求，下一次进入战斗自动播放（P0-1H 设置界面将加同款入口）
-            var tutorialReplay = CreateButton(mainCard.transform, "Tutorial Replay Button", "战斗教学", new Vector2(0.17f, 0.135f), new Vector2(0.83f, 0.225f), new Color32(55, 55, 57, 255));
+            // P0-1H 设置入口：一行一个全宽按钮（用户 2026-08-21），占原「战斗教学」行
+            var settings = CreateButton(mainCard.transform, "Settings Button", "设置", new Vector2(0.17f, 0.135f), new Vector2(0.83f, 0.225f), new Color32(55, 55, 57, 255));
+            // P0-1G 教程重播入口：点击标记重播请求，下一次进入战斗自动播放（P0-1H 设置界面有同款入口，文案同步）
+            var tutorialReplay = CreateButton(mainCard.transform, "Tutorial Replay Button", "战斗教学", new Vector2(0.17f, 0.03f), new Vector2(0.83f, 0.12f), new Color32(55, 55, 57, 255));
             var tutorialReplayLabel = tutorialReplay.transform.Find("Label").GetComponent<Text>();
-            CreateText(mainCard.transform, "Version", "MVP 可玩闭环", 18, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.05f), new Vector2(0.92f, 0.13f), Color.gray);
+            // P0-1H：卡片内已放满 5 个按钮，版本文本移出卡片挂主菜单屏底部
+            CreateText(main.transform, "Version", "MVP 可玩闭环", 18, TextAnchor.MiddleCenter, new Vector2(0.08f, 0.015f), new Vector2(0.92f, 0.06f), Color.gray);
 
             var collection = CreateScreenRoot(canvas, "10 Persona Collection Screen");
             CreateBackground(collection.transform);
@@ -609,6 +644,10 @@ namespace PersonaCards.UI.Editor
             var tutorialNextLabel = tutorialNext.transform.Find("Label").GetComponent<Text>();
             tutorialOverlay.SetActive(false); // 初始隐藏：仅教程激活时由 FlowController 打开
 
+            // P0-1H 设置界面：Canvas 根独立屏（非 MainMenu 子对象），仅主菜单阶段可打开，遮罩拦截主菜单点击；
+            // dim 层在 BuildSettingsScreen 内部最后创建（Canvas 根最上层 sibling）
+            var settingsReferences = BuildSettingsScreen(canvas, settings);
+
             battleScreen.SetActive(false);
             collection.gameObject.SetActive(false);
             persona.gameObject.SetActive(false);
@@ -632,7 +671,93 @@ namespace PersonaCards.UI.Editor
                 personaSlotButtons.ToArray(), personaNameTexts.ToArray(), personaRuleTexts.ToArray(),
                 forgeRolls, forgeStatus, forgeCandidateTexts.ToArray(), forgeCandidateButtons.ToArray(), forgeConfirm,
                 tutorialOverlay, tutorialStep, tutorialTitle, tutorialBody, tutorialNext, tutorialSkip, tutorialNextLabel,
-                tutorialReplay, tutorialReplayLabel);
+                tutorialReplay, tutorialReplayLabel,
+                settingsReferences);
+        }
+
+        /// <summary>P0-1H 设置界面：Canvas 根独立屏（非 MainMenu 子对象，初始隐藏）。全屏遮罩拦截主菜单点击；卡片内 画面/声音/操作 三区 + 底部四按钮。</summary>
+        private static SettingsReferences BuildSettingsScreen(Transform canvas, Button mainMenuEntry)
+        {
+            var settingsScreen = CreateScreenRoot(canvas, "05 Settings Screen");
+            // 全屏遮罩：暗化主菜单并拦截下层点击（raycastTarget 保持默认 true）
+            CreatePanel(settingsScreen.transform, "Settings Mask", Vector2.zero, Vector2.one, new Color(0f, 0f, 0f, 0.55f));
+            CreateText(settingsScreen.transform, "Settings Title", "设置", 40, TextAnchor.MiddleCenter, new Vector2(0.17f, 0.87f), new Vector2(0.97f, 0.97f), PaleGold, FontStyle.Bold);
+            var back = CreateButton(settingsScreen.transform, "Settings Back Button", "← 返回", new Vector2(0.03f, 0.885f), new Vector2(0.15f, 0.955f), new Color32(70, 70, 72, 255));
+
+            var card = CreatePanel(settingsScreen.transform, "Settings Card", new Vector2(0.15f, 0.08f), new Vector2(0.85f, 0.92f), new Color32(17, 18, 20, 248));
+
+            // —— 画面设置区 ——
+            CreateText(card.transform, "Settings Section 1", "画面设置", 24, TextAnchor.MiddleLeft, new Vector2(0.05f, 0.855f), new Vector2(0.95f, 0.935f), PaleGold, FontStyle.Bold);
+            CreateText(card.transform, "Brightness Label", "亮度", 20, TextAnchor.MiddleLeft, new Vector2(0.05f, 0.765f), new Vector2(0.17f, 0.845f), Color.white);
+            var brightness = CreateSlider(card.transform, "Brightness Slider", new Vector2(0.19f, 0.785f), new Vector2(0.80f, 0.825f));
+            var brightnessValue = CreateText(card.transform, "Brightness Value", "80%", 20, TextAnchor.MiddleCenter, new Vector2(0.82f, 0.765f), new Vector2(0.96f, 0.845f), Gold);
+            var animation = CreateToggle(card.transform, "UI Animation Toggle", "界面动效", new Vector2(0.05f, 0.655f), new Vector2(0.50f, 0.745f));
+            var shake = CreateToggle(card.transform, "Screen Shake Toggle", "屏幕震动", new Vector2(0.52f, 0.655f), new Vector2(0.97f, 0.745f));
+
+            // —— 声音设置区 ——
+            CreateText(card.transform, "Settings Section 2", "声音设置", 24, TextAnchor.MiddleLeft, new Vector2(0.05f, 0.565f), new Vector2(0.95f, 0.645f), PaleGold, FontStyle.Bold);
+            CreateText(card.transform, "Volume Label", "主音量", 20, TextAnchor.MiddleLeft, new Vector2(0.05f, 0.475f), new Vector2(0.17f, 0.555f), Color.white);
+            var volume = CreateSlider(card.transform, "Master Volume Slider", new Vector2(0.19f, 0.495f), new Vector2(0.80f, 0.535f));
+            var volumeValue = CreateText(card.transform, "Master Volume Value", "80%", 20, TextAnchor.MiddleCenter, new Vector2(0.82f, 0.475f), new Vector2(0.96f, 0.555f), Gold);
+            CreateText(card.transform, "Volume Note", "按钮、选牌、出牌、弃牌等音效受主音量控制（当前版本暂无音频文件）", 16, TextAnchor.MiddleLeft, new Vector2(0.05f, 0.395f), new Vector2(0.95f, 0.465f), Color.gray);
+
+            // —— 操作设置区 ——
+            CreateText(card.transform, "Settings Section 3", "操作设置", 24, TextAnchor.MiddleLeft, new Vector2(0.05f, 0.305f), new Vector2(0.95f, 0.385f), PaleGold, FontStyle.Bold);
+            var playKey = CreateButton(card.transform, "Play Key Button", "出牌：空格", new Vector2(0.05f, 0.21f), new Vector2(0.34f, 0.29f), new Color32(55, 55, 57, 255));
+            var discardKey = CreateButton(card.transform, "Discard Key Button", "弃牌：D", new Vector2(0.36f, 0.21f), new Vector2(0.65f, 0.29f), new Color32(55, 55, 57, 255));
+            var settingsKey = CreateButton(card.transform, "Settings Key Button", "设置与返回：ESC", new Vector2(0.66f, 0.21f), new Vector2(0.95f, 0.29f), new Color32(55, 55, 57, 255));
+            // 与主菜单「战斗教学」同款的 replay 标记 toggle（P0-1H）：文案由 FlowController.RefreshTutorialReplayLabels 同步
+            var tutorialReplay = CreateButton(card.transform, "Settings Tutorial Replay Button", "战斗教学", new Vector2(0.05f, 0.105f), new Vector2(0.95f, 0.195f), new Color32(55, 55, 57, 255));
+
+            // —— 底部按钮行 ——
+            var returnMain = CreateButton(card.transform, "Settings Return Button", "返回主界面", new Vector2(0.03f, 0.015f), new Vector2(0.24f, 0.095f), new Color32(70, 70, 72, 255));
+            var restoreDefaults = CreateButton(card.transform, "Settings Restore Defaults Button", "恢复默认", new Vector2(0.26f, 0.015f), new Vector2(0.47f, 0.095f), new Color32(70, 70, 72, 255));
+            var cancel = CreateButton(card.transform, "Settings Cancel Button", "取消", new Vector2(0.49f, 0.015f), new Vector2(0.70f, 0.095f), new Color32(70, 70, 72, 255));
+            var save = CreateButton(card.transform, "Settings Save Button", "保存", new Vector2(0.72f, 0.015f), new Vector2(0.95f, 0.095f), Gold);
+
+            settingsScreen.gameObject.SetActive(false); // 初始隐藏：仅主菜单阶段打开设置时由 FlowController 激活
+
+            // P0-1H 亮度 dim 层：Canvas 根最后创建 = 所有 UI 之上（含设置界面），raycastTarget=false 永不拦截点击；
+            // alpha = 1 - 亮度（默认亮度 0.8 → 0.2），运行时由 FlowController.RefreshAppliedSettings 按门面值重设
+            var dim = CreatePanel(canvas, "Screen Dim Layer", Vector2.zero, Vector2.one, new Color(0f, 0f, 0f, 1f - GameSettings.Brightness));
+            dim.GetComponent<Image>().raycastTarget = false;
+
+            return new SettingsReferences(mainMenuEntry, settingsScreen.gameObject,
+                brightness, brightnessValue, volume, volumeValue,
+                animation, shake,
+                playKey, playKey.transform.Find("Label").GetComponent<Text>(),
+                discardKey, discardKey.transform.Find("Label").GetComponent<Text>(),
+                settingsKey, settingsKey.transform.Find("Label").GetComponent<Text>(),
+                tutorialReplay, tutorialReplay.transform.Find("Label").GetComponent<Text>(),
+                back, returnMain, restoreDefaults, cancel, save,
+                dim.GetComponent<Image>());
+        }
+
+        /// <summary>uGUI 滑条 helper（P0-1H）：水平 0~1、初始值 0.8（与默认亮度/音量一致）。结构照抄 uGUI 默认 Slider（Background + Fill Area + Handle Slide Area）。</summary>
+        private static Slider CreateSlider(Transform parent, string name, Vector2 min, Vector2 max)
+        {
+            var root = new GameObject(name, typeof(RectTransform), typeof(Slider));
+            root.transform.SetParent(parent, false);
+            Stretch(root.GetComponent<RectTransform>(), min, max);
+            var background = CreatePanel(root.transform, "Background", new Vector2(0f, 0.30f), new Vector2(1f, 0.70f), new Color32(50, 50, 52, 255));
+            var fillArea = new GameObject("Fill Area", typeof(RectTransform));
+            fillArea.transform.SetParent(root.transform, false);
+            Stretch(fillArea.GetComponent<RectTransform>(), new Vector2(0.02f, 0.30f), new Vector2(0.98f, 0.70f));
+            var fill = CreatePanel(fillArea.transform, "Fill", Vector2.zero, Vector2.one, Gold);
+            var handleArea = new GameObject("Handle Slide Area", typeof(RectTransform));
+            handleArea.transform.SetParent(root.transform, false);
+            Stretch(handleArea.GetComponent<RectTransform>(), new Vector2(0.01f, 0f), new Vector2(0.99f, 1f));
+            // 点锚点 (0.5,0.5)：Slider 按值驱动 handleRect 的 x 锚点，sizeDelta 定把手大小
+            var handle = CreatePanel(handleArea.transform, "Handle", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), PaleGold);
+            handle.GetComponent<RectTransform>().sizeDelta = new Vector2(26f, 26f);
+            var slider = root.GetComponent<Slider>();
+            slider.fillRect = fill.GetComponent<RectTransform>();
+            slider.handleRect = handle.GetComponent<RectTransform>();
+            slider.targetGraphic = background.GetComponent<Image>();
+            slider.minValue = 0f;
+            slider.maxValue = 1f;
+            slider.value = 0.8f;
+            return slider;
         }
 
         private static void CreateBackground(Transform parent)
@@ -688,9 +813,9 @@ namespace PersonaCards.UI.Editor
             var discard = CreateButton(parent, "Discard Button", "弃牌", new Vector2(0.52f, 0.03f), new Vector2(0.77f, 0.13f), new Color32(85, 63, 51, 255));
             AddButtonIcon(play, "♠", PaleGold);
             AddButtonIcon(discard, "×", new Color32(224, 175, 156, 255));
-            var reduceMotion = CreateToggle(parent, "Reduce Motion Toggle", "减少动效", new Vector2(0.80f, 0.04f), new Vector2(0.96f, 0.11f));
+            // P0-1H：战斗屏「减少动效」Toggle 已归口到设置系统的「界面动效」开关（GameSettings.AnimationsEnabled），不再创建
             return new CenterReferences(hand.GetComponent<RectTransform>(), preview, message, play, discard,
-                played.GetComponent<RectTransform>(), scoringLog, reduceMotion);
+                played.GetComponent<RectTransform>(), scoringLog);
         }
 
         private static RightReferences BuildRightPanel(Transform parent)
@@ -801,7 +926,8 @@ namespace PersonaCards.UI.Editor
         {
             return name is "Left - Persona Slots" or "Center - Table" or "Right - Battle Info" or
                 "Main Menu Card" or "Persona Setup Card" or "Boss Reveal Card" or "Run Result Card" or
-                "Reward Card" or "Shop Card" or "Run Report Card" or "Persona Forge Card" or "Result Overlay";
+                "Reward Card" or "Shop Card" or "Run Report Card" or "Persona Forge Card" or "Result Overlay" or
+                "Settings Card";
         }
 
         private static bool IsInsetFrame(string name)
@@ -1035,9 +1161,9 @@ namespace PersonaCards.UI.Editor
         private readonly struct CenterReferences
         {
             public CenterReferences(RectTransform handRoot, Text preview, Text message, Button play, Button discard,
-                RectTransform playedSlots, Text scoringLog, Toggle reduceMotion)
+                RectTransform playedSlots, Text scoringLog)
             { HandRoot = handRoot; Preview = preview; Message = message; Play = play; Discard = discard;
-                PlayedSlots = playedSlots; ScoringLog = scoringLog; ReduceMotion = reduceMotion; }
+                PlayedSlots = playedSlots; ScoringLog = scoringLog; }
             public RectTransform HandRoot { get; }
             public Text Preview { get; }
             public Text Message { get; }
@@ -1045,7 +1171,6 @@ namespace PersonaCards.UI.Editor
             public Button Discard { get; }
             public RectTransform PlayedSlots { get; }
             public Text ScoringLog { get; }
-            public Toggle ReduceMotion { get; }
         }
 
         private readonly struct RightReferences
@@ -1124,7 +1249,8 @@ namespace PersonaCards.UI.Editor
                 Text forgeRolls, Text forgeStatus, Text[] forgeCandidates, Button[] forgeCandidateButtons,
                 Button forgeConfirm,
                 GameObject tutorialOverlay, Text tutorialStep, Text tutorialTitle, Text tutorialBody,
-                Button tutorialNext, Button tutorialSkip, Text tutorialNextLabel, Button tutorialReplay, Text tutorialReplayLabel)
+                Button tutorialNext, Button tutorialSkip, Text tutorialNextLabel, Button tutorialReplay, Text tutorialReplayLabel,
+                SettingsReferences settings)
             {
                 MainMenu = mainMenu;
                 Collection = collection;
@@ -1189,6 +1315,7 @@ namespace PersonaCards.UI.Editor
                 TutorialNextLabel = tutorialNextLabel;
                 TutorialReplay = tutorialReplay;
                 TutorialReplayLabel = tutorialReplayLabel;
+                Settings = settings;
             }
 
             public GameObject MainMenu { get; }
@@ -1254,6 +1381,67 @@ namespace PersonaCards.UI.Editor
             public Text TutorialNextLabel { get; }
             public Button TutorialReplay { get; }
             public Text TutorialReplayLabel { get; }
+            public SettingsReferences Settings { get; }
+        }
+
+        /// <summary>设置界面引用集合（P0-1H）：独立 struct 收编 22 个引用，避免 FlowReferences 构造器继续膨胀。</summary>
+        private readonly struct SettingsReferences
+        {
+            public SettingsReferences(Button mainMenuEntry, GameObject overlay,
+                Slider brightness, Text brightnessValue, Slider volume, Text volumeValue,
+                Toggle animation, Toggle shake,
+                Button playKey, Text playKeyText, Button discardKey, Text discardKeyText,
+                Button settingsKey, Text settingsKeyText,
+                Button tutorialReplay, Text tutorialReplayText,
+                Button back, Button returnMain, Button restoreDefaults, Button cancel, Button save,
+                Image dim)
+            {
+                MainMenuEntry = mainMenuEntry;
+                Overlay = overlay;
+                Brightness = brightness;
+                BrightnessValue = brightnessValue;
+                Volume = volume;
+                VolumeValue = volumeValue;
+                Animation = animation;
+                Shake = shake;
+                PlayKey = playKey;
+                PlayKeyText = playKeyText;
+                DiscardKey = discardKey;
+                DiscardKeyText = discardKeyText;
+                SettingsKey = settingsKey;
+                SettingsKeyText = settingsKeyText;
+                TutorialReplay = tutorialReplay;
+                TutorialReplayText = tutorialReplayText;
+                Back = back;
+                ReturnMain = returnMain;
+                RestoreDefaults = restoreDefaults;
+                Cancel = cancel;
+                Save = save;
+                Dim = dim;
+            }
+
+            public Button MainMenuEntry { get; }
+            public GameObject Overlay { get; }
+            public Slider Brightness { get; }
+            public Text BrightnessValue { get; }
+            public Slider Volume { get; }
+            public Text VolumeValue { get; }
+            public Toggle Animation { get; }
+            public Toggle Shake { get; }
+            public Button PlayKey { get; }
+            public Text PlayKeyText { get; }
+            public Button DiscardKey { get; }
+            public Text DiscardKeyText { get; }
+            public Button SettingsKey { get; }
+            public Text SettingsKeyText { get; }
+            public Button TutorialReplay { get; }
+            public Text TutorialReplayText { get; }
+            public Button Back { get; }
+            public Button ReturnMain { get; }
+            public Button RestoreDefaults { get; }
+            public Button Cancel { get; }
+            public Button Save { get; }
+            public Image Dim { get; }
         }
     }
 }

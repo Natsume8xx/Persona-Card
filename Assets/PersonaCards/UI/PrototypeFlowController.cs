@@ -99,6 +99,37 @@ namespace PersonaCards.UI
         /// <summary>主菜单重播入口：按钮 + 文案标签（点击后文案变「✓ 下次战斗播放教学」作为即时反馈）。</summary>
         [SerializeField] private Button tutorialReplayButton;
         [SerializeField] private Text tutorialReplayLabel;
+        // —— P0-1H 设置系统（ConfigureSettings 注入）——
+        /// <summary>主菜单卡片内的「设置」入口按钮：点击打开设置界面（仅主菜单阶段）。</summary>
+        [SerializeField] private Button settingsEntryButton;
+        /// <summary>设置界面根（Canvas 下独立屏）：主菜单 overlay，遮罩拦截下层点击。</summary>
+        [SerializeField] private GameObject settingsOverlay;
+        /// <summary>亮度/主音量滑条与百分比文本（策划 12.3.1：百分比立即预览）。</summary>
+        [SerializeField] private Slider brightnessSlider;
+        [SerializeField] private Text brightnessValueText;
+        [SerializeField] private Slider volumeSlider;
+        [SerializeField] private Text volumeValueText;
+        /// <summary>界面动效/屏幕震动开关（Toggle）。</summary>
+        [SerializeField] private Toggle animationToggle;
+        [SerializeField] private Toggle shakeToggle;
+        /// <summary>三个快捷键按钮与文案标签（点击进入改键态，文案显示当前键）。</summary>
+        [SerializeField] private Button playKeyButton;
+        [SerializeField] private Text playKeyLabel;
+        [SerializeField] private Button discardKeyButton;
+        [SerializeField] private Text discardKeyLabel;
+        [SerializeField] private Button settingsKeyButton;
+        [SerializeField] private Text settingsKeyLabel;
+        /// <summary>设置界面内的「重新查看战斗教学」入口：与主菜单按钮共用 toggle 逻辑（P0-1G 移交）。</summary>
+        [SerializeField] private Button settingsTutorialReplayButton;
+        [SerializeField] private Text settingsTutorialReplayLabel;
+        /// <summary>顶部返回 / 底部「返回主界面」「恢复默认」「取消」「保存」按钮。</summary>
+        [SerializeField] private Button settingsBackButton;
+        [SerializeField] private Button settingsReturnButton;
+        [SerializeField] private Button settingsRestoreDefaultsButton;
+        [SerializeField] private Button settingsCancelButton;
+        [SerializeField] private Button settingsSaveButton;
+        /// <summary>全局亮度 dim 层（Canvas 根最上层，raycastTarget=false）：alpha = 1 - 亮度。</summary>
+        [SerializeField] private Image dimImage;
 
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
@@ -124,6 +155,19 @@ namespace PersonaCards.UI
         private bool _tutorialReplayRequested;
         /// <summary>教程已看 PlayerPrefs 键（P0-1G）：首次进战斗自动播放判定；重播请求不读写此标志。</summary>
         private const string TutorialSeenKey = "PersonaCards.TutorialSeen";
+        /// <summary>设置界面是否打开（P0-1H）：主菜单 overlay，不进入流程状态机。</summary>
+        private bool _settingsOpen;
+        /// <summary>进入设置时的快照：「取消/返回主界面」回滚到此（12.3.1「未保存修改不生效」）。</summary>
+        private GameSettingsData _settingsSnapshot;
+        /// <summary>正在改键的目标（None = 未在改键；再点同一条目退出改键态）。</summary>
+        private RebindingTarget _rebinding;
+        /// <summary>刷新设置 UI 时置位：防止 Slider/Toggle 值回写触发 onValueChanged 递归。</summary>
+        private bool _refreshingSettingsUi;
+        /// <summary>设置存档（P0-1H）：独立 JSON 文件，与战役存档（PrototypeSaveStore）互不影响。</summary>
+        private GameSettingsStore _settingsStore;
+
+        /// <summary>改键目标：对应设置界面操作区的三个快捷键按钮。</summary>
+        private enum RebindingTarget { None, Play, Discard, Settings }
 
         public PrototypeFlowStage Stage => _flow.Stage;
 
@@ -222,6 +266,43 @@ namespace PersonaCards.UI
             tutorialNextLabel = tutorialNextButtonLabel;
             tutorialReplayButton = tutorialReplay;
             tutorialReplayLabel = tutorialReplayLabelText;
+        }
+
+        /// <summary>
+        /// 设置界面引用注入（P0-1H）：独立于主 Configure 签名（后者已近 40 参，不再膨胀）。
+        /// SceneBuilder 构建 Settings Screen 后调用；字段名同样进 journey validation 校验列表。
+        /// </summary>
+        public void ConfigureSettings(Button mainMenuEntry, GameObject overlay,
+            Slider brightness, Text brightnessValue, Slider volume, Text volumeValue,
+            Toggle animation, Toggle shake,
+            Button playKey, Text playKeyText, Button discardKey, Text discardKeyText,
+            Button settingsKey, Text settingsKeyText,
+            Button tutorialReplay, Text tutorialReplayText,
+            Button back, Button returnMain, Button restoreDefaults, Button cancel, Button save,
+            Image dim)
+        {
+            settingsEntryButton = mainMenuEntry;
+            settingsOverlay = overlay;
+            brightnessSlider = brightness;
+            brightnessValueText = brightnessValue;
+            volumeSlider = volume;
+            volumeValueText = volumeValue;
+            animationToggle = animation;
+            shakeToggle = shake;
+            playKeyButton = playKey;
+            playKeyLabel = playKeyText;
+            discardKeyButton = discardKey;
+            discardKeyLabel = discardKeyText;
+            settingsKeyButton = settingsKey;
+            settingsKeyLabel = settingsKeyText;
+            settingsTutorialReplayButton = tutorialReplay;
+            settingsTutorialReplayLabel = tutorialReplayText;
+            settingsBackButton = back;
+            settingsReturnButton = returnMain;
+            settingsRestoreDefaultsButton = restoreDefaults;
+            settingsCancelButton = cancel;
+            settingsSaveButton = save;
+            dimImage = dim;
         }
 
         private void Awake()
@@ -353,6 +434,28 @@ namespace PersonaCards.UI
             tutorialNextButton.onClick.AddListener(TutorialNext);
             tutorialSkipButton.onClick.AddListener(TutorialSkip);
             tutorialReplayButton.onClick.AddListener(ToggleTutorialReplay);
+            // 设置系统绑定（P0-1H）：存档读取（异常回落默认）→ 滑条/开关/按钮绑定 → 应用当前设置
+            _settingsStore = new GameSettingsStore();
+            if (_settingsStore.TryLoad(out var loadedSettings) && GameSettings.TryApply(loadedSettings))
+                Debug.Log("[Settings] 设置已从存档读取。");
+            else
+                Debug.Log("[Settings] 设置存档缺失或异常：使用默认设置。");
+            settingsEntryButton.onClick.AddListener(OpenSettings);
+            brightnessSlider.onValueChanged.AddListener(OnBrightnessSliderChanged);
+            volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
+            animationToggle.onValueChanged.AddListener(OnAnimationToggled);
+            shakeToggle.onValueChanged.AddListener(OnShakeToggled);
+            playKeyButton.onClick.AddListener(() => BeginRebinding(RebindingTarget.Play));
+            discardKeyButton.onClick.AddListener(() => BeginRebinding(RebindingTarget.Discard));
+            settingsKeyButton.onClick.AddListener(() => BeginRebinding(RebindingTarget.Settings));
+            settingsTutorialReplayButton.onClick.AddListener(ToggleTutorialReplay);
+            settingsBackButton.onClick.AddListener(CancelAndCloseSettings);
+            settingsReturnButton.onClick.AddListener(CancelAndCloseSettings);
+            settingsRestoreDefaultsButton.onClick.AddListener(RestoreDefaults);
+            settingsCancelButton.onClick.AddListener(CancelAndCloseSettings);
+            settingsSaveButton.onClick.AddListener(SaveSettings);
+            RefreshAppliedSettings();
+            RefreshSettingsUi();
             battleController.BattleCompleted += OnBattleCompleted;
             battleController.HandPlayed += OnHandPlayed;
             battleController.HandDiscarded += OnHandDiscarded;
@@ -633,28 +736,245 @@ namespace PersonaCards.UI
             Render();
         }
 
-        /// <summary>主菜单「战斗教学」按钮：切换重播请求——已标记 ↔ 未标记（再点取消），下一次进入战斗按标记决定是否播放（P0-1G；P0-1H 设置界面将加同款入口）。</summary>
+        /// <summary>主菜单「战斗教学」按钮：切换重播请求——已标记 ↔ 未标记（再点取消），下一次进入战斗按标记决定是否播放（P0-1G；P0-1H 设置界面同款入口共用此逻辑）。</summary>
         private void ToggleTutorialReplay()
         {
             _tutorialReplayRequested = !_tutorialReplayRequested;
-            if (tutorialReplayLabel != null)
-                tutorialReplayLabel.text = _tutorialReplayRequested ? "✓ 下次战斗播放教学" : "战斗教学"; // 按钮文案即时反馈当前标记状态
+            RefreshTutorialReplayLabels();
             Debug.Log(_tutorialReplayRequested
                 ? "[Flow] 已标记：下次进入战斗时播放教学。"
                 : "[Flow] 已取消标记：下次进入战斗不再播放教学。");
         }
 
+        /// <summary>同步主菜单与设置界面两处「战斗教学」按钮文案（即时反馈当前标记状态，P0-1H）。</summary>
+        private void RefreshTutorialReplayLabels()
+        {
+            var label = _tutorialReplayRequested ? "✓ 下次战斗播放教学" : "战斗教学";
+            if (tutorialReplayLabel != null) tutorialReplayLabel.text = label;
+            if (settingsTutorialReplayLabel != null) settingsTutorialReplayLabel.text = label;
+        }
+
         /// <summary>
-        /// 教程进行中吞掉空格/弃牌快捷键（策划 11.3.1「拦截空格、弃牌快捷键，防止操作穿透」）。
+        /// 每帧按键处理（P0-1H 快捷键统一入口）：改键态捕获一切按键；教学激活吞掉一切快捷键（P0-1G 拦截点就此兑现）；
+        /// 设置键在主菜单/设置界面切换；出牌/弃牌键仅战斗阶段生效（且由 BattlePrototypeController 自身守卫演示锁与弹窗）。
         /// 项目已切换 Input System（Player Settings），故用 Keyboard.current 而非旧 UnityEngine.Input。
-        /// TODO(P0-1H)：当前原型尚未接入快捷键（设置系统范畴），此拦截为防御性——快捷键接入后由 TutorialActive 统一拦截，本函数即生效。
         /// </summary>
         private void Update()
         {
-            if (_tutorial.IsActive && Keyboard.current != null &&
-                (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.dKey.wasPressedThisFrame))
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return; // 无键盘设备（触屏等）时全部快捷键不可用，仅按钮操作
+
+            // 改键态优先：一切按键（含 ESC）被捕获为候选新键；再点同一条目可退出改键态
+            if (_rebinding != RebindingTarget.None)
             {
-                // 吞键：教学期间不响应出牌/弃牌快捷键（当前无快捷键处理，防御性空拦截）
+                foreach (var keyControl in keyboard.allKeys)
+                {
+                    if (keyControl.wasPressedThisFrame)
+                    {
+                        TryFinishRebinding(keyControl.keyCode);
+                        break;
+                    }
+                }
+                return;
+            }
+
+            // 教学激活：吞掉全部快捷键（策划 11.3.1「拦截空格、弃牌快捷键，防止操作穿透」）
+            if (_tutorial.IsActive) return;
+
+            // 设置键：设置界面 ↔ 主菜单；其余阶段（含战斗）不响应 ESC（原型无暂停系统，见 P0-1H 拍板）
+            if (keyboard[GameSettings.SettingsKey].wasPressedThisFrame)
+            {
+                if (_settingsOpen) CloseSettings();
+                else if (_flow.Stage == PrototypeFlowStage.MainMenu) OpenSettings();
+            }
+
+            // 出牌/弃牌键：仅战斗阶段响应（按钮同入口，内部守卫锁定态）
+            if (_flow.Stage == PrototypeFlowStage.Battle)
+            {
+                if (keyboard[GameSettings.PlayKey].wasPressedThisFrame) battleController.OnPlay();
+                if (keyboard[GameSettings.DiscardKey].wasPressedThisFrame) battleController.OnDiscard();
+            }
+        }
+
+        // —— P0-1H 设置系统方法 ——
+
+        /// <summary>打开设置界面（ESC 或主菜单「设置」按钮）：快照当前设置供取消回滚。</summary>
+        private void OpenSettings()
+        {
+            if (_flow.Stage != PrototypeFlowStage.MainMenu || _settingsOpen) return;
+            _settingsOpen = true;
+            _settingsSnapshot = GameSettings.Current.Clone(); // 回滚基线（12.3.1「取消：返回修改前状态」）
+            _rebinding = RebindingTarget.None;
+            Render();
+            RefreshSettingsUi();
+        }
+
+        /// <summary>关闭设置界面（仅隐藏；修改回滚由 CancelAndCloseSettings 负责）。</summary>
+        private void CloseSettings()
+        {
+            _settingsOpen = false;
+            _rebinding = RebindingTarget.None;
+            Render();
+        }
+
+        /// <summary>「保存设置」：当前值落盘并关闭（12.3.1「保存后下次进游戏自动读取」）。保存失败不关闭界面、不丢修改。</summary>
+        private void SaveSettings()
+        {
+            if (_settingsStore.TrySave(GameSettings.Current))
+            {
+                Debug.Log("[Settings] 设置已保存。");
+                CloseSettings();
+            }
+            else
+            {
+                Debug.LogWarning("[Settings] 设置保存失败：请检查磁盘空间后重试。");
+            }
+        }
+
+        /// <summary>「取消」「返回主界面」「← 返回」：回滚进入设置时的快照并关闭（未保存修改不生效）。</summary>
+        private void CancelAndCloseSettings()
+        {
+            GameSettings.TryApply(_settingsSnapshot); // 快照必合法，恒成功
+            RefreshAppliedSettings();
+            CloseSettings();
+        }
+
+        /// <summary>「恢复默认」：默认值立即生效并落盘覆盖本地（12.6「恢复默认覆盖本地设置」）。</summary>
+        private void RestoreDefaults()
+        {
+            GameSettings.ApplyDefault();
+            RefreshAppliedSettings();
+            RefreshSettingsUi();
+            if (_settingsStore.TrySave(GameSettings.Current))
+                Debug.Log("[Settings] 已恢复默认设置并保存。");
+            else
+                Debug.LogWarning("[Settings] 恢复默认设置保存失败。");
+        }
+
+        /// <summary>亮度滑条：修改即生效（草稿不落盘，12.6 调和拍板）；百分比文本即时预览。</summary>
+        private void OnBrightnessSliderChanged(float value)
+        {
+            if (_refreshingSettingsUi || !_settingsOpen) return;
+            var updated = GameSettings.Current.Clone();
+            updated.brightness = value;
+            if (GameSettings.TryApply(updated)) // 滑条只给 0~1，恒成功
+            {
+                RefreshAppliedSettings();
+                brightnessValueText.text = $"{Mathf.RoundToInt(value * 100f)}%";
+            }
+        }
+
+        /// <summary>主音量滑条：修改即生效（AudioListener.volume）；百分比文本即时预览。</summary>
+        private void OnVolumeSliderChanged(float value)
+        {
+            if (_refreshingSettingsUi || !_settingsOpen) return;
+            var updated = GameSettings.Current.Clone();
+            updated.masterVolume = value;
+            if (GameSettings.TryApply(updated))
+            {
+                RefreshAppliedSettings();
+                volumeValueText.text = $"{Mathf.RoundToInt(value * 100f)}%";
+            }
+        }
+
+        /// <summary>界面动效开关：修改即生效（PresentationDuration 每帧读门面，无需额外应用）。</summary>
+        private void OnAnimationToggled(bool isOn)
+        {
+            if (_refreshingSettingsUi || !_settingsOpen) return;
+            var updated = GameSettings.Current.Clone();
+            updated.uiAnimation = isOn;
+            GameSettings.TryApply(updated);
+        }
+
+        /// <summary>屏幕震动开关：修改即生效（出牌结算时读门面）。</summary>
+        private void OnShakeToggled(bool isOn)
+        {
+            if (_refreshingSettingsUi || !_settingsOpen) return;
+            var updated = GameSettings.Current.Clone();
+            updated.screenShake = isOn;
+            GameSettings.TryApply(updated);
+        }
+
+        /// <summary>点击键位按钮：进入改键态；再点同一条目退出（12.3.1「点击进入改键状态」）。</summary>
+        private void BeginRebinding(RebindingTarget target)
+        {
+            if (!_settingsOpen) return;
+            _rebinding = _rebinding == target ? RebindingTarget.None : target;
+            RefreshSettingsUi();
+        }
+
+        /// <summary>改键态按下的键替换对应快捷键：与已有键重复或非法则拒绝并保持改键态（日志提示）。</summary>
+        private void TryFinishRebinding(Key key)
+        {
+            var updated = GameSettings.Current.Clone();
+            switch (_rebinding)
+            {
+                case RebindingTarget.Play: updated.playKey = (int)key; break;
+                case RebindingTarget.Discard: updated.discardKey = (int)key; break;
+                case RebindingTarget.Settings: updated.settingsKey = (int)key; break;
+                default: return;
+            }
+            if (!GameSettings.TryApply(updated))
+            {
+                Debug.LogWarning("[Settings] 改键失败：按键与已有快捷键重复或非法。");
+                return; // 保持改键态，等待玩家按其他键或再点按钮退出
+            }
+            Debug.Log($"[Settings] 已改键：{_rebinding} → {key}。");
+            _rebinding = RebindingTarget.None;
+            RefreshSettingsUi();
+        }
+
+        /// <summary>把门面当前值应用到引擎侧：主音量 → AudioListener；亮度 → 全局 dim 层 alpha（1 - 亮度）。</summary>
+        private void RefreshAppliedSettings()
+        {
+            AudioListener.volume = GameSettings.MasterVolume;
+            if (dimImage != null)
+            {
+                var color = dimImage.color;
+                color.a = 1f - GameSettings.Brightness;
+                dimImage.color = color;
+            }
+        }
+
+        /// <summary>刷新设置界面全部控件（滑条/开关/百分比/键位文案/教学按钮）：_refreshingSettingsUi 防值回写递归。</summary>
+        private void RefreshSettingsUi()
+        {
+            _refreshingSettingsUi = true;
+            try
+            {
+                brightnessSlider.value = GameSettings.Brightness;
+                volumeSlider.value = GameSettings.MasterVolume;
+                animationToggle.isOn = GameSettings.AnimationsEnabled;
+                shakeToggle.isOn = GameSettings.ScreenShakeEnabled;
+                brightnessValueText.text = $"{Mathf.RoundToInt(GameSettings.Brightness * 100f)}%";
+                volumeValueText.text = $"{Mathf.RoundToInt(GameSettings.MasterVolume * 100f)}%";
+                playKeyLabel.text = KeyButtonLabel(RebindingTarget.Play, GameSettings.PlayKey);
+                discardKeyLabel.text = KeyButtonLabel(RebindingTarget.Discard, GameSettings.DiscardKey);
+                settingsKeyLabel.text = KeyButtonLabel(RebindingTarget.Settings, GameSettings.SettingsKey);
+                RefreshTutorialReplayLabels();
+            }
+            finally
+            {
+                _refreshingSettingsUi = false;
+            }
+        }
+
+        /// <summary>键位按钮文案：改键态提示「请按新按键…」，否则显示当前键（空格/ESC 用中文名，其余枚举名）。</summary>
+        private string KeyButtonLabel(RebindingTarget target, Key key)
+        {
+            var name = target == RebindingTarget.Play ? "出牌" : target == RebindingTarget.Discard ? "弃牌" : "设置与返回";
+            if (_rebinding == target) return $"{name}：请按新按键…";
+            return $"{name}：{KeyDisplayName(key)}";
+        }
+
+        /// <summary>按键显示名：空格/ESC 用中文名（策划 12.3.1 文案风格），其余键用枚举名。</summary>
+        private static string KeyDisplayName(Key key)
+        {
+            switch (key)
+            {
+                case Key.Space: return "空格";
+                case Key.Escape: return "ESC";
+                default: return key.ToString();
             }
         }
 
@@ -678,6 +998,29 @@ namespace PersonaCards.UI
         private void OnHandPlayed(HandType handType, int cardCount, long score)
         {
             _behaviorTracker?.RecordPlay(handType, cardCount, score);
+            // 屏幕震动（P0-1H）：出牌结算时战斗屏短促抖动，开关读设置门面
+            if (GameSettings.ScreenShakeEnabled)
+                StartCoroutine(ShakeScreen());
+        }
+
+        /// <summary>屏幕震动协程：战斗屏 ±6px 抖动 0.25 秒，幅度线性衰减复位（结束后精确还原原位置）。</summary>
+        private System.Collections.IEnumerator ShakeScreen()
+        {
+            if (battleScreen == null) yield break;
+            var rect = battleScreen.GetComponent<RectTransform>();
+            var duration = 0.25f;
+            var elapsed = 0f;
+            var basePosition = rect.anchoredPosition;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                var amplitude = 6f * (1f - elapsed / duration);
+                rect.anchoredPosition = basePosition + new Vector2(
+                    UnityEngine.Random.Range(-amplitude, amplitude),
+                    UnityEngine.Random.Range(-amplitude, amplitude));
+                yield return null;
+            }
+            rect.anchoredPosition = basePosition;
         }
 
         private void OnHandDiscarded(int cardCount)
@@ -1129,6 +1472,7 @@ namespace PersonaCards.UI
         {
             mainMenuScreen.SetActive(_flow.Stage == PrototypeFlowStage.MainMenu && !_collectionOpen);
             collectionScreen.SetActive(_flow.Stage == PrototypeFlowStage.MainMenu && _collectionOpen);
+            settingsOverlay.SetActive(_settingsOpen && _flow.Stage == PrototypeFlowStage.MainMenu); // P0-1H：设置 overlay 仅主菜单阶段
             personaSetupScreen.SetActive(_flow.Stage == PrototypeFlowStage.PersonaSetup);
             bossRevealScreen.SetActive(_flow.Stage == PrototypeFlowStage.BossReveal);
             if (_flow.Stage == PrototypeFlowStage.BossReveal && bossRevealRuleText != null)
