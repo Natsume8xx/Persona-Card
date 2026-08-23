@@ -97,9 +97,9 @@ MonoBehaviour:
     playsLimit: 0
     discardsLimit: 0
     genCount: 1
-  - kind: 0
+  - kind: 1
     targetScore: 1900
-    bossPoolId: 0
+    bossPoolId: 1
     hasShopAfter: 0
     playsLimit: 4
     discardsLimit: 3
