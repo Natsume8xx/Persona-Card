@@ -51,6 +51,9 @@ namespace PersonaCards.UI.Editor
         [MenuItem("Persona Cards/Rebuild Battle Prototype UI")]
         public static void Build()
         {
+            // 2026-08-26：手动美术接入后禁用代码重建——方法开头直接返回，防止误触菜单/自动重建抹掉场景里的手动修改。
+            // 需要恢复代码重建时，删除下面这一行 return 即可。
+            return;
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             EnsureFolders();
             var cardPrefab = CreateCardPrefab();
