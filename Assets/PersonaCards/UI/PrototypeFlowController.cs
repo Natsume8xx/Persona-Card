@@ -143,6 +143,14 @@ namespace PersonaCards.UI
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
         private PersonaLoadoutState _personaLoadout;
+
+        // 槽位视觉配色（与场景构建器 BattlePrototypeSceneBuilder 的原始值一致）：
+        // 有卡 = 金棕底 + PaleGold 名 + 白规则；空槽 = 灰底 + 灰文本
+        private static readonly Color SlotNameGold = new Color32(232, 214, 173, 255); // PaleGold
+        private static readonly Color32 SetupSlotBackground = new Color32(58, 49, 35, 250);
+        private static readonly Color32 SetupEmptySlotBackground = new Color32(37, 37, 39, 245);
+        private static readonly Color32 BattleSlotBackground = new Color32(54, 47, 36, 245);
+        private static readonly Color32 BattleEmptySlotBackground = new Color32(35, 35, 36, 210);
         private RunBehaviorTracker _behaviorTracker;
         private PersonaForgeState _forgeState;
         private int _selectedForgeCandidate = -1;
@@ -1186,7 +1194,37 @@ namespace PersonaCards.UI
                 battlePersonaNameTexts[index].text = personaSlotNameTexts[index].text;
                 battlePersonaRuleTexts[index].text = personaSlotRuleTexts[index].text;
                 SyncPersonaPortrait(index, definition);
+                SyncPersonaSlotVisual(index, definition != null);
             }
+        }
+
+        /// <summary>
+        /// 槽位视觉状态同步（美术接入）：有卡 = 金棕底 + 金名 + 白规则，空槽 = 灰底 + 灰文本。
+        /// 配色与场景构建器原始值一致（02 屏 58,49,35 / 战斗屏 54,47,36；空槽 37,37,39 / 35,35,36），
+        /// 每帧刷新以覆盖槽位 Button 的颜色过渡副作用；面板节点缺失时静默跳过。
+        /// </summary>
+        private void SyncPersonaSlotVisual(int slotIndex, bool equipped)
+        {
+            var nameColor = equipped ? SlotNameGold : Color.gray;
+            var ruleColor = equipped ? Color.white : Color.gray;
+            personaSlotNameTexts[slotIndex].color = nameColor;
+            personaSlotRuleTexts[slotIndex].color = ruleColor;
+            battlePersonaNameTexts[slotIndex].color = nameColor;
+            battlePersonaRuleTexts[slotIndex].color = ruleColor;
+            ColorSlotPanel(personaSetupScreen, $"Persona Setup Card/Loadout Slot {slotIndex + 1}",
+                equipped ? SetupSlotBackground : SetupEmptySlotBackground);
+            ColorSlotPanel(battleScreen, $"Left - Persona Slots/Persona Slot {slotIndex + 1}",
+                equipped ? BattleSlotBackground : BattleEmptySlotBackground);
+        }
+
+        /// <summary>给指定屏幕根下的面板 Image 刷底色；节点缺失时静默跳过。</summary>
+        private static void ColorSlotPanel(GameObject screenRoot, string relativePath, Color color)
+        {
+            if (screenRoot == null) return;
+            var panel = screenRoot.transform.Find(relativePath);
+            if (panel == null) return;
+            var image = panel.GetComponent<Image>();
+            if (image != null) image.color = color;
         }
 
         /// <summary>
@@ -1218,7 +1256,11 @@ namespace PersonaCards.UI
                 return;
             }
             var rawImage = child.GetComponent<RawImage>();
-            if (rawImage != null) rawImage.texture = sprite.texture;
+            if (rawImage != null)
+            {
+                rawImage.texture = sprite.texture;
+                rawImage.color = Color.white; // 空槽期节点被设为透明隐藏，换图时恢复可见
+            }
         }
 
         private static string PersonaRule(PersonaCardDefinition definition)
@@ -1245,11 +1287,29 @@ namespace PersonaCards.UI
                 forgeCandidateButtons[index].targetGraphic.color = index == _selectedForgeCandidate
                     ? new Color32(91, 70, 34, 255)
                     : new Color32(55, 47, 35, 250);
+                SyncForgePortrait(index, candidate);
             }
             forgeStatusText.text = _selectedForgeCandidate < 0
                 ? "请选择一张人格牌；另两张将在确认后消失"
                 : $"已选择：{_forgeState.Candidates[_selectedForgeCandidate].DisplayName}，请再次确认";
             forgeConfirmButton.interactable = _selectedForgeCandidate >= 0;
+        }
+
+        /// <summary>
+        /// 铸造候选立绘同步（美术接入）：候选块 "Portrait" 节点若已是 RawImage（场景换装后）则按 TemplateId 换图；
+        /// 目录未收录、节点仍是旧 Text 结构或资源缺失时静默跳过。
+        /// </summary>
+        private void SyncForgePortrait(int index, PersonaCardDefinition candidate)
+        {
+            if (forgeCandidateButtons == null || index >= forgeCandidateButtons.Length) return;
+            var portrait = forgeCandidateButtons[index].transform.Find("Portrait");
+            if (portrait == null) return;
+            var rawImage = portrait.GetComponent<RawImage>();
+            if (rawImage == null) return;
+            var sprite = PersonaArtCatalog.PortraitFor(candidate.TemplateId);
+            if (sprite == null) return;
+            rawImage.texture = sprite.texture;
+            rawImage.color = Color.white;
         }
 
         private static string ForgeRule(PersonaCardDefinition definition)

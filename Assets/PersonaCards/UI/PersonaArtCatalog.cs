@@ -36,6 +36,11 @@ namespace PersonaCards.UI
             { "PER_006", "06" },
             { "PER_007", "07" },
             { "PER_008", "08" },
+            // 铸造三选一候选（临时映射，待策划/美术确认）：
+            // 映照→映照组 1 号（终局观察者）、偏转→偏转组 1 号（花色漫游者）、裂变→暂无裂变美术，暂用 01 隐境寻路者
+            { "persona.forge.映照.洞察者", "06" },
+            { "persona.forge.偏转.调律者", "03" },
+            { "persona.forge.裂变.破局者", "01" },
         };
 
         /// <summary>加载缓存：TemplateId → Sprite（含加载失败的 null 结果，避免重复 Resources.Load）。</summary>

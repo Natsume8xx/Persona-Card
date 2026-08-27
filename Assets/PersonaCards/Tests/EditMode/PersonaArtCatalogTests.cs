@@ -32,11 +32,19 @@ namespace PersonaCards.Tests.EditMode
         [Test]
         public void UnmappedIdsReturnNull()
         {
-            // PER_009~016 美术未到货、forge 候选与未知键一律回落 null
+            // PER_009~016 美术未到货、未知键一律回落 null
             Assert.That(PersonaArtCatalog.PortraitFor("PER_009"), Is.Null);
             Assert.That(PersonaArtCatalog.PortraitFor("PER_016"), Is.Null);
-            Assert.That(PersonaArtCatalog.PortraitFor("persona.forge.映照.洞察者"), Is.Null);
             Assert.That(PersonaArtCatalog.PortraitFor("不存在的牌"), Is.Null);
+        }
+
+        [Test]
+        public void ForgeCandidatesMapToArts()
+        {
+            // 铸造三选一候选均有立绘（临时映射：映照→映照组1号、偏转→偏转组1号、裂变暂用01）
+            Assert.That(PersonaArtCatalog.PortraitFor("persona.forge.映照.洞察者"), Is.Not.Null);
+            Assert.That(PersonaArtCatalog.PortraitFor("persona.forge.偏转.调律者"), Is.Not.Null);
+            Assert.That(PersonaArtCatalog.PortraitFor("persona.forge.裂变.破局者"), Is.Not.Null);
         }
 
         [Test]
