@@ -59,6 +59,15 @@ namespace PersonaCards.UI
         private bool _modalOpen;
         private int _deckViewerPage;
         private DeckViewerZone _deckViewerZone;
+
+        /// <summary>牌库查看器各卡槽自带的卡底 Image（懒缓存：首次打开查看器时收集，场景零改动）。</summary>
+        private Image[] _deckViewerBackdrops;
+
+        /// <summary>各卡槽卡底的原始颜色（美术贴图缺失时恢复旧样式纯色底）。</summary>
+        private Color[] _deckViewerBackdropColors;
+
+        /// <summary>整卡贴图 → Sprite 缓存（卡槽 Image 只能渲染 Sprite，按贴图名缓存避免每次翻页重建）。</summary>
+        private readonly Dictionary<string, Sprite> _deckViewerFaceSprites = new Dictionary<string, Sprite>();
         // P0-1I：手牌显示排序模式（战斗内临时状态，不落档）；当前金币（由 FlowController 注入）与本场获得金币（预留 P0-6，恒 0）
         private HandSortMode _handSortMode = HandSortMode.RankFirst;
         private int _journeyCoins;
@@ -621,6 +630,7 @@ namespace PersonaCards.UI
                     ? new Color32(112, 84, 39, 255)
                     : new Color32(32, 32, 31, 248);
             }
+            EnsureDeckViewerBackdropCache(); // 首次渲染前记录各卡槽卡底原始色（无贴图时的回退底色）
             for (var visibleIndex = 0; visibleIndex < pageSize; visibleIndex++)
             {
                 var cardIndex = _deckViewerPage * pageSize + visibleIndex;
@@ -628,11 +638,51 @@ namespace PersonaCards.UI
                 deckViewerCardTexts[visibleIndex].transform.parent.gameObject.SetActive(hasCard);
                 if (!hasCard) continue;
                 var card = cards[cardIndex];
-                deckViewerCardTexts[visibleIndex].text = $"{RankName(card.Rank)}\n{SuitName(card.Suit)}{EnhancementName(card.Enhancement)}";
-                deckViewerCardTexts[visibleIndex].color = card.Suit is Suit.Hearts or Suit.Diamonds
-                    ? new Color32(180, 91, 72, 255)
-                    : new Color32(226, 214, 184, 255);
+                // 美术牌面接入（与手牌 BattleCardView 同模式）：有贴图 → 卡槽自带卡底 Image 换整卡 Sprite
+                //（点数由美术自带），文本降级为只显示增强标记；无贴图 → 恢复原始纯色卡底 + 旧文本样式
+                var face = CardFaceCatalog.FaceFor(card.Suit, card.Rank);
+                var hasFace = face != null;
+                var backdrop = _deckViewerBackdrops[visibleIndex];
+                backdrop.sprite = hasFace ? SpriteForFace(face) : null; // null 回退原始纯色卡底
+                backdrop.color = hasFace ? Color.white : _deckViewerBackdropColors[visibleIndex];
+                var enhancement = EnhancementName(card.Enhancement).Replace("\n", string.Empty);
+                deckViewerCardTexts[visibleIndex].gameObject.SetActive(!hasFace || enhancement.Length > 0);
+                deckViewerCardTexts[visibleIndex].text = hasFace
+                    ? enhancement
+                    : $"{RankName(card.Rank)}\n{SuitName(card.Suit)}{EnhancementName(card.Enhancement)}";
+                deckViewerCardTexts[visibleIndex].color = hasFace
+                    ? new Color32(116, 77, 24, 255) // 增强标记棕色（与手牌增强徽记同色）
+                    : card.Suit is Suit.Hearts or Suit.Diamonds
+                        ? new Color32(180, 91, 72, 255)
+                        : new Color32(226, 214, 184, 255);
             }
+        }
+
+        /// <summary>
+        /// 懒收集各卡槽自带的卡底 Image 与原始颜色（首次打开查看器时调用一次）。
+        /// 原始色在首次被贴图覆盖前记录，之后作为无贴图卡的回退底色。
+        /// </summary>
+        private void EnsureDeckViewerBackdropCache()
+        {
+            if (_deckViewerBackdrops != null) return;
+            _deckViewerBackdrops = new Image[deckViewerCardTexts.Length];
+            _deckViewerBackdropColors = new Color[deckViewerCardTexts.Length];
+            for (var index = 0; index < deckViewerCardTexts.Length; index++)
+            {
+                var backdrop = deckViewerCardTexts[index].transform.parent.GetComponent<Image>();
+                _deckViewerBackdrops[index] = backdrop;
+                _deckViewerBackdropColors[index] = backdrop.color;
+            }
+        }
+
+        /// <summary>整卡贴图 → Sprite（卡槽 Image 只能渲染 Sprite；按贴图名缓存，52 张每张只转一次）。</summary>
+        private Sprite SpriteForFace(Texture2D face)
+        {
+            if (_deckViewerFaceSprites.TryGetValue(face.name, out var cached)) return cached;
+            var sprite = Sprite.Create(face, new Rect(0f, 0f, face.width, face.height), new Vector2(0.5f, 0.5f));
+            sprite.name = face.name; // 与贴图同名，调试/日志可读
+            _deckViewerFaceSprites[face.name] = sprite;
+            return sprite;
         }
 
         private IReadOnlyList<PlayingCardInstance> DeckViewerCards()
