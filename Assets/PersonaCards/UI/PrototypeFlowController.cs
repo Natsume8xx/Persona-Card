@@ -1185,7 +1185,40 @@ namespace PersonaCards.UI
                 personaSlotRuleTexts[index].text = PersonaRule(definition);
                 battlePersonaNameTexts[index].text = personaSlotNameTexts[index].text;
                 battlePersonaRuleTexts[index].text = personaSlotRuleTexts[index].text;
+                SyncPersonaPortrait(index, definition);
             }
+        }
+
+        /// <summary>
+        /// 按 TemplateId 同步 02 准备屏与战斗左栏的立绘（美术接入）。
+        /// 仅当槽位有卡且目录能给出立绘时覆盖 Image.sprite；空槽/未知键/手动改版场景缺少节点时一律保持现状，静默跳过。
+        /// </summary>
+        private void SyncPersonaPortrait(int slotIndex, PersonaCardDefinition definition)
+        {
+            if (definition == null) return;
+            var sprite = PersonaArtCatalog.PortraitFor(definition.TemplateId);
+            if (sprite == null) return;
+            ApplyPortrait(personaSetupScreen, $"Persona Setup Card/Loadout Slot {slotIndex + 1}/Portrait Artwork", sprite);
+            ApplyPortrait(battleScreen, $"Left - Persona Slots/Persona Slot {slotIndex + 1}/Persona Portrait", sprite);
+        }
+
+        /// <summary>
+        /// 在指定屏幕根下按相对路径找到立绘节点并换图；节点不存在时静默跳过（不打扰手动维护的场景）。
+        /// 立绘节点可能是 Image（代码生成）或 RawImage（手动贴图时替换过组件），两者都支持。
+        /// </summary>
+        private static void ApplyPortrait(GameObject screenRoot, string relativePath, Sprite sprite)
+        {
+            if (screenRoot == null) return;
+            var child = screenRoot.transform.Find(relativePath);
+            if (child == null) return;
+            var image = child.GetComponent<Image>();
+            if (image != null)
+            {
+                image.sprite = sprite;
+                return;
+            }
+            var rawImage = child.GetComponent<RawImage>();
+            if (rawImage != null) rawImage.texture = sprite.texture;
         }
 
         private static string PersonaRule(PersonaCardDefinition definition)
