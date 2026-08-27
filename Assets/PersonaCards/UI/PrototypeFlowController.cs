@@ -587,10 +587,16 @@ namespace PersonaCards.UI
             {
                 var collectionIndex = _collectionPage * pageSize + visibleIndex;
                 var hasDefinition = collectionIndex < _personaCollection.Count;
+                var definition = hasDefinition ? _personaCollection[collectionIndex] : null;
                 collectionCardButtons[visibleIndex].interactable = hasDefinition;
-                collectionCardTexts[visibleIndex].text = hasDefinition
-                    ? $"{_personaCollection[collectionIndex].DisplayName}\n{PersonaRule(_personaCollection[collectionIndex])}"
-                    : "空";
+                // 收藏条目样式对齐准备屏（02）：左侧立绘 + 名称（金色）+ 效果（白色）两行；
+                // 立绘缺失（美术未到货/未知键）时 ApplyPortrait 置空隐藏，文本仍完整可读
+                collectionCardTexts[visibleIndex].text = hasDefinition ? definition.DisplayName : "空";
+                ApplyPortrait(collectionScreen,
+                    $"Persona Collection Card/Collection List Panel/Collection Card {visibleIndex + 1}/Portrait Artwork",
+                    definition == null ? null : PersonaArtCatalog.PortraitFor(definition.TemplateId));
+                var ruleText = CollectionCardRuleText(visibleIndex);
+                if (ruleText != null) ruleText.text = hasDefinition ? PersonaRule(definition) : string.Empty;
                 collectionCardButtons[visibleIndex].targetGraphic.color = collectionIndex == _selectedCollectionIndex
                     ? new Color32(114, 86, 40, 255)
                     : new Color32(34, 34, 33, 248);
@@ -614,6 +620,14 @@ namespace PersonaCards.UI
                 ? "请选择一张已收藏的人格牌。"
                 : $"已选择：{selected.DisplayName}\n{PersonaRule(selected)}\n\n点击右侧任意槽位即可装备；已装备的人格不会重复出现。";
             collectionUnequipButton.interactable = _personaLoadout.Slots[_selectedEquipmentSlot] != null;
+        }
+
+        /// <summary>取收藏条目右侧的「效果」文本节点（对齐准备屏样式新增的场景节点；缺失时返回 null 静默跳过）。</summary>
+        private Text CollectionCardRuleText(int visibleIndex)
+        {
+            var node = collectionScreen.transform.Find(
+                $"Persona Collection Card/Collection List Panel/Collection Card {visibleIndex + 1}/Rule");
+            return node == null ? null : node.GetComponent<Text>();
         }
 
         private void OnDestroy()
@@ -1274,7 +1288,7 @@ namespace PersonaCards.UI
                 return;
             }
             var rawImage = child.GetComponent<RawImage>();
-            if (rawImage != null)
+            if (rawImage != null && sprite != null)
             {
                 rawImage.texture = sprite.texture;
                 rawImage.color = Color.white; // 空槽期节点被设为透明隐藏，换图时恢复可见
