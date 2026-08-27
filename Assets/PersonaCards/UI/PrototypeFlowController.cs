@@ -497,6 +497,23 @@ namespace PersonaCards.UI
             battleController.HandDiscarded += OnHandDiscarded;
             battleController.StableStateChanged += SaveActiveRun;
             continueButton.interactable = _saveStore.TryLoad(out var initialSave) && initialSave.hasActiveRun;
+
+            // 音效：全部静态按钮统一挂点击音效（叠加监听不影响业务逻辑；手牌按钮由 BattleCardView.Configure 单独挂）
+            MusicManager.AttachClickSound(startButton, continueButton, collectionButton, collectionBackButton,
+                collectionPreviousButton, collectionNextButton, collectionUnequipButton,
+                confirmPersonaButton, beginBattleButton, resultReturnButton,
+                rewardContinueButton, shopContinueButton, reportReturnButton, personaBackButton, bossBackButton,
+                rewardPreviousButton, rewardNextButton, shopPreviousButton, shopNextButton,
+                shopDeleteButton, shopReforgeButton, shopEnhanceButton, forgeConfirmButton,
+                tutorialNextButton, tutorialSkipButton, tutorialReplayButton,
+                settingsEntryButton, playKeyButton, discardKeyButton, settingsKeyButton, settingsTutorialReplayButton,
+                settingsBackButton, settingsReturnButton, settingsRestoreDefaultsButton, settingsCancelButton, settingsSaveButton,
+                compendiumEntryButton, compendiumBackButton, quitGameButton);
+            MusicManager.AttachClickSound(collectionCardButtons);
+            MusicManager.AttachClickSound(collectionEquipmentButtons);
+            MusicManager.AttachClickSound(personaSlotButtons);
+            MusicManager.AttachClickSound(forgeCandidateButtons);
+
             Render();
         }
 
@@ -1152,6 +1169,7 @@ namespace PersonaCards.UI
             var won = status == BattleStatus.Won;
             if (!_flow.CompleteBattle(won)) return;
             Debug.Log($"[Flow] 战斗结算：{(won ? "胜利" : "失败")}，得分 {score} / 目标 {target}，进入阶段 {_flow.Stage}。");
+            MusicManager.Instance.PlaySfx(won ? MusicCatalog.SfxVictory : MusicCatalog.SfxDefeat); // 音效：战斗胜利/失败结算
 
             if (!won)
             {
@@ -1672,6 +1690,10 @@ namespace PersonaCards.UI
                 if (tutorialNextLabel != null)
                     tutorialNextLabel.text = step == TutorialSequence.StepCount - 1 ? "完成" : "下一步";
             }
+            // 音乐系统：每帧按阶段同步 BGM（同曲幂等；Battle 阶段同一枚举承载普通战与 Boss 战，按节点类型区分）
+            var isBossBattle = _flow.Stage == PrototypeFlowStage.Battle
+                && RunRoute.GetNode(_flow.NodeIndex).kind == RunNodeKind.BossBattle;
+            MusicManager.Instance.SyncStage(_flow.Stage, isBossBattle);
         }
     }
 }

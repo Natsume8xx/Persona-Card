@@ -81,6 +81,7 @@ namespace PersonaCards.UI
             centerSuit.color = new Color(inkColor.r, inkColor.g, inkColor.b, 0.72f);
             enhancementLabel.color = new Color32(116, 77, 24, 255);
             button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(MusicManager.Instance.PlayClick); // 音效：点牌（RemoveAllListeners 会清掉，故在此处补挂）
             button.onClick.AddListener(() => onClicked(card.Id));
         }
 

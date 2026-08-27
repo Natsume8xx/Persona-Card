@@ -180,6 +180,12 @@ namespace PersonaCards.UI
             deckViewerOverlay.SetActive(false);
             handReferenceOverlay.SetActive(false);
             RefreshHandReference();
+
+            // 音效：战斗界面静态按钮统一挂点击音效（手牌按钮由 BattleCardView.Configure 单独挂）
+            MusicManager.AttachClickSound(playButton, discardButton, deckViewerButton, handReferenceButton,
+                deckViewerCloseButton, handReferenceCloseButton, deckViewerPreviousButton, deckViewerNextButton,
+                handSortButton, newBattleButton);
+            MusicManager.AttachClickSound(deckViewerZoneButtons);
         }
 
         public void BeginBattle()
@@ -405,6 +411,7 @@ namespace PersonaCards.UI
                 yield break;
             }
             HandDiscarded?.Invoke(count);
+            MusicManager.Instance.PlaySfx(MusicCatalog.SfxDiscard); // 音效：弃牌
 
             _battle.SetPresentationLock(true);
             SetCardInteraction(false);
@@ -451,6 +458,7 @@ namespace PersonaCards.UI
 
         private IEnumerator PresentScoringEvents(IEnumerable<ScoringEvent> events)
         {
+            MusicManager.Instance.PlaySfx(MusicCatalog.SfxScoreCount); // 音效：分数计算（结算事件演示）
             foreach (var scoringEvent in events)
             {
                 scoringLogText.text = DescribeEvent(scoringEvent);
@@ -477,6 +485,10 @@ namespace PersonaCards.UI
 
         private IEnumerator AnimateNewCards(ISet<string> newCardIds)
         {
+            if (newCardIds.Count > 0)
+            {
+                MusicManager.Instance.PlaySfx(MusicCatalog.SfxDraw); // 音效：出牌/弃牌后补牌
+            }
             foreach (var card in _battle.Deck.Hand.Where(card => newCardIds.Contains(card.Id)))
             {
                 var view = _cardViews[card.Id];
