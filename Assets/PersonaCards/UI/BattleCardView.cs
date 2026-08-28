@@ -16,8 +16,17 @@ namespace PersonaCards.UI
         [SerializeField] private Text enhancementLabel;
         [SerializeField] private CanvasGroup canvasGroup;
 
+        /// <summary>prefab 序列化引用的原始卡面底纹（羊皮纸），无美术贴图时的回退纹理。</summary>
+        private Texture _fallbackFace;
+
         public RectTransform RectTransform => (RectTransform)transform;
         public CanvasGroup CanvasGroup => canvasGroup;
+
+        private void Awake()
+        {
+            // 记录 prefab 原始底纹：美术贴图缺失的卡面回退到它
+            if (faceArtwork != null) _fallbackFace = faceArtwork.texture;
+        }
 
         public void ConfigurePrefab(Image image, RawImage artwork, Button clickButton, Text cardLabel,
             Text largeSuit, Text mirroredCardLabel, Text enhancement, CanvasGroup group)
@@ -46,7 +55,15 @@ namespace PersonaCards.UI
             rect.sizeDelta = new Vector2(112f, 168f);
             rect.anchoredPosition = new Vector2((index - (cardCount - 1) * 0.5f) * 121f, selected ? 28f : 0f);
             background.color = selected ? new Color32(211, 166, 76, 255) : new Color32(103, 84, 51, 255);
-            faceArtwork.color = selected ? new Color32(255, 244, 205, 255) : Color.white;
+            // 美术牌面接入：52 张整卡贴图存在 → 替换底纹并隐藏手绘点数文本（美术自带，避免重叠）；
+            // 贴图缺失 → 回退 prefab 原始羊皮纸 + 文本，选中染色保持旧行为；增强词条两种情况下都照常显示
+            var face = CardFaceCatalog.FaceFor(card.Suit, card.Rank);
+            var hasFace = face != null;
+            faceArtwork.texture = hasFace ? face : _fallbackFace;
+            faceArtwork.color = hasFace ? Color.white : selected ? new Color32(255, 244, 205, 255) : Color.white;
+            label.gameObject.SetActive(!hasFace);
+            centerSuit.gameObject.SetActive(!hasFace);
+            mirroredLabel.gameObject.SetActive(!hasFace);
             label.font = font;
             centerSuit.font = font;
             mirroredLabel.font = font;
@@ -64,6 +81,7 @@ namespace PersonaCards.UI
             centerSuit.color = new Color(inkColor.r, inkColor.g, inkColor.b, 0.72f);
             enhancementLabel.color = new Color32(116, 77, 24, 255);
             button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(MusicManager.Instance.PlayClick); // 音效：点牌（RemoveAllListeners 会清掉，故在此处补挂）
             button.onClick.AddListener(() => onClicked(card.Id));
         }
 

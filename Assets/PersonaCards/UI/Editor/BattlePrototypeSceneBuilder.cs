@@ -38,6 +38,13 @@ namespace PersonaCards.UI.Editor
         [InitializeOnLoadMethod]
         private static void RebuildWhenPrototypeSchemaChanges()
         {
+            // 2026-08-28：自动钩子停用。Build 已禁用后（手动美术场景维护期），此钩子唯一的实际副作用是
+            // delayCall 里无条件执行 ValidateRunRouteJourney()，而走查第一行 OpenScene(Single) 会重载场景——
+            // 编辑器里有未保存的手动 UI 修改（如徽章对齐）时会被静默丢弃，表现为「UI 跑回去」。
+            // 验证改为纯手动菜单命令：Persona Cards/Validate Run Route Journey（Ctrl+Shift+V）。
+            // 需要恢复自动重建/自动走查时，删除下面的 return 即可。
+#pragma warning disable CS0162 // 禁用开关：return 后为可恢复的自动钩子实现（死代码警告有意压制）
+            return;
             EditorApplication.delayCall += () =>
             {
                 if (EditorApplication.isPlayingOrWillChangePlaymode) return;
@@ -46,11 +53,16 @@ namespace PersonaCards.UI.Editor
                 if (GameObject.Find("Prototype Schema - Boss Rules Pass") == null) Build();
                 ValidateRunRouteJourney();
             };
+#pragma warning restore CS0162
         }
 
         [MenuItem("Persona Cards/Rebuild Battle Prototype UI")]
         public static void Build()
         {
+            // 2026-08-26：手动美术接入后禁用代码重建——方法开头直接返回，防止误触菜单/自动重建抹掉场景里的手动修改。
+            // 需要恢复代码重建时，删除下面这一行 return 即可。
+#pragma warning disable CS0162 // 禁用开关：return 后为可恢复的构建实现（死代码警告有意压制）
+            return;
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             EnsureFolders();
             var cardPrefab = CreateCardPrefab();
@@ -235,6 +247,7 @@ namespace PersonaCards.UI.Editor
             SetFirstBuildScene();
             Selection.activeGameObject = canvasObject;
             Debug.Log("BattlePrototype rebuilt with serialized UI hierarchy and card prefab.");
+#pragma warning restore CS0162
         }
 
         /// <summary>确保路线资产存在并返回引用：缺失时按 GDD 默认路线创建（场景重建时自动挂接）。</summary>
@@ -305,7 +318,13 @@ namespace PersonaCards.UI.Editor
         [MenuItem("Persona Cards/Validate Run Route Journey %#v")]
         public static void ValidateRunRouteJourney()
         {
-            var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            // 2026-08-28：不再无条件 OpenScene(Single)——那会在场景已有未保存修改时静默重载丢弃。
+            // 仅当当前场景不是战斗场景时才打开它；已是战斗场景则直接对当前场景走查。
+            var scene = EditorSceneManager.GetActiveScene();
+            if (scene.path != ScenePath)
+            {
+                scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            }
             var requiredObjects = new[]
             {
                 "01 Main Menu Screen", "10 Persona Collection Screen", "02 Persona Setup Screen", "03 Boss Reveal Screen",
