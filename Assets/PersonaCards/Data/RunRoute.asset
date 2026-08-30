@@ -14,49 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.RunRouteAsset
   battleNodes:
   - kind: 0
-    targetScore: 550
+    targetScore: 950
     bossPoolId: 0
     hasShopAfter: 1
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
   - kind: 0
-    targetScore: 625
+    targetScore: 1100
     bossPoolId: 0
     hasShopAfter: 1
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
   - kind: 0
-    targetScore: 675
-    bossPoolId: 0
-    hasShopAfter: 1
-    playsLimit: 4
-    discardsLimit: 3
-    genCount: 0
-  - kind: 2
-    targetScore: 0
-    bossPoolId: 0
-    hasShopAfter: 0
-    playsLimit: 0
-    discardsLimit: 0
-    genCount: 1
-  - kind: 0
-    targetScore: 775
-    bossPoolId: 0
-    hasShopAfter: 1
-    playsLimit: 4
-    discardsLimit: 3
-    genCount: 0
-  - kind: 0
-    targetScore: 875
-    bossPoolId: 0
-    hasShopAfter: 1
-    playsLimit: 4
-    discardsLimit: 3
-    genCount: 0
-  - kind: 0
-    targetScore: 975
+    targetScore: 1250
     bossPoolId: 0
     hasShopAfter: 1
     playsLimit: 4
@@ -70,21 +42,49 @@ MonoBehaviour:
     discardsLimit: 0
     genCount: 1
   - kind: 0
-    targetScore: 1050
+    targetScore: 1350
     bossPoolId: 0
     hasShopAfter: 1
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
   - kind: 0
-    targetScore: 1275
+    targetScore: 1500
     bossPoolId: 0
     hasShopAfter: 1
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
   - kind: 0
-    targetScore: 1475
+    targetScore: 1650
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 2
+    targetScore: 0
+    bossPoolId: 0
+    hasShopAfter: 0
+    playsLimit: 0
+    discardsLimit: 0
+    genCount: 1
+  - kind: 0
+    targetScore: 1750
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 1950
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 2150
     bossPoolId: 0
     hasShopAfter: 1
     playsLimit: 4
@@ -98,7 +98,7 @@ MonoBehaviour:
     discardsLimit: 0
     genCount: 1
   - kind: 1
-    targetScore: 1900
+    targetScore: 2600
     bossPoolId: 1
     hasShopAfter: 0
     playsLimit: 4
