@@ -292,11 +292,14 @@ namespace PersonaCards.UI.Editor
         /// <summary>确保人格牌配置资产存在并返回引用：缺失时创建空条目资产（白盒 = 空模板目录，场景重建时自动挂接）。</summary>
         private static PersonaConfigAsset EnsurePersonaConfigAsset()
         {
-            var asset = AssetDatabase.LoadAssetAtPath<PersonaConfigAsset>(PersonaImportCommand.AssetPath);
+            var asset = AssetDatabase.LoadAssetAtPath<PersonaConfigAsset>(PersonaConfigAsset.AssetPath);
             if (asset == null)
             {
-                PersonaImportCommand.CreateOrReset();
-                asset = AssetDatabase.LoadAssetAtPath<PersonaConfigAsset>(PersonaImportCommand.AssetPath);
+                // P0-1J：旧导入命令（PersonaImportCommand）已随人格牌三表化删除，此处内联白盒创建（空条目资产合法）
+                asset = ScriptableObject.CreateInstance<PersonaConfigAsset>();
+                asset.name = "PersonaConfig";
+                AssetDatabase.CreateAsset(asset, PersonaConfigAsset.AssetPath);
+                AssetDatabase.SaveAssets();
                 Debug.Log("[Persona] 场景重建时发现人格牌配置资产缺失，已创建空条目资产（白盒）。");
             }
             return asset;

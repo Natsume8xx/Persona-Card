@@ -1,10 +1,10 @@
 ﻿<Solution>
+  <Project Path="PersonaCards.Data.csproj" />
   <Project Path="PersonaCards.Tests.EditMode.csproj" />
   <Project Path="PersonaCards.Cards.csproj" />
-  <Project Path="PersonaCards.Data.csproj" />
+  <Project Path="PersonaCards.UI.Editor.csproj" />
   <Project Path="PersonaCards.Core.csproj" />
   <Project Path="PersonaCards.UI.csproj" />
   <Project Path="PersonaCards.Battle.csproj" />
-  <Project Path="PersonaCards.UI.Editor.csproj" />
   <Project Path="PersonaCards.Tests.PlayMode.csproj" />
 </Solution>

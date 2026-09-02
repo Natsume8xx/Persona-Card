@@ -70,9 +70,10 @@ namespace PersonaCards.Data
     }
 
     /// <summary>
-    /// 人格牌配置资产：16 张人格牌（PER_001~016）的配表落地，由菜单「导入人格牌配置数据」写入。
+    /// 人格牌配置资产：16 张人格牌（PER_001~016）的配表落地（P0-1E 遗留；P0-1J 人格牌三表化后不再有导入层，
+    /// 新数据走 PersonaCardCatalog/PersonaEntryCatalog/PersonaMainAttrCatalog/PersonaSubAttrCatalog，本资产保留供旧运行时链路用直到 B7）。
     /// P0-1E 白盒语义：空条目资产合法（Battle 门面回落 = 空模板目录，教学 3 张独立静态锚点），
-    /// 因此 PER_001~016 齐全校验不在此层（在 PersonaTableMapper 导入层，防误删）。
+    /// 因此 PER_001~016 齐全校验不在此层（旧导入层 PersonaTableMapper 已删除，防误删校验随之退役）。
     /// 程序集边界：Data 不能引用 Battle → 枚举文本（品质/触发条件/比较符/效果类型）以 string 存规范值，
     /// 由 Battle 门面 Configure(条目列表) 时转换；数值列存 string 原文（如 PER_013 的 2.4500000000000002 精确保存），空串 = 无。
     /// </summary>
