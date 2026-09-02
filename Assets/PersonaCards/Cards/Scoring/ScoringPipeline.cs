@@ -11,6 +11,7 @@ namespace PersonaCards.Cards.Scoring
     {
         private static readonly ScoringPhase[] EffectPhases =
         {
+            ScoringPhase.ScoringCards, // P0-4：为花色审查/沉默/试探等卡面级词条开阶段口子（自定义效果按序插在卡面硬编码之后）
             ScoringPhase.HeldAndGlobal,
             ScoringPhase.Persona,
             ScoringPhase.BossFinal

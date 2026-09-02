@@ -1,7 +1,9 @@
 using System.Linq;
 using NUnit.Framework;
 using PersonaCards.Battle;
+using PersonaCards.Battle.Personas;
 using PersonaCards.Cards;
+using PersonaCards.Cards.Scoring;
 
 namespace PersonaCards.Tests.EditMode
 {
@@ -171,6 +173,52 @@ namespace PersonaCards.Tests.EditMode
         {
             Assert.Throws<System.ArgumentOutOfRangeException>(() =>
                 new BattleStateMachine(StandardDeckFactory.Create(), 12345u, 350, selectionLimit: 0));
+        }
+
+        [Test]
+        public void HandsPlayedTracksPlayedHands()
+        {
+            // P0-5 人格延迟的过滤基准：开局 0，每出一手 +1（弃牌不计数）
+            var battle = CreateBattle(long.MaxValue);
+
+            Assert.That(battle.HandsPlayed, Is.EqualTo(0));
+
+            battle.TryToggleSelection(battle.Deck.Hand[0].Id);
+            battle.TryPlaySelected();
+            Assert.That(battle.HandsPlayed, Is.EqualTo(1));
+
+            battle.TryToggleSelection(battle.Deck.Hand[0].Id);
+            battle.TryPlaySelected();
+            Assert.That(battle.HandsPlayed, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void DisabledPersonaSlotSkipsItsEffect()
+        {
+            // P0-5 封印：槽 1（执行者）禁用 → 其事件为 Skip，相邻槽正常
+            var battle = new BattleStateMachine(StandardDeckFactory.Create(), 12345u, long.MaxValue,
+                InitialPersonaCatalog.CreateDefaultLoadout(), disabledPersonaSlots: new[] { 1 });
+            Assert.That(battle.TryToggleSelection(battle.Deck.Hand[0].Id).Succeeded, Is.True);
+
+            var preview = battle.PreviewSelected();
+
+            var executor = preview.Events.Single(scoringEvent => scoringEvent.SourceId == "persona.initial.executor");
+            Assert.That(executor.Operation, Is.EqualTo(ScoringOperation.Skip));
+            Assert.That(executor.DisplayTextKey, Is.EqualTo("persona.disabled"));
+            Assert.That(preview.Events.Any(scoringEvent =>
+                scoringEvent.SourceId == "persona.initial.accumulator"
+                && scoringEvent.Operation == ScoringOperation.AddChips), Is.True);
+        }
+
+        [Test]
+        public void DisabledPersonaSlotOutOfRangeIsRejected()
+        {
+            // 槽号越界在计分派生时暴露（框架不静默吞掉非法配置）
+            var battle = new BattleStateMachine(StandardDeckFactory.Create(), 12345u, long.MaxValue,
+                InitialPersonaCatalog.CreateDefaultLoadout(), disabledPersonaSlots: new[] { 4 });
+            battle.TryToggleSelection(battle.Deck.Hand[0].Id);
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => battle.PreviewSelected());
         }
 
         [Test]

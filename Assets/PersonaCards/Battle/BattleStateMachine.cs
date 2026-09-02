@@ -23,6 +23,7 @@ namespace PersonaCards.Battle
         private readonly ScoringPipeline _scoringPipeline;
         private readonly PersonaLoadout _personaLoadout;
         private readonly BossEncounterRuntime _bossEncounter;
+        private readonly IReadOnlyCollection<int> _disabledPersonaSlots;
 
         public BattleStateMachine(
             IEnumerable<PlayingCardInstance> cards,
@@ -33,7 +34,8 @@ namespace PersonaCards.Battle
             BossEncounterRuntime bossEncounter = null,
             int playsLimit = StartingPlays,
             int discardsLimit = StartingDiscards,
-            int selectionLimit = DefaultSelectionLimit)
+            int selectionLimit = DefaultSelectionLimit,
+            IReadOnlyCollection<int> disabledPersonaSlots = null)
         {
             if (targetScore < 1)
             {
@@ -59,13 +61,15 @@ namespace PersonaCards.Battle
             _personaLoadout = personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout();
             _scoringPipeline = scoringPipeline ?? new ScoringPipeline();
             _bossEncounter = bossEncounter;
+            _disabledPersonaSlots = disabledPersonaSlots; // P0-5 封印口子：槽号越界在 CreateScoringEffects 派生时校验
 
             Deck.ShuffleDrawPile(new XorShift32Rng(seed));
             DrawToHandLimit();
         }
 
         public BattleStateMachine(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout = null,
-            ScoringPipeline scoringPipeline = null, int selectionLimit = DefaultSelectionLimit)
+            ScoringPipeline scoringPipeline = null, int selectionLimit = DefaultSelectionLimit,
+            IReadOnlyCollection<int> disabledPersonaSlots = null)
         {
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
             if (snapshot.TargetScore < 1) throw new ArgumentOutOfRangeException(nameof(snapshot));
@@ -90,6 +94,7 @@ namespace PersonaCards.Battle
             _personaLoadout = personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout();
             _scoringPipeline = scoringPipeline ?? new ScoringPipeline();
             _bossEncounter = BossEncounterCatalog.Restore(snapshot.BossEncounter);
+            _disabledPersonaSlots = disabledPersonaSlots; // 封印为 Boss 战斗态，随 Boss 快照走（P0-8），此处由调用方重注
             foreach (var cardId in snapshot.SelectedCardIds ?? Array.Empty<string>())
             {
                 if (!Deck.Hand.Any(card => string.Equals(card.Id, cardId, StringComparison.Ordinal)) ||
@@ -111,6 +116,8 @@ namespace PersonaCards.Battle
         public int SelectionLimit { get; }
         public int PlaysRemaining { get; private set; }
         public int DiscardsRemaining { get; private set; }
+        /// <summary>本场已出手数（P0-5 人格延迟的过滤基准：0 = 未出手；每出一手 +1）。</summary>
+        public int HandsPlayed => PlaysLimit - PlaysRemaining;
         public BattleStatus Status { get; private set; }
         public bool IsPresentationLocked { get; private set; }
         public IReadOnlyCollection<string> SelectedCardIds => _selectedCardIds;
@@ -234,7 +241,11 @@ namespace PersonaCards.Battle
 
         private IReadOnlyList<IScoringEffect> CreateScoringEffects()
         {
-            var effects = new List<IScoringEffect>(_personaLoadout.CreateScoringEffects());
+            // P0-5 封印：禁用槽集合派生 loadout（空集合直通，避免无谓派生）
+            var loadout = _disabledPersonaSlots == null || _disabledPersonaSlots.Count == 0
+                ? _personaLoadout
+                : _personaLoadout.WithDisabledSlots(_disabledPersonaSlots);
+            var effects = new List<IScoringEffect>(loadout.CreateScoringEffects(() => HandsPlayed));
             if (_bossEncounter != null) effects.AddRange(_bossEncounter.CreateScoringEffects());
             return effects;
         }

@@ -131,6 +131,34 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void ScoringCardsPhaseEffectsRunAfterCardFacesBeforeHeld()
+        {
+            // P0-4：自定义效果可挂 ScoringCards 阶段——事件排在卡面硬编码之后、HeldAndGlobal 之前
+            var result = _pipeline.Score(
+                new[]
+                {
+                    Card("ace", Suit.Spades, Rank.Ace),
+                    Card("junk", Suit.Hearts, Rank.Four)
+                },
+                new IScoringEffect[]
+                {
+                    Effect(ScoringPhase.HeldAndGlobal, 0, "global", c => c.AddChips(3m, "global.chips")),
+                    Effect(ScoringPhase.ScoringCards, 0, "suit-check", c => c.AddMultiplier(1m, "suit.review"))
+                });
+
+            Assert.That(result.Events.Select(e => (int)e.Phase), Is.Ordered);
+            var scoringCardSources = result.Events
+                .Where(e => e.Phase == ScoringPhase.ScoringCards)
+                .Select(e => e.SourceId)
+                .ToArray();
+            Assert.That(scoringCardSources, Is.EqualTo(new[] { "ace", "suit-check" }));
+            // P0-1C 新表：高牌基础 55/1，A 面值 11，+1 倍率（suit-check）、+3 筹码（global）→ 69 × 2 = 138
+            Assert.That(result.Chips, Is.EqualTo(69m));
+            Assert.That(result.Multiplier, Is.EqualTo(2m));
+            Assert.That(result.FinalScore, Is.EqualTo(138));
+        }
+
+        [Test]
         public void WildSuitCompletesFlushWithoutChangingPrintedSuit()
         {
             var wild = Card("wild", Suit.Spades, Rank.Seven, CardEnhancement.WildSuit);

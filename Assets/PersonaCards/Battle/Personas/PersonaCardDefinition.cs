@@ -12,7 +12,8 @@ namespace PersonaCards.Battle.Personas
             PersonaConditionKind conditionKind,
             HandType minimumHandType,
             PersonaEffectKind effectKind,
-            decimal effectValue)
+            decimal effectValue,
+            int delayHands = 0)
         {
             if (string.IsNullOrWhiteSpace(templateId))
             {
@@ -44,12 +45,18 @@ namespace PersonaCards.Battle.Personas
                 throw new ArgumentOutOfRangeException(nameof(effectValue));
             }
 
+            if (delayHands < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(delayHands));
+            }
+
             TemplateId = templateId;
             DisplayName = displayName;
             ConditionKind = conditionKind;
             MinimumHandType = minimumHandType;
             EffectKind = effectKind;
             EffectValue = effectValue;
+            DelayHands = delayHands;
         }
 
         public string TemplateId { get; }
@@ -58,5 +65,7 @@ namespace PersonaCards.Battle.Personas
         public HandType MinimumHandType { get; }
         public PersonaEffectKind EffectKind { get; }
         public decimal EffectValue { get; }
+        /// <summary>生效延迟手数（P0-5 人格延迟框架）：0 = 立即生效；N = 已出手数 ≥ N 后生效。</summary>
+        public int DelayHands { get; }
     }
 }

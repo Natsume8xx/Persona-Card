@@ -8,14 +8,17 @@ namespace PersonaCards.Battle.Personas
     public sealed class PersonaScoringEffect : IScoringEffect
     {
         private readonly PersonaSlot _slot;
+        private readonly Func<int> _handsPlayed;
 
-        public PersonaScoringEffect(PersonaSlot slot)
+        public PersonaScoringEffect(PersonaSlot slot, Func<int> handsPlayed = null)
         {
             _slot = slot ?? throw new ArgumentNullException(nameof(slot));
             if (slot.IsEmpty)
             {
                 throw new ArgumentException("An empty persona slot has no scoring effect.", nameof(slot));
             }
+
+            _handsPlayed = handsPlayed ?? (() => 0);
         }
 
         public ScoringPhase Phase => ScoringPhase.Persona;
@@ -38,6 +41,12 @@ namespace PersonaCards.Battle.Personas
             if (_slot.IsDisabled)
             {
                 context.Skip("persona.disabled");
+                return;
+            }
+
+            if (_slot.Definition.DelayHands > 0 && _handsPlayed() < _slot.Definition.DelayHands)
+            {
+                context.Skip("persona.delayed"); // P0-5 人格延迟：已出手数不足时不生效
                 return;
             }
 
