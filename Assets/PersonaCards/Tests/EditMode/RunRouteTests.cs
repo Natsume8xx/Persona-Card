@@ -21,23 +21,28 @@ namespace PersonaCards.Tests.EditMode
         {
             RunRoute.Configure(null);
 
-            Assert.That(RunRoute.StageCount, Is.EqualTo(13));
-            Assert.That(RunRoute.BattleCount, Is.EqualTo(10));
-            Assert.That(RunRoute.ShopCount, Is.EqualTo(9)); // 9 个非最终战斗节点全部带商店
+            Assert.That(RunRoute.StageCount, Is.EqualTo(17));
+            Assert.That(RunRoute.BattleCount, Is.EqualTo(13));
+            Assert.That(RunRoute.ShopCount, Is.EqualTo(12)); // 12 个非最终战斗节点全部带商店
 
             var expectedKinds = new[]
             {
                 RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.PersonaGen,
                 RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.PersonaGen,
                 RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.PersonaGen,
-                RunNodeKind.NormalBattle
+                RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.NormalBattle, RunNodeKind.PersonaGen,
+                RunNodeKind.BossBattle
             };
-            var expectedScores = new long?[] { 550, 625, 675, null, 775, 875, 975, null, 1050, 1275, 1475, null, 1900 };
+            var expectedScores = new long?[]
+            {
+                950, 1100, 1250, null, 1350, 1500, 1650, null, 1750, 1950, 2150, null, 2300, 2500, 2750, null, 3200
+            };
             for (var index = 0; index < RunRoute.StageCount; index++)
             {
                 var node = RunRoute.GetNode(index);
                 Assert.That(node.Index, Is.EqualTo(index));
                 Assert.That(node.kind, Is.EqualTo(expectedKinds[index]), $"节点 {index} 类型与配表白盒不符");
+                Assert.That(node.stageId, Is.EqualTo($"STAGE_{index + 1:00}"), $"节点 {index} 阶段_ID 与配表白盒不符");
                 if (node.kind == RunNodeKind.PersonaGen)
                 {
                     Assert.That(node.genCount, Is.EqualTo(1), $"节点 {index} 生成数量与配表白盒不符");
@@ -46,12 +51,14 @@ namespace PersonaCards.Tests.EditMode
                 else
                 {
                     Assert.That(node.targetScore, Is.EqualTo(expectedScores[index].Value), $"节点 {index} 目标分与配表白盒不符");
-                    Assert.That(node.hasShopAfter, Is.EqualTo(index != 12), $"节点 {index} 商店标记不符（非最终战斗都带商店）");
+                    Assert.That(node.hasShopAfter, Is.EqualTo(index != 16), $"节点 {index} 商店标记不符（非最终战斗都带商店）");
+                    Assert.That(node.rewardType1, Is.Empty, $"节点 {index} 白盒奖励列应为空（奖励接线留给后续阶段）");
                 }
             }
 
-            Assert.That(RunRoute.IsFinalNode(12), Is.True);
-            Assert.That(RunRoute.IsFinalNode(11), Is.False);
+            Assert.That(RunRoute.GetNode(16).bossPoolId, Is.EqualTo(BossPoolId.Primary)); // 最终 Boss → 初级池
+            Assert.That(RunRoute.IsFinalNode(16), Is.True);
+            Assert.That(RunRoute.IsFinalNode(15), Is.False);
         }
 
         [Test]
@@ -76,7 +83,7 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(RunRoute.NextNodeKindOf(0), Is.EqualTo(RunNodeKind.BossBattle)); // 下一节点是 Boss 战
 
             RunRoute.Configure(null);
-            Assert.That(RunRoute.BattleCount, Is.EqualTo(10)); // 回落内置默认路线
+            Assert.That(RunRoute.BattleCount, Is.EqualTo(13)); // 回落内置默认路线
         }
 
         [Test]
@@ -202,9 +209,11 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(RunRoute.NextNodeKindOf(3), Is.EqualTo(RunNodeKind.NormalBattle));
             Assert.That(RunRoute.NextNodeKindOf(6), Is.EqualTo(RunNodeKind.PersonaGen));
             Assert.That(RunRoute.NextNodeKindOf(10), Is.EqualTo(RunNodeKind.PersonaGen));
+            Assert.That(RunRoute.NextNodeKindOf(14), Is.EqualTo(RunNodeKind.PersonaGen)); // 关卡 12 后是生成节点（商店）
+            Assert.That(RunRoute.NextNodeKindOf(15), Is.EqualTo(RunNodeKind.BossBattle)); // 生成后是最终 Boss
 
             // 最终节点没有下一节点
-            Assert.Throws<System.ArgumentOutOfRangeException>(() => RunRoute.NextNodeKindOf(12));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => RunRoute.NextNodeKindOf(16));
         }
 
         [Test]
@@ -216,6 +225,7 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(() => RunRoute.BattleOrdinalOf(3), Throws.TypeOf<System.InvalidOperationException>()); // 生成节点没有战斗序号
             Assert.That(RunRoute.BattleOrdinalOf(4), Is.EqualTo(4)); // 生成节点不计入
             Assert.That(RunRoute.BattleOrdinalOf(12), Is.EqualTo(10));
+            Assert.That(RunRoute.BattleOrdinalOf(16), Is.EqualTo(13)); // 最终 Boss 是第 13 场战斗
         }
 
         [Test]

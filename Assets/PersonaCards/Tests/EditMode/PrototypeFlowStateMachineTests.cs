@@ -39,14 +39,20 @@ namespace PersonaCards.Tests.EditMode
         {
             var kind = RunRoute.GetNode(flow.NodeIndex).kind;
             if (kind == RunNodeKind.BossBattle) Assert.That(flow.BeginBossBattle(), Is.True);
-            if (kind == RunNodeKind.PersonaGen) Assert.That(flow.CompletePersonaGen(), Is.True);
+            if (kind == RunNodeKind.PersonaGen)
+            {
+                Assert.That(flow.CompletePersonaGen(), Is.True);
+                // 生成节点确认后自动推进到下一节点：下一节点是 Boss 战时直接进入 BossReveal 揭示阶段（新配表 STAGE_16 商店 → STAGE_17 Boss），需开战才算入场完成
+                var nextKind = RunRoute.GetNode(flow.NodeIndex).kind;
+                if (nextKind == RunNodeKind.BossBattle) Assert.That(flow.BeginBossBattle(), Is.True);
+            }
             Assert.That(flow.Stage, Is.EqualTo(PrototypeFlowStage.Battle), $"节点 {flow.NodeIndex}（{kind}）未进入战斗");
         }
 
         [Test]
         public void DefaultRouteWalksEndToEndThroughGenNodes()
         {
-            RunRoute.Configure(null); // 内置白盒：13 阶段 = 10 战斗 + 3 生成节点
+            RunRoute.Configure(null); // 内置白盒：17 阶段 = 13 战斗 + 4 生成节点
             var flow = new PrototypeFlowStateMachine();
 
             Assert.That(flow.Stage, Is.EqualTo(PrototypeFlowStage.MainMenu));

@@ -53,6 +53,21 @@ namespace PersonaCards.Data
         [Tooltip("人格牌生成数量（仅人格牌生成节点有效，当前版本固定 1）。")]
         public int genCount;
 
+        [Tooltip("阶段编号（配表「阶段_ID」列原文，如 STAGE_01；仅定位与展示用）。")]
+        public string stageId;
+
+        [Tooltip("奖励 1 类型（配表「奖励类型1」列原文，如 金币/无/人格牌；空 = 无数据）。")]
+        public string rewardType1;
+
+        [Tooltip("奖励 1 参数（配表「奖励参数1」列原文，如 3；空 = 无数据）。")]
+        public string rewardParam1;
+
+        [Tooltip("奖励 2 类型（配表「奖励类型2」列原文）。")]
+        public string rewardType2;
+
+        [Tooltip("奖励 2 参数（配表「奖励参数2」列原文）。")]
+        public string rewardParam2;
+
         /// <summary>节点序号（0 起）。资产加载时由 RunRoute 门面按列表位置写入，策划无需填写。</summary>
         public int Index { get; set; }
 
@@ -61,9 +76,11 @@ namespace PersonaCards.Data
         {
         }
 
-        /// <summary>便捷构造：供内置默认路线与编辑器生成器使用。playsLimit/discardsLimit 传 0 表示使用默认值 4/3；genCount 仅人格牌生成节点需要。</summary>
+        /// <summary>便捷构造：供内置默认路线与编辑器生成器使用。playsLimit/discardsLimit 传 0 表示使用默认值 4/3；genCount 仅人格牌生成节点需要；stageId/奖励列为配表原文，默认空串。</summary>
         public RunBattleNode(RunNodeKind kind, long targetScore, BossPoolId bossPoolId, bool hasShopAfter,
-            int playsLimit = 0, int discardsLimit = 0, int genCount = 0)
+            int playsLimit = 0, int discardsLimit = 0, int genCount = 0,
+            string stageId = "", string rewardType1 = "", string rewardParam1 = "",
+            string rewardType2 = "", string rewardParam2 = "")
         {
             this.kind = kind;
             this.targetScore = targetScore;
@@ -72,6 +89,11 @@ namespace PersonaCards.Data
             this.playsLimit = playsLimit;
             this.discardsLimit = discardsLimit;
             this.genCount = genCount;
+            this.stageId = stageId;
+            this.rewardType1 = rewardType1;
+            this.rewardParam1 = rewardParam1;
+            this.rewardType2 = rewardType2;
+            this.rewardParam2 = rewardParam2;
         }
     }
 
@@ -86,26 +108,31 @@ namespace PersonaCards.Data
         public static bool IsBattleKind(RunNodeKind kind) => kind == RunNodeKind.NormalBattle || kind == RunNodeKind.BossBattle;
 
         /// <summary>
-        /// 内置白盒路线（= 配表"关卡流程"当前初值）：13 个阶段 = 10 场战斗 + 3 个人格牌生成节点（顺序 4/8/12）。
-        /// RunRoute 门面兜底与"Regenerate Run Route Asset"菜单共用此工厂，消灭多份拷贝漂移；正式数据以 xlsx 导入命令写入为准。
+        /// 内置白盒路线（= 配表"关卡流程"当前初值）：17 个阶段 = 12 场普通战斗 + 4 个人格牌生成节点（顺序 4/8/12/16）+ 最终 Boss（顺序 17）。
+        /// 奖励 4 列暂留空（白盒只兜底流程骨架，奖励接线留给后续阶段）。RunRoute 门面兜底与"Regenerate Run Route Asset"菜单共用此工厂，
+        /// 消灭多份拷贝漂移；正式数据以 xlsx 导入命令写入为准。
         /// </summary>
         public static List<RunBattleNode> CreateDefaultNodes()
         {
             return new List<RunBattleNode>
             {
-                new RunBattleNode(RunNodeKind.NormalBattle, 550, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.NormalBattle, 625, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.NormalBattle, 675, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1),
-                new RunBattleNode(RunNodeKind.NormalBattle, 775, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.NormalBattle, 875, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.NormalBattle, 975, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1050, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1275, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1475, BossPoolId.None, true),
-                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1900, BossPoolId.None, false)
+                new RunBattleNode(RunNodeKind.NormalBattle, 950, BossPoolId.None, true, stageId: "STAGE_01"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1100, BossPoolId.None, true, stageId: "STAGE_02"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1250, BossPoolId.None, true, stageId: "STAGE_03"),
+                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_04"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1350, BossPoolId.None, true, stageId: "STAGE_05"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1500, BossPoolId.None, true, stageId: "STAGE_06"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1650, BossPoolId.None, true, stageId: "STAGE_07"),
+                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_08"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1750, BossPoolId.None, true, stageId: "STAGE_09"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1950, BossPoolId.None, true, stageId: "STAGE_10"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2150, BossPoolId.None, true, stageId: "STAGE_11"),
+                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_12"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2300, BossPoolId.None, true, stageId: "STAGE_13"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2500, BossPoolId.None, true, stageId: "STAGE_14"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2750, BossPoolId.None, true, stageId: "STAGE_15"),
+                new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_16"),
+                new RunBattleNode(RunNodeKind.BossBattle, 3200, BossPoolId.Primary, false, stageId: "STAGE_17")
             };
         }
 
