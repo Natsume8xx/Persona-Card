@@ -749,7 +749,7 @@ namespace PersonaCards.UI
             if (node.kind == RunNodeKind.BossBattle)
                 Debug.LogWarning($"[Boss] 节点 {node.Index} 难度池 {node.bossPoolId} 尚未落地（TODO P0-3），临时返回镜厅守门人。");
             battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss,
-                playsLimit, discardsLimit, journeyCoins: _journeyDeck.Coins); // P0-1I：当前金币注入战斗信息显示（3.3.9）
+                playsLimit, discardsLimit, selectionLimit: GlobalConfig.SelectionLimit, journeyCoins: _journeyDeck.Coins); // P0-1I：当前金币注入战斗信息显示（3.3.9）
             battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}"; // 进度只计战斗，生成节点不计入
             Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，出牌 {playsLimit} 弃牌 {discardsLimit}，场次种子 {seed}" +
                       (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));

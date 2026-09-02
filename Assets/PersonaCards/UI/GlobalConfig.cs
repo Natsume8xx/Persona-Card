@@ -10,8 +10,9 @@ namespace PersonaCards.UI
     /// <summary>
     /// 全局配置门面（P0-1F）：17 条规则（RULE_001~017）的运行时读取入口。
     /// RULE_001/002（每关基础出牌/弃牌次数）与战斗参数化归口：RunRoute 默认值链与读档兜底均经
-    /// StartingPlays/StartingDiscards；RULE_005（商店商品槽数量）与 RULE_014~017（剩余行动兑换）已开便捷属性，
-    /// 其余 9 条只落数据，玩法接入等对应 P0 任务经 TryGetInt/TryGetDecimal 读取。
+    /// StartingPlays/StartingDiscards；RULE_005（商店商品槽数量）、RULE_014~017（剩余行动兑换）与
+    /// RULE_018（选牌上限，P0-2 预留扩展位）已开便捷属性，其余 9 条只落数据，玩法接入等对应 P0 任务经
+    /// TryGetInt/TryGetDecimal 读取。
     /// 白盒回落 = 空配置：Configure(null)/空资产/坏条目 → 出牌/弃牌回落 Battle 编译期常量 4/3（行为与 P0-1F 前零差异）。
     /// </summary>
     public static class GlobalConfig
@@ -37,6 +38,9 @@ namespace PersonaCards.UI
         /// <summary>规则_ID：剩余弃牌奖励金币。</summary>
         public const string RuleExchangeDiscardsCoins = "RULE_017";
 
+        /// <summary>规则_ID：选牌上限（P0-2 预留扩展位：当前 xlsx 17 条未含此行，策划加行后重导即生效）。</summary>
+        public const string RuleSelectionLimit = "RULE_018";
+
         private static Dictionary<string, GlobalConfigEntry> _entries; // null = 白盒空配置
         private static string _summary;
 
@@ -54,6 +58,10 @@ namespace PersonaCards.UI
         /// <summary>商店商品槽数量：RULE_005 命中则用之，否则回落 4（与配表默认值一致，白盒零差异）。</summary>
         public static int ShopSlots =>
             TryGetInt(RuleShopSlots, out var value) ? value : 4;
+
+        /// <summary>选牌上限：RULE_018 命中则用之，否则回落 Battle 编译期常量（白盒零差异）。</summary>
+        public static int SelectionLimit =>
+            TryGetInt(RuleSelectionLimit, out var value) ? value : BattleStateMachine.DefaultSelectionLimit;
 
         /// <summary>剩余出牌兑换单位：RULE_014 命中则用之，否则回落 1（与配表默认值一致，白盒零差异）。</summary>
         public static int ExchangePlaysUnit =>

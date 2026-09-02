@@ -205,11 +205,11 @@ namespace PersonaCards.UI
         public void BeginBattle(long targetScore, uint seed, IEnumerable<PlayingCardInstance> cards = null,
             PersonaLoadout personaLoadout = null, BossEncounterRuntime bossEncounter = null,
             int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards,
-            int journeyCoins = 0)
+            int selectionLimit = BattleStateMachine.DefaultSelectionLimit, int journeyCoins = 0)
         {
             _battle = new BattleStateMachine(cards ?? StandardDeckFactory.Create(), seed, targetScore,
                 personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(), bossEncounter: bossEncounter,
-                playsLimit: playsLimit, discardsLimit: discardsLimit);
+                playsLimit: playsLimit, discardsLimit: discardsLimit, selectionLimit: selectionLimit);
             _completionRaised = false;
             _modalOpen = false;
             // P0-1I：新战斗开局重置手牌显示排序为默认「大小」（排序偏好不落档），并刷新按钮文案
@@ -222,14 +222,15 @@ namespace PersonaCards.UI
             handReferenceOverlay.SetActive(false);
             resultOverlay.SetActive(false);
             scoringLogText.text = "等待出牌";
-            messageText.text = "选择 1—5 张牌，然后出牌或弃牌";
+            messageText.text = $"选择 1—{_battle.SelectionLimit} 张牌，然后出牌或弃牌";
             RefreshAll();
             RefreshBossRule();
         }
 
         public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout, int journeyCoins = 0)
         {
-            _battle = new BattleStateMachine(snapshot, personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout());
+            _battle = new BattleStateMachine(snapshot, personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(),
+                selectionLimit: GlobalConfig.SelectionLimit);
             _completionRaised = false;
             _modalOpen = false;
             resultOverlay.SetActive(false);
@@ -241,7 +242,7 @@ namespace PersonaCards.UI
             _journeyCoins = journeyCoins;
             _battleCoinsGained = 0;
             scoringLogText.text = "战斗已从存档恢复";
-            messageText.text = _battle.SelectedCardIds.Count > 0 ? "已恢复上次选择" : "选择 1—5 张牌，然后出牌或弃牌";
+            messageText.text = _battle.SelectedCardIds.Count > 0 ? "已恢复上次选择" : $"选择 1—{_battle.SelectionLimit} 张牌，然后出牌或弃牌";
             RefreshAll();
             RefreshBossRule();
         }
@@ -788,11 +789,11 @@ namespace PersonaCards.UI
             };
         }
 
-        private static string FailureText(BattleCommandFailure failure)
+        private string FailureText(BattleCommandFailure failure)
         {
             return failure switch
             {
-                BattleCommandFailure.SelectionLimitReached => "最多只能选择 5 张牌",
+                BattleCommandFailure.SelectionLimitReached => $"最多只能选择 {_battle.SelectionLimit} 张牌",
                 BattleCommandFailure.PresentationInProgress => "结算动画进行中",
                 BattleCommandFailure.NoCardsSelected => "请先选择至少 1 张牌",
                 BattleCommandFailure.NoPlaysRemaining => "出牌次数已经用完",

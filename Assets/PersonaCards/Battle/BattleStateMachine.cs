@@ -14,7 +14,8 @@ namespace PersonaCards.Battle
     public sealed class BattleStateMachine
     {
         public const int HandLimit = 8;
-        public const int SelectionLimit = 5;
+        /// <summary>选牌上限编译期默认（白盒回落；运行时以构造参数/全局配置 RULE_018 为准，P0-2）。</summary>
+        public const int DefaultSelectionLimit = 5;
         public const int StartingPlays = 4;
         public const int StartingDiscards = 3;
 
@@ -31,7 +32,8 @@ namespace PersonaCards.Battle
             ScoringPipeline scoringPipeline = null,
             BossEncounterRuntime bossEncounter = null,
             int playsLimit = StartingPlays,
-            int discardsLimit = StartingDiscards)
+            int discardsLimit = StartingDiscards,
+            int selectionLimit = DefaultSelectionLimit)
         {
             if (targetScore < 1)
             {
@@ -41,11 +43,16 @@ namespace PersonaCards.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(playsLimit), "出牌/弃牌上限必须至少为 1（配置为 0 表示使用默认值，调用方应已解析）。");
             }
+            if (selectionLimit < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(selectionLimit), "选牌上限必须至少为 1。");
+            }
 
             Deck = new DeckState(cards ?? throw new ArgumentNullException(nameof(cards)));
             TargetScore = targetScore;
             PlaysLimit = playsLimit;      // 本场限制由路线节点配置（0 已在 RunRoute 门面解析为默认值）
             DiscardsLimit = discardsLimit;
+            SelectionLimit = selectionLimit; // 选牌上限由全局配置派生（调用方解析；默认回落编译期常量）
             PlaysRemaining = playsLimit;
             DiscardsRemaining = discardsLimit;
             Status = BattleStatus.PlayerTurn;
@@ -58,7 +65,7 @@ namespace PersonaCards.Battle
         }
 
         public BattleStateMachine(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout = null,
-            ScoringPipeline scoringPipeline = null)
+            ScoringPipeline scoringPipeline = null, int selectionLimit = DefaultSelectionLimit)
         {
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
             if (snapshot.TargetScore < 1) throw new ArgumentOutOfRangeException(nameof(snapshot));
@@ -68,6 +75,8 @@ namespace PersonaCards.Battle
                 throw new ArgumentOutOfRangeException(nameof(snapshot), "Battle resources are invalid.");
             if (!Enum.IsDefined(typeof(BattleStatus), snapshot.Status))
                 throw new ArgumentOutOfRangeException(nameof(snapshot), "Battle status is invalid.");
+            if (selectionLimit < 1)
+                throw new ArgumentOutOfRangeException(nameof(selectionLimit), "选牌上限必须至少为 1。");
 
             Deck = new DeckState(snapshot.DrawPile, snapshot.Hand, snapshot.Played, snapshot.Discarded);
             TargetScore = snapshot.TargetScore;
@@ -77,6 +86,7 @@ namespace PersonaCards.Battle
             PlaysRemaining = snapshot.PlaysRemaining;
             DiscardsRemaining = snapshot.DiscardsRemaining;
             Status = snapshot.Status;
+            SelectionLimit = selectionLimit; // 选牌上限为全局配置派生，不随快照（P0-8 存档时全局配置重载兜底）
             _personaLoadout = personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout();
             _scoringPipeline = scoringPipeline ?? new ScoringPipeline();
             _bossEncounter = BossEncounterCatalog.Restore(snapshot.BossEncounter);
@@ -97,6 +107,8 @@ namespace PersonaCards.Battle
         public int PlaysLimit { get; }
         /// <summary>本场弃牌次数上限（由路线节点配置；未指定时为 StartingDiscards）。</summary>
         public int DiscardsLimit { get; }
+        /// <summary>本场选牌上限（由全局配置 RULE_018 派生；未配置时为 DefaultSelectionLimit）。</summary>
+        public int SelectionLimit { get; }
         public int PlaysRemaining { get; private set; }
         public int DiscardsRemaining { get; private set; }
         public BattleStatus Status { get; private set; }

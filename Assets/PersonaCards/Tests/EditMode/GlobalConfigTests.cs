@@ -88,6 +88,29 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void SelectionLimitReadsRule018WithDefault5()
+        {
+            // P0-2：白盒回落——无配置 → 5（Battle 编译期默认；RULE_018 为预留扩展位，当前 17 条夹具不含此行）
+            Assert.That(GlobalConfig.SelectionLimit, Is.EqualTo(5));
+
+            // 配表注入 17 条（无 RULE_018）→ 回落 5
+            GlobalConfig.Configure(BuildTableEntries());
+            Assert.That(GlobalConfig.SelectionLimit, Is.EqualTo(5));
+
+            // 追加 RULE_018=7 → 门面值随配表走（Mapper 齐全校验只要求 RULE_001~017，多出允许）
+            var entries = BuildTableEntries();
+            entries.Add(new GlobalConfigEntry
+            {
+                ruleId = "RULE_018",
+                ruleName = "选牌上限",
+                valueType = "整数",
+                valueText = "7"
+            });
+            GlobalConfig.Configure(entries);
+            Assert.That(GlobalConfig.SelectionLimit, Is.EqualTo(7));
+        }
+
+        [Test]
         public void ExchangePropertiesReadRules014To017WithDefault1()
         {
             // 白盒回落：无配置 → 4 个兑换属性全 1（配表默认值）

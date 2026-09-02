@@ -151,6 +151,62 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void CustomSelectionLimitIsHonored()
+        {
+            // P0-2：选牌上限参数化——构造参数生效，第 3 张按显式原因拒绝
+            var battle = new BattleStateMachine(StandardDeckFactory.Create(), 12345u, 350, selectionLimit: 2);
+
+            Assert.That(battle.SelectionLimit, Is.EqualTo(2));
+            Assert.That(battle.TryToggleSelection(battle.Deck.Hand[0].Id).Succeeded, Is.True);
+            Assert.That(battle.TryToggleSelection(battle.Deck.Hand[1].Id).Succeeded, Is.True);
+
+            var result = battle.TryToggleSelection(battle.Deck.Hand[2].Id);
+
+            Assert.That(result.Succeeded, Is.False);
+            Assert.That(result.Failure, Is.EqualTo(BattleCommandFailure.SelectionLimitReached));
+        }
+
+        [Test]
+        public void SelectionLimitBelowOneIsRejected()
+        {
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+                new BattleStateMachine(StandardDeckFactory.Create(), 12345u, 350, selectionLimit: 0));
+        }
+
+        [Test]
+        public void SnapshotRestoreHonorsPassedSelectionLimit()
+        {
+            // 快照存 2 张已选，恢复时传入 selectionLimit: 2 → 通过并保留选择（选牌上限为全局配置派生，不随快照）
+            var original = CreateBattle(long.MaxValue);
+            original.TryToggleSelection(original.Deck.Hand[0].Id);
+            original.TryToggleSelection(original.Deck.Hand[1].Id);
+            var snapshot = new BattleStateSnapshot(original.Deck.DrawPile, original.Deck.Hand,
+                original.Deck.Played, original.Deck.Discarded, original.SelectedCardIds,
+                original.TargetScore, original.TotalScore, original.PlaysRemaining,
+                original.DiscardsRemaining, original.Status);
+
+            var restored = new BattleStateMachine(snapshot, selectionLimit: 2);
+
+            Assert.That(restored.SelectionLimit, Is.EqualTo(2));
+            Assert.That(restored.SelectedCardIds, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public void SnapshotRestoreRejectsSelectionAbovePassedLimit()
+        {
+            // 快照存 2 张已选，恢复时传入 selectionLimit: 1 → 超出上限必须拒绝
+            var original = CreateBattle(long.MaxValue);
+            original.TryToggleSelection(original.Deck.Hand[0].Id);
+            original.TryToggleSelection(original.Deck.Hand[1].Id);
+            var snapshot = new BattleStateSnapshot(original.Deck.DrawPile, original.Deck.Hand,
+                original.Deck.Played, original.Deck.Discarded, original.SelectedCardIds,
+                original.TargetScore, original.TotalScore, original.PlaysRemaining,
+                original.DiscardsRemaining, original.Status);
+
+            Assert.Throws<System.ArgumentException>(() => new BattleStateMachine(snapshot, selectionLimit: 1));
+        }
+
+        [Test]
         public void LimitsBelowOneAreRejected()
         {
             Assert.Throws<System.ArgumentOutOfRangeException>(() =>
