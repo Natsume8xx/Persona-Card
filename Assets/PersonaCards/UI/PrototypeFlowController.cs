@@ -166,6 +166,10 @@ namespace PersonaCards.UI
         private int _selectedEquipmentSlot;
         /// <summary>商店继续按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
         private Text _shopContinueLabel;
+        // P0-9：揭示屏 Boss 名牌/台词（场景静态文本按名查找缓存；Find 失败后不再重试，显示场景默认值）
+        private Text _bossRevealNameText;
+        private Text _bossRevealLineText;
+        private bool _bossRevealTextsResolved;
         /// <summary>教程序列状态（P0-1G）：五步推进逻辑在 TutorialSequence 纯类中，本类只做 UI 接线。</summary>
         private readonly TutorialSequence _tutorial = new TutorialSequence();
         /// <summary>重播请求标志：主菜单「战斗教学」按钮置位，下一次进入战斗时消耗并自动播放。</summary>
@@ -1667,10 +1671,18 @@ namespace PersonaCards.UI
             if (_flow.Stage == PrototypeFlowStage.BossReveal && bossRevealRuleText != null)
             {
                 var node = RunRoute.GetNode(_flow.NodeIndex);
-                // TODO(P0-9)：揭示文本仍消费定义内字段；揭示阶段的数据驱动展示（台词档/事件化）留给 P0-9。
                 // P0-3：与开战同种子抽取（局种子 + 节点序号 + 1），保证揭示展示的 Boss 就是即将开战的 Boss。
                 var seed = unchecked(_runSeed + (uint)(node.Index + 1));
                 var encounter = BossEncounterCatalog.CreateFromPool(node.bossPoolId, seed).Definition;
+                // P0-9：Boss 名牌与台词按定义覆盖场景静态文本（按名查找；美术重排后 Find 失败则静默跳过，显示场景默认值）
+                if (!_bossRevealTextsResolved)
+                {
+                    _bossRevealNameText = bossRevealScreen.transform.Find("Boss Reveal Card/Boss Name")?.GetComponent<Text>();
+                    _bossRevealLineText = bossRevealScreen.transform.Find("Boss Reveal Card/Boss Line")?.GetComponent<Text>();
+                    _bossRevealTextsResolved = true;
+                }
+                if (_bossRevealNameText != null) _bossRevealNameText.text = encounter.DisplayName;
+                if (_bossRevealLineText != null) _bossRevealLineText.text = encounter.RevealLine;
                 // 出牌/弃牌限制按节点配置展示（配表驱动）
                 bossRevealRuleText.text = $"主规则 · {encounter.RuleName}\n{encounter.RuleDescription}\n\n介入事件 · {encounter.InterventionName}\n{encounter.InterventionDescription}\n\n目标分数：{node.targetScore}　出牌：{RunRoute.PlaysLimitOf(_flow.NodeIndex)}　弃牌：{RunRoute.DiscardsLimitOf(_flow.NodeIndex)}";
             }

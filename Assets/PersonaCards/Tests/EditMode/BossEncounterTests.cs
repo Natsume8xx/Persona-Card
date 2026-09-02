@@ -84,6 +84,8 @@ namespace PersonaCards.Tests.EditMode
 
             Assert.That(boss.Definition.EncounterId, Is.EqualTo(BossEncounterCatalog.MirrorKeeperEncounterId));
             Assert.That(boss.Definition.PoolId, Is.EqualTo(BossPoolId.Primary));
+            // P0-9：揭示/观察者台词随定义携带（揭示屏与战斗屏共用）
+            Assert.That(boss.Definition.RevealLine, Is.EqualTo("“让我看看你的选择。”"));
         }
 
         [Test]

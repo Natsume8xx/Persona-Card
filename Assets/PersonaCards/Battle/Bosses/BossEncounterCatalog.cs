@@ -24,7 +24,8 @@ namespace PersonaCards.Battle.Bosses
                 "本手牌型与上一手相同，最终得分 ×0.60。",
                 FirstHandEncouragementId,
                 "先手鼓励",
-                "第一手结算时获得 +30 筹码。")
+                "第一手结算时获得 +30 筹码。",
+                "“让我看看你的选择。”")
         };
 
         public static BossEncounterRuntime CreateMirrorKeeper()

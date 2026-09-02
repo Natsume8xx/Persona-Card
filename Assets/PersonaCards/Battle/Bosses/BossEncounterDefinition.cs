@@ -7,7 +7,8 @@ namespace PersonaCards.Battle.Bosses
     {
         public BossEncounterDefinition(string encounterId, string displayName, BossPoolId poolId,
             string ruleId, string ruleName,
-            string ruleDescription, string interventionId, string interventionName, string interventionDescription)
+            string ruleDescription, string interventionId, string interventionName, string interventionDescription,
+            string revealLine = "")
         {
             EncounterId = RequireText(encounterId, nameof(encounterId));
             DisplayName = RequireText(displayName, nameof(displayName));
@@ -20,6 +21,7 @@ namespace PersonaCards.Battle.Bosses
             InterventionId = RequireText(interventionId, nameof(interventionId));
             InterventionName = RequireText(interventionName, nameof(interventionName));
             InterventionDescription = RequireText(interventionDescription, nameof(interventionDescription));
+            RevealLine = revealLine; // P0-9 揭示/观察者台词：允许为空（无台词不显示）
         }
 
         public string EncounterId { get; }
@@ -32,6 +34,8 @@ namespace PersonaCards.Battle.Bosses
         public string InterventionId { get; }
         public string InterventionName { get; }
         public string InterventionDescription { get; }
+        /// <summary>揭示/观察者台词（P0-9 数据驱动：揭示屏 Boss Line 与战斗屏 Observer Line 共用；空 = 无台词）。</summary>
+        public string RevealLine { get; }
 
         private static string RequireText(string value, string parameterName)
         {

@@ -56,6 +56,10 @@ namespace PersonaCards.UI
         private bool _completionRaised;
         private Font _runtimeFont;
         private readonly Dictionary<string, BattleCardView> _cardViews = new Dictionary<string, BattleCardView>();
+        // P0-9：观察者名牌/台词按 Boss 定义覆盖（场景静态文本的兄弟节点，从 bossRuleText 的父级按名查找；美术重排后 Find 失败则静默跳过，显示场景默认值）
+        private Text _observerNameText;
+        private Text _observerLineText;
+        private bool _observerTextsResolved;
         private bool _modalOpen;
         private int _deckViewerPage;
         private DeckViewerZone _deckViewerZone;
@@ -250,9 +254,23 @@ namespace PersonaCards.UI
         private void RefreshBossRule()
         {
             if (bossRuleText == null) return;
-            bossRuleText.text = _battle?.BossEncounter == null
+            var definition = _battle?.BossEncounter?.Definition;
+            bossRuleText.text = definition == null
                 ? "观察者未施加特殊规则"
-                : $"{_battle.BossEncounter.Definition.RuleName}\n{_battle.BossEncounter.Definition.RuleDescription}\n\n介入 · {_battle.BossEncounter.Definition.InterventionName}\n{_battle.BossEncounter.Definition.InterventionDescription}";
+                : $"{definition.RuleName}\n{definition.RuleDescription}\n\n介入 · {definition.InterventionName}\n{definition.InterventionDescription}";
+
+            // P0-9：观察者名牌与台词按定义覆盖（与 bossRuleText 同父级「Right - Battle Info」；Find 失败静默跳过）
+            if (!_observerTextsResolved)
+            {
+                var parent = bossRuleText.transform.parent;
+                _observerNameText = parent?.Find("Observer Name")?.GetComponent<Text>();
+                _observerLineText = parent?.Find("Observer Line")?.GetComponent<Text>();
+                _observerTextsResolved = true;
+            }
+            if (_observerNameText != null)
+                _observerNameText.text = definition == null ? "" : definition.DisplayName;
+            if (_observerLineText != null)
+                _observerLineText.text = definition?.RevealLine ?? "";
         }
 
         private void RefreshAll()
@@ -760,7 +778,7 @@ namespace PersonaCards.UI
             Discarded
         }
 
-        private static string DescribeEvent(ScoringEvent scoringEvent)
+        private string DescribeEvent(ScoringEvent scoringEvent)
         {
             return scoringEvent.Operation switch
             {
@@ -776,15 +794,20 @@ namespace PersonaCards.UI
             };
         }
 
-        private static string SourceName(ScoringEvent scoringEvent)
+        private string SourceName(ScoringEvent scoringEvent)
         {
+            // P0-9：Boss 来源名从定义查（规则/介入 id → 名称），不再硬编码镜厅守门人的两条映射
+            var definition = _battle?.BossEncounter?.Definition;
+            if (definition != null)
+            {
+                if (scoringEvent.SourceId == definition.RuleId) return definition.RuleName;
+                if (scoringEvent.SourceId == definition.InterventionId) return definition.InterventionName;
+            }
             return scoringEvent.SourceId switch
             {
                 "persona.initial.accumulator" => "积累者",
                 "persona.initial.executor" => "执行者",
                 "persona.initial.ambitious" => "野心者",
-                BossEncounterCatalog.RepeatedJudgmentRuleId => "重复审判",
-                BossEncounterCatalog.FirstHandEncouragementId => "先手鼓励",
                 _ => scoringEvent.SourceType == ScoringSourceType.PlayingCard ? "计分牌" : scoringEvent.SourceType.ToString()
             };
         }
