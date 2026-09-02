@@ -19,6 +19,8 @@ namespace PersonaCards.Core
         StraightFlush = 9,
         FiveOfAKind = 10,
         FlushHouse = 11,
-        FlushFive = 12
+        FlushFive = 12,
+        // P0-1J：皇家同花顺（配表 HAND_11），末尾追加不改旧值（旧存档按 int 序列化）
+        RoyalFlush = 13
     }
 }

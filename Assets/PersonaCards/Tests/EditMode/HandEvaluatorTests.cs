@@ -19,7 +19,7 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
-        public void RecognizesAllTwelveSupportedHandTypes()
+        public void RecognizesAllThirteenSupportedHandTypes()
         {
             AssertType(HandType.HighCard,
                 Card(Suit.Spades, Rank.Ace), Card(Suit.Hearts, Rank.Nine), Card(Suit.Clubs, Rank.Four));
@@ -44,6 +44,9 @@ namespace PersonaCards.Tests.EditMode
                 Card(Suit.Spades, Rank.King), Card(Suit.Hearts, Rank.King), Card(Suit.Clubs, Rank.King),
                 Card(Suit.Diamonds, Rank.King), Card(Suit.Hearts, Rank.Three));
             AssertType(HandType.StraightFlush,
+                Card(Suit.Spades, Rank.Two), Card(Suit.Spades, Rank.Three), Card(Suit.Spades, Rank.Four),
+                Card(Suit.Spades, Rank.Five), Card(Suit.Spades, Rank.Six));
+            AssertType(HandType.RoyalFlush,
                 Card(Suit.Spades, Rank.Ten), Card(Suit.Spades, Rank.Jack), Card(Suit.Spades, Rank.Queen),
                 Card(Suit.Spades, Rank.King), Card(Suit.Spades, Rank.Ace));
             AssertType(HandType.FiveOfAKind,
@@ -145,7 +148,7 @@ namespace PersonaCards.Tests.EditMode
         [Test]
         public void CatalogFallbackMatchesTableValues()
         {
-            // P0-1C 白盒回落 = 配表「牌型配置」当前初值（策划案 5.2.2 正文 10 行 + 五条/同花五条占位 100/8）
+            // 白盒回落 = 配表「牌型配置」当前初值（11 行 + 五条/同花五条占位 100/8）
             AssertValues(HandType.HighCard, 55, 1m);
             AssertValues(HandType.Pair, 48, 2m);
             AssertValues(HandType.TwoPair, 52, 2.5m);
@@ -155,9 +158,33 @@ namespace PersonaCards.Tests.EditMode
             AssertValues(HandType.FullHouse, 74, 5m);
             AssertValues(HandType.FourOfAKind, 100, 6m);
             AssertValues(HandType.StraightFlush, 95, 10m);
-            AssertValues(HandType.FiveOfAKind, 100, 8m);
             AssertValues(HandType.FlushHouse, 70, 12m);
+            AssertValues(HandType.RoyalFlush, 100, 12m);
+            AssertValues(HandType.FiveOfAKind, 100, 8m);
             AssertValues(HandType.FlushFive, 100, 8m);
+        }
+
+        [Test]
+        public void RecognizesRoyalFlush()
+        {
+            var result = Evaluate(
+                Card(Suit.Hearts, Rank.Ten), Card(Suit.Hearts, Rank.Jack), Card(Suit.Hearts, Rank.Queen),
+                Card(Suit.Hearts, Rank.King), Card(Suit.Hearts, Rank.Ace));
+
+            Assert.That(result.HandType, Is.EqualTo(HandType.RoyalFlush));
+            // 皇家同花顺五张全部计分（default 分支）
+            Assert.That(result.ScoringCardIds.Count, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void AceLowWheelFlushIsStraightFlushNotRoyal()
+        {
+            var result = Evaluate(
+                Card(Suit.Clubs, Rank.Ace), Card(Suit.Clubs, Rank.Two), Card(Suit.Clubs, Rank.Three),
+                Card(Suit.Clubs, Rank.Four), Card(Suit.Clubs, Rank.Five));
+
+            // A2345 轮子不是皇家（点数集非 {10,J,Q,K,A}）
+            Assert.That(result.HandType, Is.EqualTo(HandType.StraightFlush));
         }
 
         [Test]

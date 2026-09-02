@@ -22,7 +22,7 @@ namespace PersonaCards.Tests.EditMode
         {
             var entries = new List<HandTypeEntry>
             {
-                new HandTypeEntry(HandType.HighCard, "高牌", 999, 1m, 1, "HAND_01")
+                new HandTypeEntry(HandType.HighCard, "高牌", 999, 1m, 1, HandQuality.NORMAL)
             };
 
             HandTypeCatalog.Configure(entries);
@@ -30,19 +30,19 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(HandTypeCatalog.Get(HandType.HighCard).BaseChips, Is.EqualTo(999));
             // 未注入的牌型回落白盒占位
             Assert.That(HandTypeCatalog.Get(HandType.FiveOfAKind).BaseChips, Is.EqualTo(100));
-            Assert.That(HandTypeCatalog.LastConfiguredSummary, Does.Contain("1 个来自配置").And.Contain("11 个回落白盒"));
+            Assert.That(HandTypeCatalog.LastConfiguredSummary, Does.Contain("1 个来自配置").And.Contain("12 个回落白盒"));
         }
 
         [Test]
         public void ConfigureWithMissingSpecialTypesFillsFallback()
         {
-            // 与真实配表一致的场景：10 行数据（缺五条/同花五条），两处回落白盒
-            HandTypeCatalog.Configure(HandTypeEntry.CreateFallbackList().Take(10).ToList());
+            // 与真实配表一致的场景：11 行数据（缺五条/同花五条），两处回落白盒
+            HandTypeCatalog.Configure(HandTypeEntry.CreateFallbackList().Take(11).ToList());
 
             Assert.That(HandTypeCatalog.Get(HandType.FiveOfAKind).BaseMultiplier, Is.EqualTo(8m));
             Assert.That(HandTypeCatalog.Get(HandType.FlushFive).BaseMultiplier, Is.EqualTo(8m));
-            Assert.That(HandTypeCatalog.All, Has.Count.EqualTo(12));
-            Assert.That(HandTypeCatalog.LastConfiguredSummary, Does.Contain("10 个来自配置").And.Contain("2 个回落白盒"));
+            Assert.That(HandTypeCatalog.All, Has.Count.EqualTo(13));
+            Assert.That(HandTypeCatalog.LastConfiguredSummary, Does.Contain("11 个来自配置").And.Contain("2 个回落白盒"));
         }
 
         [Test]
@@ -50,8 +50,8 @@ namespace PersonaCards.Tests.EditMode
         {
             var entries = new List<HandTypeEntry>
             {
-                new HandTypeEntry(HandType.HighCard, "高牌", 55, 1m, 1, "HAND_01"),
-                new HandTypeEntry(HandType.HighCard, "重复高牌", 999, 1m, 1, "HAND_01")
+                new HandTypeEntry(HandType.HighCard, "高牌", 55, 1m, 1, HandQuality.NORMAL),
+                new HandTypeEntry(HandType.HighCard, "重复高牌", 999, 1m, 1, HandQuality.NORMAL)
             };
 
             HandTypeCatalog.Configure(entries);
@@ -77,16 +77,16 @@ namespace PersonaCards.Tests.EditMode
             // 乱序注入：All 必须按显示顺序（再按枚举序兜底）呈现；未注入的牌型白盒补齐后按各自显示顺序接在后面
             var entries = new List<HandTypeEntry>
             {
-                new HandTypeEntry(HandType.Straight, "顺子", 60, 4m, 5, "HAND_05"),
-                new HandTypeEntry(HandType.HighCard, "高牌", 55, 1m, 1, "HAND_01"),
-                new HandTypeEntry(HandType.Pair, "对子", 48, 2m, 2, "HAND_02")
+                new HandTypeEntry(HandType.Straight, "顺子", 60, 4m, 5, HandQuality.NORMAL),
+                new HandTypeEntry(HandType.HighCard, "高牌", 55, 1m, 1, HandQuality.NORMAL),
+                new HandTypeEntry(HandType.Pair, "对子", 48, 2m, 2, HandQuality.NORMAL)
             };
 
             HandTypeCatalog.Configure(entries);
 
             // 注入顺序故意打乱（Straight/HighCard/Pair）：All 必须按显示顺序呈现（高牌1 → 对子2 → 顺子5），白盒补齐的牌型按各自显示顺序就位
             var orderedTypes = HandTypeCatalog.All.Select(definition => definition.HandType).ToList();
-            Assert.That(orderedTypes, Has.Count.EqualTo(12));
+            Assert.That(orderedTypes, Has.Count.EqualTo(13));
             Assert.That(orderedTypes[0], Is.EqualTo(HandType.HighCard)); // 显示顺序 1
             Assert.That(orderedTypes[1], Is.EqualTo(HandType.Pair));     // 显示顺序 2
             Assert.That(orderedTypes[4], Is.EqualTo(HandType.Straight)); // 显示顺序 5
@@ -107,9 +107,9 @@ namespace PersonaCards.Tests.EditMode
             HandTypeCatalog.Configure(null); // 目录白盒
             var catalogFallback = HandTypeCatalog.All.ToList();
 
-            Assert.That(catalogAfterConfigure, Has.Count.EqualTo(12));
-            Assert.That(catalogFallback, Has.Count.EqualTo(12));
-            for (var index = 0; index < 12; index++)
+            Assert.That(catalogAfterConfigure, Has.Count.EqualTo(13));
+            Assert.That(catalogFallback, Has.Count.EqualTo(13));
+            for (var index = 0; index < 13; index++)
             {
                 var configured = catalogAfterConfigure[index];
                 var fallback = catalogFallback[index];
@@ -118,7 +118,7 @@ namespace PersonaCards.Tests.EditMode
                 Assert.That(configured.BaseChips, Is.EqualTo(fallback.BaseChips), $"条目 {index} 筹码漂移");
                 Assert.That(configured.BaseMultiplier, Is.EqualTo(fallback.BaseMultiplier), $"条目 {index} 倍率漂移");
                 Assert.That(configured.DisplayOrder, Is.EqualTo(fallback.DisplayOrder), $"条目 {index} 顺序漂移");
-                Assert.That(configured.CardId, Is.EqualTo(fallback.CardId), $"条目 {index} card_id 漂移");
+                Assert.That(configured.Quality, Is.EqualTo(fallback.Quality), $"条目 {index} 品质漂移");
             }
 
             ScriptableObject.DestroyImmediate(asset);

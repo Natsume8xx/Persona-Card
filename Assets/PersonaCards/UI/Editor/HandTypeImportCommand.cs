@@ -11,7 +11,7 @@ namespace PersonaCards.UI.Editor
 {
     /// <summary>
     /// 牌型配置导入命令：读取 Docs/人格牌.xlsx 的「牌型配置」sheet，映射并覆写 HandTypeCatalog.asset。
-    /// 「图片配置」sheet 的绑定 ID 集合用于 card_id 对照警告（A2 拍板：策划会改，程序警告容错）。
+    /// 「牌型品质定义表」sheet 的品质 ID 集合用于品质对照校验（品质值不在定义表 → 行级错误）。
     /// 任一行校验失败则整体中止（资产零改动），错误全部输出到 Console。
     /// </summary>
     public static class HandTypeImportCommand
@@ -55,28 +55,28 @@ namespace PersonaCards.UI.Editor
                 return;
             }
 
-            // 图片配置 sheet 独立读取（各自内存流互不影响）；缺 sheet 只降级为跳过 card_id 对照
-            ICollection<string> imageBindingIds = null;
+            // 牌型品质定义表 sheet 独立读取（各自内存流互不影响）；缺 sheet 只降级为跳过品质对照
+            ICollection<string> qualityIds = null;
             try
             {
-                using var imageMemory = new MemoryStream();
+                using var qualityMemory = new MemoryStream();
                 using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    file.CopyTo(imageMemory);
-                var imageRows = XlsxTableReader.ReadTable(imageMemory, HandTypeTableContract.ImageSheetName);
+                    file.CopyTo(qualityMemory);
+                var qualityRows = XlsxTableReader.ReadTable(qualityMemory, HandTypeTableContract.QualitySheetName);
                 var ids = new HashSet<string>();
-                foreach (var row in imageRows)
+                foreach (var row in qualityRows)
                 {
-                    var bindingId = row.TryGetValue(HandTypeTableContract.ImageColBindingId, out var value) ? value : "";
-                    if (!string.IsNullOrEmpty(bindingId)) ids.Add(bindingId);
+                    var qualityId = row.TryGetValue("牌型品质_ID", out var value) ? value : "";
+                    if (!string.IsNullOrEmpty(qualityId)) ids.Add(qualityId);
                 }
-                imageBindingIds = ids;
+                qualityIds = ids;
             }
             catch (Exception exception)
             {
-                Debug.LogWarning($"[HandType] 读取「图片配置」sheet 失败（{exception.Message}），跳过 card_id 对照校验。");
+                Debug.LogWarning($"[HandType] 读取「牌型品质定义表」sheet 失败（{exception.Message}），跳过品质对照校验。");
             }
 
-            var mapping = HandTypeTableMapper.Map(rows, imageBindingIds);
+            var mapping = HandTypeTableMapper.Map(rows, qualityIds);
             foreach (var warning in mapping.Warnings)
                 Debug.LogWarning($"[HandType] {warning}");
 
@@ -151,7 +151,7 @@ namespace PersonaCards.UI.Editor
                 baseChips = entry.BaseChips,
                 baseMultiplier = (double)entry.BaseMultiplier,
                 displayOrder = entry.DisplayOrder,
-                cardId = entry.CardId
+                quality = entry.Quality
             };
         }
     }

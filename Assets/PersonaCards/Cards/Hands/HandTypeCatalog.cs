@@ -15,7 +15,7 @@ namespace PersonaCards.Cards.Hands
     /// </summary>
     public static class HandTypeCatalog
     {
-        /// <summary>白盒回落（= HandTypeEntry.CreateFallbackList 同源，12 个牌型含五条/同花五条占位）。</summary>
+        /// <summary>白盒回落（= HandTypeEntry.CreateFallbackList 同源，13 个牌型含五条/同花五条占位）。</summary>
         private static readonly IReadOnlyDictionary<HandType, HandTypeDefinition> FallbackDefinitions =
             BuildDefinitions(HandTypeEntry.CreateFallbackList());
 
@@ -51,7 +51,7 @@ namespace PersonaCards.Cards.Hands
 
             var fallbackCount = 0;
 
-            // 条目缺失（如五条/同花五条不在配表）的牌型用白盒补齐，判定层始终拿到完整 12 个定义
+            // 条目缺失（如五条/同花五条不在配表）的牌型用白盒补齐，判定层始终拿到完整 13 个定义
             foreach (var pair in FallbackDefinitions)
             {
                 if (configured.ContainsKey(pair.Key)) continue;
@@ -70,7 +70,7 @@ namespace PersonaCards.Cards.Hands
 
         private static string _lastConfiguredSummary;
 
-        /// <summary>回到白盒回落（12 个牌型 = 配表当前初值）。</summary>
+        /// <summary>回到白盒回落（13 个牌型 = 配表当前初值）。</summary>
         private static void ResetToFallback()
         {
             _definitions = FallbackDefinitions;
@@ -109,7 +109,7 @@ namespace PersonaCards.Cards.Hands
                     entry.BaseChips,
                     entry.BaseMultiplier,
                     entry.DisplayOrder,
-                    entry.CardId));
+                    entry.Quality));
             }
 
             return definitions;

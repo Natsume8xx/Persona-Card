@@ -15,7 +15,7 @@ namespace PersonaCards.Cards.Hands
             int baseChips,
             decimal baseMultiplier,
             int displayOrder = 0,
-            string cardId = "")
+            HandQuality quality = HandQuality.NORMAL)
         {
             if (string.IsNullOrWhiteSpace(displayName))
             {
@@ -39,7 +39,7 @@ namespace PersonaCards.Cards.Hands
             BaseMultiplier = baseMultiplier;
             // 显示顺序未配置（0）时回落枚举序，保证旧调用与白盒占位条目都有可用值
             DisplayOrder = displayOrder > 0 ? displayOrder : (int)handType;
-            CardId = cardId ?? "";
+            Quality = quality;
         }
 
         public HandType HandType { get; }
@@ -57,7 +57,7 @@ namespace PersonaCards.Cards.Hands
         /// <summary>展示/排序顺序（配表"显示顺序"列，1 起）。</summary>
         public int DisplayOrder { get; }
 
-        /// <summary>卡图绑定 ID（配表 card_id 列；美术接入前仅存值，运行时未消费）。</summary>
-        public string CardId { get; }
+        /// <summary>牌型品质（NORMAL/RARE；词条条件「牌型品质」判定依赖）。</summary>
+        public HandQuality Quality { get; }
     }
 }

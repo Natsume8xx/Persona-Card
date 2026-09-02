@@ -54,7 +54,7 @@ namespace PersonaCards.Tests.EditMode
 
             Assert.That(result.Succeeded, Is.False);
             Assert.That(result.Errors, Has.Count.EqualTo(1));
-            Assert.That(result.Errors[0], Does.Contain("花色").And.Contain("黑桃/红桃/梅花/方块"));
+            Assert.That(result.Errors[0], Does.Contain("花色_ID").And.Contain("SUIT_001~SUIT_004"));
         }
 
         [Test]
@@ -227,16 +227,17 @@ namespace PersonaCards.Tests.EditMode
         /// <summary>完整 52 行夹具（= 配表「卡牌配置」当前内容，表序：黑桃→红桃→梅花→方块 × A、2~10、J、Q、K），供测试按需修改个别行。</summary>
         private static List<Dictionary<string, string>> FullFiftyTwoRows()
         {
-            var suits = new[] { "黑桃", "红桃", "梅花", "方块" };
+            var suitIds = new[] { "SUIT_001", "SUIT_002", "SUIT_003", "SUIT_004" };
+            var suitNames = new[] { "黑桃", "红桃", "梅花", "方块" };
             var rankTexts = new[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
             var chipValues = new[] { 11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10 };
             var rows = new List<Dictionary<string, string>>();
             var index = 1;
-            foreach (var suit in suits)
+            for (var suitIndex = 0; suitIndex < suitIds.Length; suitIndex++)
             {
                 for (var rankIndex = 0; rankIndex < rankTexts.Length; rankIndex++)
                 {
-                    rows.Add(Row($"CARD_{index++:D3}", $"{suit}{rankTexts[rankIndex]}", "手牌", suit,
+                    rows.Add(Row($"CARD_{index++:D3}", $"{suitNames[suitIndex]}{rankTexts[rankIndex]}", "手牌", suitIds[suitIndex],
                         rankTexts[rankIndex], "筹码", chipValues[rankIndex].ToString()));
                 }
             }

@@ -14,14 +14,11 @@ namespace PersonaCards.Data
         /// <summary>工作表名（牌型数据）。</summary>
         public const string SheetName = "牌型配置";
 
-        /// <summary>工作表名（图片配置，用于 card_id 对照校验）。</summary>
-        public const string ImageSheetName = "图片配置";
+        /// <summary>工作表名（牌型品质定义表，用于品质对照校验）。</summary>
+        public const string QualitySheetName = "牌型品质定义表";
 
-        /// <summary>图片配置 sheet 的绑定 ID 列（牌型 ICON 行的绑定目标）。</summary>
-        public const string ImageColBindingId = "绑定ID";
-
-        /// <summary>列名：手牌_ID（权威键，HAND_01~12 固定映射 HandType 枚举）。</summary>
-        public const string ColHandId = "手牌_ID";
+        /// <summary>列名：牌型_ID（权威键，HAND_01~12 固定映射 HandType 枚举；P0-1J 表头由「手牌_ID」改名）。</summary>
+        public const string ColHandId = "牌型_ID";
 
         /// <summary>列名：牌型名称（显示名）。</summary>
         public const string ColName = "牌型名称";
@@ -38,8 +35,8 @@ namespace PersonaCards.Data
         /// <summary>列名：显示顺序（非负整数，1 起；0 = 回落枚举序）。</summary>
         public const string ColDisplayOrder = "显示顺序";
 
-        /// <summary>列名：card_id（卡图绑定，对照图片配置绑定 ID 集合警告容错；美术接入前仅存值）。</summary>
-        public const string ColCardId = "card_id";
+        /// <summary>列名：牌型品质_ID（引用牌型品质定义表，NORMAL/RARE）。</summary>
+        public const string ColQuality = "牌型品质_ID";
     }
 
     /// <summary>牌型配表映射结果：Succeeded 为 true 时 Entries 可用；Errors 非空即失败（导入命令不得写入资产）；Warnings 无论成败都可能非空。</summary>
@@ -62,23 +59,24 @@ namespace PersonaCards.Data
         /// <summary>全部错误（带行号定位，不 fail-fast，策划一次看到所有问题）。</summary>
         public IReadOnlyList<string> Errors { get; }
 
-        /// <summary>全部警告（card_id 未同步、计分牌数/显示顺序不一致等提示）。</summary>
+        /// <summary>全部警告（计分牌数/显示顺序不一致、显示顺序重复等提示）。</summary>
         public IReadOnlyList<string> Warnings { get; }
     }
 
     /// <summary>
     /// 牌型配置配表映射器：把 XlsxTableReader 输出的行字典列表转成 HandTypeEntry（Core 纯数据）列表。
-    /// 规则：权威键 = 「手牌_ID」列（HAND_01~12 固定映射枚举）；行级全量校验，任一行出错整体失败；
+    /// 规则：权威键 = 「牌型_ID」列（HAND_01~12 固定映射枚举）；行级全量校验，任一行出错整体失败；
     /// 五条/同花五条不在表 → 容错（目录 Configure 白盒补齐，已拍板）；「计分牌数」列不导入（已拍板）。
+    /// P0-1J：加「牌型品质_ID」列（对照牌型品质定义表校验）。
     /// </summary>
     public static class HandTypeTableMapper
     {
         /// <summary>
         /// 映射行字典列表（XlsxTableReader.ReadTable 的输出）。
-        /// imageBindingIds = 图片配置 sheet 的绑定 ID 集合（null 表示跳过 card_id 对照，测试用）；
+        /// qualityIds = 牌型品质定义表的品质 ID 集合（null 表示跳过品质对照，测试用）；
         /// 用 ICollection&lt;string&gt; 而非 IReadOnlyCollection 是为了走实例 Contains（只读接口会被 span 扩展方法截胡）。
         /// </summary>
-        public static HandTypeMappingResult Map(List<Dictionary<string, string>> rows, ICollection<string> imageBindingIds)
+        public static HandTypeMappingResult Map(List<Dictionary<string, string>> rows, ICollection<string> qualityIds)
         {
             var errors = new List<string>();
             var warnings = new List<string>();
@@ -161,18 +159,21 @@ namespace PersonaCards.Data
                     warnings.Add($"{label}：「计分牌数」{scoringCount} 与「显示顺序」{displayOrder} 不一致（本列不导入，以显示顺序为准，请策划确认）。");
                 }
 
-                // card_id（A2 拍板：策划会改，程序警告容错）：空或不在图片配置绑定 ID 集合内 → 警告，不阻断
-                var cardId = Get(row, HandTypeTableContract.ColCardId);
-                if (string.IsNullOrEmpty(cardId))
+                // 牌型品质（P0-1J）：必填、可解析为枚举、且在品质定义表内（qualityIds 为 null 跳过对照，测试用）
+                var qualityText = Get(row, HandTypeTableContract.ColQuality);
+                if (string.IsNullOrWhiteSpace(qualityText)
+                    || !Enum.TryParse(qualityText, true, out HandQuality quality))
                 {
-                    warnings.Add($"{label}：「card_id」为空（未绑定卡图，美术接入前仅存值）。");
+                    errors.Add($"{label}：「牌型品质_ID」值「{qualityText}」无效，应为 NORMAL 或 RARE。");
+                    continue;
                 }
-                else if (imageBindingIds != null && !imageBindingIds.Contains(cardId))
+                if (qualityIds != null && !qualityIds.Contains(qualityText))
                 {
-                    warnings.Add($"{label}：「card_id」值「{cardId}」不在图片配置「绑定ID」列中（卡图可能未同步，程序已存值容错）。");
+                    errors.Add($"{label}：「牌型品质_ID」值「{qualityText}」不在牌型品质定义表中（品质表可能未同步，请策划确认）。");
+                    continue;
                 }
 
-                entries.Add(new HandTypeEntry(handType, name, chips, (decimal)multiplier, displayOrder, cardId));
+                entries.Add(new HandTypeEntry(handType, name, chips, (decimal)multiplier, displayOrder, quality));
             }
 
             if (errors.Count > 0)
@@ -180,14 +181,14 @@ namespace PersonaCards.Data
                 return new HandTypeMappingResult(false, null, errors, warnings);
             }
 
-            // 核心牌型齐全检查（防策划误删行）：HAND_01~HAND_10 必须全在；五条/同花五条缺失容错（目录白盒补齐，已拍板）
+            // 核心牌型齐全检查（防策划误删行）：HAND_01~HAND_11 必须全在（P0-1J 起皇家同花顺也是真实表行）；五条/同花五条缺失容错（目录白盒补齐，已拍板）
             var presentTypes = new HashSet<HandType>();
             foreach (var entry in entries)
                 presentTypes.Add(entry.HandType);
             foreach (var required in RequiredCoreTypes)
             {
                 if (!presentTypes.Contains(required))
-                    errors.Add($"牌型配置表缺少核心牌型 {required} 的行（对应 HAND_01~HAND_10 之一）：请确认该行未被误删。");
+                    errors.Add($"牌型配置表缺少核心牌型 {required} 的行（对应 HAND_01~HAND_11 之一）：请确认该行未被误删。");
             }
             if (errors.Count > 0)
             {
@@ -219,14 +220,16 @@ namespace PersonaCards.Data
             return new HandTypeMappingResult(true, entries, errors, warnings);
         }
 
-        /// <summary>核心牌型（表必须包含的行）：HAND_01~HAND_10 对应的枚举；五条/同花五条不在表是容错（目录白盒补齐）。</summary>
+        /// <summary>核心牌型（表必须包含的行）：HAND_01~HAND_11 对应的枚举；五条/同花五条不在表是容错（目录白盒补齐）。</summary>
         private static readonly HandType[] RequiredCoreTypes =
         {
             HandType.HighCard, HandType.Pair, HandType.TwoPair, HandType.ThreeOfAKind, HandType.Straight,
-            HandType.Flush, HandType.FullHouse, HandType.FourOfAKind, HandType.StraightFlush, HandType.FlushHouse
+            HandType.Flush, HandType.FullHouse, HandType.FourOfAKind, HandType.StraightFlush, HandType.FlushHouse,
+            HandType.RoyalFlush
         };
 
-        /// <summary>手牌_ID → HandType 固定映射：表行顺序改动、改 ID 都会在编译期锁定；策划新增五条/同花五条用 HAND_11/HAND_12 即生效。</summary>
+        /// <summary>牌型_ID → HandType 固定映射：表行顺序改动、改 ID 都会在编译期锁定；
+        /// P0-1J：HAND_11 改为皇家同花顺（配表定稿）；HAND_12 容错映射同花五条（表补行即生效）。</summary>
         private static bool TryMapHandId(string handId, out HandType handType)
         {
             switch (handId)
@@ -241,7 +244,7 @@ namespace PersonaCards.Data
                 case "HAND_08": handType = HandType.FourOfAKind; return true;
                 case "HAND_09": handType = HandType.StraightFlush; return true;
                 case "HAND_10": handType = HandType.FlushHouse; return true;
-                case "HAND_11": handType = HandType.FiveOfAKind; return true;
+                case "HAND_11": handType = HandType.RoyalFlush; return true;
                 case "HAND_12": handType = HandType.FlushFive; return true;
                 default:
                     handType = default;

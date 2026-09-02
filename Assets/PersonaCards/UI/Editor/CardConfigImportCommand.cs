@@ -54,7 +54,7 @@ namespace PersonaCards.UI.Editor
                 return;
             }
 
-            // 图片配置 sheet 独立读取（各自内存流互不影响）；缺 sheet 只降级为跳过卡牌_ID 对照
+            // 图片配置 sheet 独立读取（各自内存流互不影响）；缺 sheet / 无「绑定ID」列（最新版配表已删）只降级为跳过卡牌_ID 对照
             ICollection<string> imageBindingIds = null;
             try
             {
@@ -62,13 +62,14 @@ namespace PersonaCards.UI.Editor
                 using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     file.CopyTo(imageMemory);
                 var imageRows = XlsxTableReader.ReadTable(imageMemory, ImageSheetContract.SheetName);
-                var ids = new HashSet<string>();
-                foreach (var row in imageRows)
+                if (ImageSheetContract.TryBuildBindingIds(imageRows, out var ids))
                 {
-                    var bindingId = row.TryGetValue(ImageSheetContract.ColBindingId, out var value) ? value : "";
-                    if (!string.IsNullOrEmpty(bindingId)) ids.Add(bindingId);
+                    imageBindingIds = ids;
                 }
-                imageBindingIds = ids;
+                else
+                {
+                    Debug.LogWarning("[Card] 「图片配置」sheet 缺少「绑定ID」列（最新版配表已删除该列），跳过卡牌_ID 对照校验。");
+                }
             }
             catch (Exception exception)
             {

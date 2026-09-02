@@ -125,11 +125,15 @@ namespace PersonaCards.Cards
             }
         }
 
-        /// <summary>配表「花色」文本 → Suit 枚举（固定映射，CardConfigTableMapper 共用）：黑桃/红桃/梅花/方块。</summary>
+        /// <summary>配表「花色_ID」文本 → Suit 枚举（固定映射，CardConfigTableMapper 共用）：SUIT_001~004（P0-1J 定稿）或中文黑桃/红桃/梅花/方块（旧表兼容）。</summary>
         public static bool TryMapSuit(string text, out Suit suit)
         {
             switch (text)
             {
+                case "SUIT_001": suit = Suit.Spades; return true;
+                case "SUIT_002": suit = Suit.Hearts; return true;
+                case "SUIT_003": suit = Suit.Clubs; return true;
+                case "SUIT_004": suit = Suit.Diamonds; return true;
                 case "黑桃": suit = Suit.Spades; return true;
                 case "红桃": suit = Suit.Hearts; return true;
                 case "梅花": suit = Suit.Clubs; return true;

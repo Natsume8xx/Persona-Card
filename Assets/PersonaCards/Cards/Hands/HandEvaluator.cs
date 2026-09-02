@@ -29,9 +29,11 @@ namespace PersonaCards.Cards.Hands
             var isFiveCardHand = cards.Count == MaximumCards;
             var isFlush = isFiveCardHand && IsFlush(cards);
             var isStraight = isFiveCardHand && IsStraight(cards);
+            // 皇家同花顺（P0-1J）：DetermineHandType 没有 rank 信息，调用处算好传入（A2345 轮子不算）
+            var isRoyalFlush = isFiveCardHand && isFlush && IsRoyalFlush(cards);
             var groupCounts = rankGroups.Select(group => group.Count()).OrderByDescending(count => count).ToArray();
 
-            var handType = DetermineHandType(groupCounts, isFlush, isStraight);
+            var handType = DetermineHandType(groupCounts, isFlush, isStraight, isRoyalFlush);
             var scoringCardIds = SelectScoringCardIds(cards, rankGroups, handType);
 
             return new HandEvaluationResult(HandTypeCatalog.Get(handType), scoringCardIds);
@@ -40,7 +42,8 @@ namespace PersonaCards.Cards.Hands
         private static HandType DetermineHandType(
             IReadOnlyList<int> groupCounts,
             bool isFlush,
-            bool isStraight)
+            bool isStraight,
+            bool isRoyalFlush)
         {
             if (groupCounts[0] == 5 && isFlush)
             {
@@ -55,6 +58,12 @@ namespace PersonaCards.Cards.Hands
             if (groupCounts[0] == 5)
             {
                 return HandType.FiveOfAKind;
+            }
+
+            // 皇家同花顺 = 10~A 同花顺：必须插在 StraightFlush 之前（两者判定条件重叠，皇家更窄）
+            if (isRoyalFlush)
+            {
+                return HandType.RoyalFlush;
             }
 
             if (isStraight && isFlush)
@@ -184,6 +193,21 @@ namespace PersonaCards.Cards.Hands
             }
 
             return true;
+        }
+
+        /// <summary>皇家同花顺：点数集合恰为 {10,J,Q,K,A}（A2345 轮子不算皇家，走 StraightFlush）。</summary>
+        private static bool IsRoyalFlush(IEnumerable<PlayingCardInstance> cards)
+        {
+            var ranks = cards
+                .Select(card => (int)card.Rank)
+                .Distinct()
+                .OrderBy(rank => rank)
+                .ToArray();
+
+            return ranks.SequenceEqual(new[]
+            {
+                (int)Rank.Ten, (int)Rank.Jack, (int)Rank.Queen, (int)Rank.King, (int)Rank.Ace
+            });
         }
 
         private static bool IsFlush(IEnumerable<PlayingCardInstance> cards)

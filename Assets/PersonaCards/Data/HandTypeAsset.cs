@@ -31,8 +31,8 @@ namespace PersonaCards.Data
             [Tooltip("显示顺序（配表「显示顺序」列，1 起；0 = 回落枚举序）。")]
             public int displayOrder;
 
-            [Tooltip("卡图绑定 ID（配表 card_id 列；美术接入前仅存值，运行时未消费）。")]
-            public string cardId = "";
+            [Tooltip("牌型品质（配表「牌型品质_ID」列，NORMAL/RARE；词条条件「牌型品质」判定依赖）。")]
+            public HandQuality quality = HandQuality.NORMAL;
         }
 
         /// <summary>牌型条目列表；缺五条/同花五条时该牌型回落白盒占位值（代策划确认 A5 容错精神，已拍板）。</summary>
@@ -87,13 +87,18 @@ namespace PersonaCards.Data
                     error = $"牌型 {entry.handType} 的显示顺序为负数（{entry.displayOrder}）。";
                     return false;
                 }
+                if (!Enum.IsDefined(typeof(HandQuality), entry.quality))
+                {
+                    error = $"牌型 {entry.handType} 的品质无效（{(int)entry.quality}）。";
+                    return false;
+                }
             }
 
             return true;
         }
 
         /// <summary>
-        /// 白盒条目（= 配表「牌型配置」当前初值，策划案 5.2.2 正文 10 行 + 五条/同花五条占位）：
+        /// 白盒条目（= 配表「牌型配置」当前初值，11 行 + 五条/同花五条占位）：
         /// 导入命令创建初始资产与场景重建兜底共用此工厂。数值源为 Core 的 HandTypeEntry.CreateFallbackList
         /// （与 HandTypeCatalog 白盒回落同源，数值只写一处），此处转成资产条目（decimal→double，白盒值 ≤2 位小数无损）。
         /// </summary>
@@ -108,7 +113,7 @@ namespace PersonaCards.Data
                     coreEntry.BaseChips,
                     (double)coreEntry.BaseMultiplier,
                     coreEntry.DisplayOrder,
-                    coreEntry.CardId));
+                    coreEntry.Quality));
             }
 
             return entries;
@@ -129,14 +134,14 @@ namespace PersonaCards.Data
                     entry.baseChips,
                     (decimal)entry.baseMultiplier,
                     entry.displayOrder,
-                    entry.cardId));
+                    entry.quality));
             }
 
             return result;
         }
 
         /// <summary>便捷构造：白盒工厂单条条目。</summary>
-        private static Entry EntryOf(HandType handType, string displayName, int baseChips, double baseMultiplier, int displayOrder, string cardId)
+        private static Entry EntryOf(HandType handType, string displayName, int baseChips, double baseMultiplier, int displayOrder, HandQuality quality)
         {
             return new Entry
             {
@@ -145,7 +150,7 @@ namespace PersonaCards.Data
                 baseChips = baseChips,
                 baseMultiplier = baseMultiplier,
                 displayOrder = displayOrder,
-                cardId = cardId
+                quality = quality
             };
         }
     }

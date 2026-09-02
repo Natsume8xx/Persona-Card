@@ -23,8 +23,8 @@ namespace PersonaCards.Data
         /// <summary>列名：卡牌类型（当前仅「手牌」）。</summary>
         public const string ColCardKind = "卡牌类型";
 
-        /// <summary>列名：花色（黑桃/红桃/梅花/方块，固定映射 Suit 枚举）。</summary>
-        public const string ColSuit = "花色";
+        /// <summary>列名：花色_ID（SUIT_001~004 或中文黑桃/红桃/梅花/方块，固定映射 Suit 枚举；P0-1J 表头由「花色」改名并拆出「花色名称」列）。</summary>
+        public const string ColSuit = "花色_ID";
 
         /// <summary>列名：点数（A/2~10/J/Q/K，固定映射 Rank 枚举）。</summary>
         public const string ColRank = "点数";
@@ -114,7 +114,7 @@ namespace PersonaCards.Data
                 var suitText = Get(row, CardConfigTableContract.ColSuit);
                 if (!CardConfigEntry.TryMapSuit(suitText, out var suit))
                 {
-                    errors.Add($"{label}：「花色」值「{suitText}」无效，应为黑桃/红桃/梅花/方块。");
+                    errors.Add($"{label}：「花色_ID」值「{suitText}」无效，应为 SUIT_001~SUIT_004（或黑桃/红桃/梅花/方块）。");
                     continue;
                 }
 
