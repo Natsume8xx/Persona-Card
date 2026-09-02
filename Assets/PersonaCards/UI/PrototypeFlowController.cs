@@ -744,10 +744,8 @@ namespace PersonaCards.UI
             var discardsLimit = RunRoute.DiscardsLimitOf(_flow.NodeIndex);
             var seed = unchecked(_runSeed + (uint)(node.Index + 1)); // 场次种子由局种子派生，保证同局可复现
             var boss = node.kind == RunNodeKind.BossBattle
-                ? BossEncounterCatalog.CreateFromPool(node.bossPoolId) // TODO(P0-3)：按池出 Boss，当前临时统一返回镜厅守门人
+                ? BossEncounterCatalog.CreateFromPool(node.bossPoolId, seed) // P0-3：按池抽取（与揭示界面同种子，必得同一 Boss）
                 : null;
-            if (node.kind == RunNodeKind.BossBattle)
-                Debug.LogWarning($"[Boss] 节点 {node.Index} 难度池 {node.bossPoolId} 尚未落地（TODO P0-3），临时返回镜厅守门人。");
             battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss,
                 playsLimit, discardsLimit, selectionLimit: GlobalConfig.SelectionLimit, journeyCoins: _journeyDeck.Coins); // P0-1I：当前金币注入战斗信息显示（3.3.9）
             battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}"; // 进度只计战斗，生成节点不计入
@@ -1669,8 +1667,10 @@ namespace PersonaCards.UI
             if (_flow.Stage == PrototypeFlowStage.BossReveal && bossRevealRuleText != null)
             {
                 var node = RunRoute.GetNode(_flow.NodeIndex);
-                // TODO(P0-3/P0-9)：Boss 名称与规则文本应按难度池数据驱动；当前临时统一展示镜厅守门人。
-                var encounter = BossEncounterCatalog.CreateFromPool(node.bossPoolId).Definition;
+                // TODO(P0-9)：揭示文本仍消费定义内字段；揭示阶段的数据驱动展示（台词档/事件化）留给 P0-9。
+                // P0-3：与开战同种子抽取（局种子 + 节点序号 + 1），保证揭示展示的 Boss 就是即将开战的 Boss。
+                var seed = unchecked(_runSeed + (uint)(node.Index + 1));
+                var encounter = BossEncounterCatalog.CreateFromPool(node.bossPoolId, seed).Definition;
                 // 出牌/弃牌限制按节点配置展示（配表驱动）
                 bossRevealRuleText.text = $"主规则 · {encounter.RuleName}\n{encounter.RuleDescription}\n\n介入事件 · {encounter.InterventionName}\n{encounter.InterventionDescription}\n\n目标分数：{node.targetScore}　出牌：{RunRoute.PlaysLimitOf(_flow.NodeIndex)}　弃牌：{RunRoute.DiscardsLimitOf(_flow.NodeIndex)}";
             }
