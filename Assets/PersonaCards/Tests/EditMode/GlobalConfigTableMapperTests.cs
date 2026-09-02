@@ -6,9 +6,9 @@ namespace PersonaCards.Tests.EditMode
 {
     /// <summary>
     /// 全局配置配表映射器测试（P0-1F）：
-    /// 12 行真实夹具（RULE_001~012 真实值）；行级错误全收集不 fail-fast；
+    /// 17 行真实夹具（RULE_001~017 真实值）；行级错误全收集不 fail-fast；
     /// 数值类型「整数/小数」与配置数值类型一致性（整数规则整数字面量、小数规则整数文本合格）；
-    /// RULE_001~012 齐全校验（缺=错误防误删、多=允许）；decimal 原文精确保存。
+    /// RULE_001~017 齐全校验（缺=错误防误删、多=允许）；decimal 原文精确保存。
     /// </summary>
     public class GlobalConfigTableMapperTests
     {
@@ -24,7 +24,7 @@ namespace PersonaCards.Tests.EditMode
             };
         }
 
-        /// <summary>真实配表 12 行夹具（RULE_001~012 真实值）。</summary>
+        /// <summary>真实配表 17 行夹具（RULE_001~017 真实值）。</summary>
         private static List<Dictionary<string, string>> FixtureRows()
         {
             return new List<Dictionary<string, string>>
@@ -33,21 +33,26 @@ namespace PersonaCards.Tests.EditMode
                 Row("RULE_002", "每关基础弃牌次数", "整数", "3"),
                 Row("RULE_003", "人格生效槽位", "整数", "4"),
                 Row("RULE_004", "基础人格数量", "整数", "8"),
-                Row("RULE_005", "每局AI人格生成总量", "整数", "3"),
-                Row("RULE_006", "每局AI人格可带出数量", "整数", "1"),
-                Row("RULE_007", "人格库存上限", "整数", "99"),
-                Row("RULE_008", "人格融合消耗数量", "整数", "3"),
-                Row("RULE_009", "人格融合生成数量", "整数", "1"),
-                Row("RULE_010", "最近3关行为权重", "小数", "0.65"),
-                Row("RULE_011", "本局累计行为权重", "小数", "0.35"),
-                Row("RULE_012", "雷同人格生成降重", "小数", "0.15")
+                Row("RULE_005", "商店商品槽数量", "整数", "4"),
+                Row("RULE_006", "每局AI人格生成总量", "整数", "3"),
+                Row("RULE_007", "每局AI人格可带出数量", "整数", "1"),
+                Row("RULE_008", "人格库存上限", "整数", "99"),
+                Row("RULE_009", "人格融合消耗数量", "整数", "3"),
+                Row("RULE_010", "人格融合生成数量", "整数", "1"),
+                Row("RULE_011", "最近3关行为权重", "小数", "0.65"),
+                Row("RULE_012", "本局累计行为权重", "小数", "0.35"),
+                Row("RULE_013", "雷同人格生成降重", "小数", "0.15"),
+                Row("RULE_014", "剩余出牌兑换单位", "整数", "1"),
+                Row("RULE_015", "剩余出牌奖励金币", "整数", "1"),
+                Row("RULE_016", "剩余弃牌兑换单位", "整数", "1"),
+                Row("RULE_017", "剩余弃牌奖励金币", "整数", "1")
             };
         }
 
         [Test]
-        public void MapsAll12RowsAndSortsByRuleId()
+        public void MapsAll17RowsAndSortsByRuleId()
         {
-            // 乱序输入 → 12 条目 + 按规则_ID 升序 + 全字段与配表一致
+            // 乱序输入 → 17 条目 + 按规则_ID 升序 + 全字段与配表一致
             var rows = FixtureRows();
             rows.Reverse();
 
@@ -56,9 +61,9 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(result.Succeeded, Is.True);
             Assert.That(result.Errors, Is.Empty);
             Assert.That(result.Warnings, Is.Empty);
-            Assert.That(result.Entries.Count, Is.EqualTo(12));
+            Assert.That(result.Entries.Count, Is.EqualTo(17));
 
-            for (var index = 1; index <= 12; index++)
+            for (var index = 1; index <= 17; index++)
             {
                 var entry = result.Entries[index - 1];
                 Assert.That(entry.ruleId, Is.EqualTo($"RULE_{index:D3}"), $"第 {index} 条应升序为 RULE_{index:D3}");
@@ -67,8 +72,12 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(result.Entries[0].ruleName, Is.EqualTo("每关基础出牌次数"));
             Assert.That(result.Entries[0].valueType, Is.EqualTo("整数"));
             Assert.That(result.Entries[0].valueText, Is.EqualTo("4"));
-            Assert.That(result.Entries[6].ruleName, Is.EqualTo("人格库存上限"));
-            Assert.That(result.Entries[6].valueText, Is.EqualTo("99"));
+            Assert.That(result.Entries[4].ruleName, Is.EqualTo("商店商品槽数量"));
+            Assert.That(result.Entries[4].valueText, Is.EqualTo("4"));
+            Assert.That(result.Entries[7].ruleName, Is.EqualTo("人格库存上限"));
+            Assert.That(result.Entries[7].valueText, Is.EqualTo("99"));
+            Assert.That(result.Entries[16].ruleName, Is.EqualTo("剩余弃牌奖励金币"));
+            Assert.That(result.Entries[16].valueText, Is.EqualTo("1"));
         }
 
         [Test]
@@ -78,9 +87,9 @@ namespace PersonaCards.Tests.EditMode
 
             Assert.That(result.Succeeded, Is.True);
             // decimal 原文精确保存（0.65/0.35/0.15 与配表一致，不做任何规整）
-            Assert.That(result.Entries[9].valueText, Is.EqualTo("0.65"));
-            Assert.That(result.Entries[10].valueText, Is.EqualTo("0.35"));
-            Assert.That(result.Entries[11].valueText, Is.EqualTo("0.15"));
+            Assert.That(result.Entries[10].valueText, Is.EqualTo("0.65"));
+            Assert.That(result.Entries[11].valueText, Is.EqualTo("0.35"));
+            Assert.That(result.Entries[12].valueText, Is.EqualTo("0.15"));
         }
 
         [Test]
@@ -113,12 +122,12 @@ namespace PersonaCards.Tests.EditMode
         public void AcceptsIntegerTextForDecimalRule()
         {
             var rows = FixtureRows();
-            rows[9][GlobalConfigTableContract.ColValue] = "3";
+            rows[10][GlobalConfigTableContract.ColValue] = "3"; // RULE_011 最近3关行为权重
 
             var result = GlobalConfigTableMapper.Map(rows);
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Entries[9].valueText, Is.EqualTo("3"));
+            Assert.That(result.Entries[10].valueText, Is.EqualTo("3"));
         }
 
         [Test]
@@ -137,7 +146,7 @@ namespace PersonaCards.Tests.EditMode
         public void RejectsNonNumericValue()
         {
             var rows = FixtureRows();
-            rows[9][GlobalConfigTableContract.ColValue] = "abc";
+            rows[10][GlobalConfigTableContract.ColValue] = "abc"; // RULE_011 最近3关行为权重
 
             var result = GlobalConfigTableMapper.Map(rows);
 
@@ -214,13 +223,13 @@ namespace PersonaCards.Tests.EditMode
         public void AllowsExtraRuleIds()
         {
             var rows = FixtureRows();
-            rows.Add(Row("RULE_013", "未来规则占位", "整数", "1"));
+            rows.Add(Row("RULE_018", "未来规则占位", "整数", "1"));
 
             var result = GlobalConfigTableMapper.Map(rows);
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Entries.Count, Is.EqualTo(13));
-            Assert.That(result.Entries[12].ruleId, Is.EqualTo("RULE_013"));
+            Assert.That(result.Entries.Count, Is.EqualTo(18));
+            Assert.That(result.Entries[17].ruleId, Is.EqualTo("RULE_018"));
         }
 
         [Test]

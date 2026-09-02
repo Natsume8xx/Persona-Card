@@ -301,7 +301,7 @@ namespace PersonaCards.Tests.EditMode
         [Test]
         public void AiNodeZeroIsTreatedAsEmpty()
         {
-            // 当前配表战斗行 AI节点 统一填 0（占位）：必须按空处理，否则 12 条战斗行全是噪音警告
+            // 当前配表战斗行 AI节点 统一填 0（占位）：必须按空处理，否则 13 条战斗行全是噪音警告
             var zero = new List<Dictionary<string, string>>
             {
                 Row(1, RunRouteTableContract.KindNormal, score: "100", shop: "否", aiNode: "0", name: "战斗一")

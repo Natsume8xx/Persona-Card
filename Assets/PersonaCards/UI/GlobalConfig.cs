@@ -8,9 +8,10 @@ using PersonaCards.Data;
 namespace PersonaCards.UI
 {
     /// <summary>
-    /// 全局配置门面（P0-1F）：12 条规则（RULE_001~012）的运行时读取入口。
+    /// 全局配置门面（P0-1F）：17 条规则（RULE_001~017）的运行时读取入口。
     /// RULE_001/002（每关基础出牌/弃牌次数）与战斗参数化归口：RunRoute 默认值链与读档兜底均经
-    /// StartingPlays/StartingDiscards；其余 10 条只落数据，玩法接入等对应 P0 任务经 TryGetInt/TryGetDecimal 读取。
+    /// StartingPlays/StartingDiscards；RULE_005（商店商品槽数量）与 RULE_014~017（剩余行动兑换）已开便捷属性，
+    /// 其余 9 条只落数据，玩法接入等对应 P0 任务经 TryGetInt/TryGetDecimal 读取。
     /// 白盒回落 = 空配置：Configure(null)/空资产/坏条目 → 出牌/弃牌回落 Battle 编译期常量 4/3（行为与 P0-1F 前零差异）。
     /// </summary>
     public static class GlobalConfig
@@ -20,6 +21,21 @@ namespace PersonaCards.UI
 
         /// <summary>规则_ID：每关基础弃牌次数。</summary>
         public const string RuleStartingDiscards = "RULE_002";
+
+        /// <summary>规则_ID：商店商品槽数量。</summary>
+        public const string RuleShopSlots = "RULE_005";
+
+        /// <summary>规则_ID：剩余出牌兑换单位。</summary>
+        public const string RuleExchangePlaysUnit = "RULE_014";
+
+        /// <summary>规则_ID：剩余出牌奖励金币。</summary>
+        public const string RuleExchangePlaysCoins = "RULE_015";
+
+        /// <summary>规则_ID：剩余弃牌兑换单位。</summary>
+        public const string RuleExchangeDiscardsUnit = "RULE_016";
+
+        /// <summary>规则_ID：剩余弃牌奖励金币。</summary>
+        public const string RuleExchangeDiscardsCoins = "RULE_017";
 
         private static Dictionary<string, GlobalConfigEntry> _entries; // null = 白盒空配置
         private static string _summary;
@@ -34,6 +50,26 @@ namespace PersonaCards.UI
         /// <summary>每关基础弃牌次数：RULE_002 命中则用之，否则回落 Battle 编译期常量（白盒零差异）。</summary>
         public static int StartingDiscards =>
             TryGetInt(RuleStartingDiscards, out var value) ? value : BattleStateMachine.StartingDiscards;
+
+        /// <summary>商店商品槽数量：RULE_005 命中则用之，否则回落 4（与配表默认值一致，白盒零差异）。</summary>
+        public static int ShopSlots =>
+            TryGetInt(RuleShopSlots, out var value) ? value : 4;
+
+        /// <summary>剩余出牌兑换单位：RULE_014 命中则用之，否则回落 1（与配表默认值一致，白盒零差异）。</summary>
+        public static int ExchangePlaysUnit =>
+            TryGetInt(RuleExchangePlaysUnit, out var value) ? value : 1;
+
+        /// <summary>剩余出牌奖励金币：RULE_015 命中则用之，否则回落 1（与配表默认值一致，白盒零差异）。</summary>
+        public static int ExchangePlaysCoins =>
+            TryGetInt(RuleExchangePlaysCoins, out var value) ? value : 1;
+
+        /// <summary>剩余弃牌兑换单位：RULE_016 命中则用之，否则回落 1（与配表默认值一致，白盒零差异）。</summary>
+        public static int ExchangeDiscardsUnit =>
+            TryGetInt(RuleExchangeDiscardsUnit, out var value) ? value : 1;
+
+        /// <summary>剩余弃牌奖励金币：RULE_017 命中则用之，否则回落 1（与配表默认值一致，白盒零差异）。</summary>
+        public static int ExchangeDiscardsCoins =>
+            TryGetInt(RuleExchangeDiscardsCoins, out var value) ? value : 1;
 
         /// <summary>
         /// 注入条目列表：null/空列表 → 白盒空配置（summary 置 null）。逐条校验（格式/类型/数值/唯一/非负），

@@ -13,7 +13,7 @@ namespace PersonaCards.Data
     [Serializable]
     public sealed class GlobalConfigEntry
     {
-        [Tooltip("规则_ID（RULE_xxx，权威查询键；RULE_001~012 应齐全）。")]
+        [Tooltip("规则_ID（RULE_xxx，权威查询键；RULE_001~017 应齐全）。")]
         public string ruleId;
 
         [Tooltip("规则名称（仅存值，供 Inspector 与日志可读）。")]
@@ -27,9 +27,9 @@ namespace PersonaCards.Data
     }
 
     /// <summary>
-    /// 全局配置资产：12 条规则（RULE_001~012）的配表落地，由菜单「导入全局配置数据」写入。
+    /// 全局配置资产：17 条规则（RULE_001~017）的配表落地，由菜单「导入全局配置数据」写入。
     /// P0-1F 白盒语义：空条目资产合法（UI 门面回落 = 空配置，出牌/弃牌回落 Battle 编译期常量 4/3，行为与 P0-1F 前零差异），
-    /// 因此 RULE_001~012 齐全校验不在此层（在 GlobalConfigTableMapper 导入层，防误删）。
+    /// 因此 RULE_001~017 齐全校验不在此层（在 GlobalConfigTableMapper 导入层，防误删）。
     /// </summary>
     [CreateAssetMenu(menuName = "PersonaCards/GlobalConfig", fileName = "GlobalConfig")]
     public sealed class GlobalConfigAsset : ScriptableObject
@@ -37,7 +37,7 @@ namespace PersonaCards.Data
         /// <summary>资产固定路径（导入命令与场景构建器共用）。</summary>
         public const string AssetPath = "Assets/PersonaCards/Data/GlobalConfig.asset";
 
-        [Tooltip("全局配置条目（RULE_001~012 齐全，导入后按规则_ID 升序；空列表 = 白盒合法）。")]
+        [Tooltip("全局配置条目（RULE_001~017 齐全，导入后按规则_ID 升序；空列表 = 白盒合法）。")]
         public List<GlobalConfigEntry> entries = new List<GlobalConfigEntry>();
 
         /// <summary>

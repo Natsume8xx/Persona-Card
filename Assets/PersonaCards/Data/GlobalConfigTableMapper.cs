@@ -14,7 +14,7 @@ namespace PersonaCards.Data
         /// <summary>工作表名（全局配置数据）。</summary>
         public const string SheetName = "全局配置";
 
-        /// <summary>列名：规则_ID（RULE_xxx；权威查询键，RULE_001~012 必须齐全）。</summary>
+        /// <summary>列名：规则_ID（RULE_xxx；权威查询键，RULE_001~017 必须齐全）。</summary>
         public const string ColRuleId = "规则_ID";
 
         /// <summary>列名：规则名称（仅存值，Inspector/日志可读）。</summary>
@@ -38,8 +38,8 @@ namespace PersonaCards.Data
         /// <summary>规则_ID 格式（RULE_001~RULE_999）。</summary>
         public const string RuleIdPattern = @"^RULE_\d{3}$";
 
-        /// <summary>当前契约要求齐全的规则_ID 条数（RULE_001~012；Mapper 齐全校验用）。</summary>
-        public const int RequiredRuleCount = 12;
+        /// <summary>当前契约要求齐全的规则_ID 条数（RULE_001~017；Mapper 齐全校验用）。</summary>
+        public const int RequiredRuleCount = 17;
     }
 
     /// <summary>全局配置映射结果：Succeeded 为 true 时 Entries 可用；Errors 非空即失败（导入命令不得写入资产）；Warnings 无论成败都可能非空。</summary>
@@ -69,7 +69,7 @@ namespace PersonaCards.Data
 
     /// <summary>
     /// 全局配置配表映射器：把 XlsxTableReader 输出的行字典列表转成 GlobalConfigEntry 列表。
-    /// 规则：RULE_001~012 必须齐全（防策划误删，多出允许——规则可扩展）；数值类型「整数/小数」与配置数值
+    /// 规则：RULE_001~017 必须齐全（防策划误删，多出允许——规则可扩展）；数值类型「整数/小数」与配置数值
     /// 类型一致性校验；数值 string 原文保存（如 0.65 精确保存，供门面 parse）。
     /// </summary>
     public static class GlobalConfigTableMapper
@@ -151,7 +151,7 @@ namespace PersonaCards.Data
                 return new GlobalConfigMappingResult(false, null, errors, warnings);
             }
 
-            // RULE_001~012 齐全检查（防策划误删行）：缺任一 = 错误；多出的 ID 允许（规则可扩展）
+            // RULE_001~017 齐全检查（防策划误删行）：缺任一 = 错误；多出的 ID 允许（规则可扩展）
             for (var index = 1; index <= GlobalConfigTableContract.RequiredRuleCount; index++)
             {
                 var expected = $"RULE_{index:D3}";

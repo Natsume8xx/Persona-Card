@@ -10,7 +10,7 @@ namespace PersonaCards.UI.Editor
 {
     /// <summary>
     /// 全局配置导入命令：读取 Docs/人格牌.xlsx 的「全局配置」sheet，映射并覆写 GlobalConfig.asset（P0-1F）。
-    /// 任一行校验失败则整体中止（资产零改动），错误全部输出到 Console；RULE_001~012 齐全校验防误删。
+    /// 任一行校验失败则整体中止（资产零改动），错误全部输出到 Console；RULE_001~017 齐全校验防误删。
     /// </summary>
     public static class GlobalConfigImportCommand
     {
@@ -101,7 +101,7 @@ namespace PersonaCards.UI.Editor
 
         /// <summary>
         /// 取得或创建 GlobalConfig.asset（缺失时创建空条目资产）：首次导入与场景重建兜底共用。
-        /// 空条目 = 白盒合法（门面回落空配置，出牌/弃牌回落 4/3 行为零差异）——不存在「白盒 12 条拷贝」。
+        /// 空条目 = 白盒合法（门面回落空配置，出牌/弃牌回落 4/3 行为零差异）——不存在「白盒 17 条拷贝」。
         /// </summary>
         public static GlobalConfigAsset CreateOrReset()
         {
