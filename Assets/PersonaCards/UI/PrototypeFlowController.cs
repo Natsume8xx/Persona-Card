@@ -170,6 +170,10 @@ namespace PersonaCards.UI
         private Text _bossRevealNameText;
         private Text _bossRevealLineText;
         private bool _bossRevealTextsResolved;
+        // P0-6：奖励屏说明文本（Reward Rule）与金币结算行（按名查找缓存；基础句取场景静态原文，Find 失败后不追加金币行）
+        private Text _rewardRuleText;
+        private string _rewardRuleBaseText;
+        private bool _rewardRuleResolved;
         /// <summary>教程序列状态（P0-1G）：五步推进逻辑在 TutorialSequence 纯类中，本类只做 UI 接线。</summary>
         private readonly TutorialSequence _tutorial = new TutorialSequence();
         /// <summary>重播请求标志：主菜单「战斗教学」按钮置位，下一次进入战斗时消耗并自动播放。</summary>
@@ -695,13 +699,19 @@ namespace PersonaCards.UI
             Render();
         }
 
-        /// <summary>领取奖励强化：所选牌获得筹码强化后，按节点配置进商店或直接推进到下一节点。</summary>
+        /// <summary>领取奖励强化：所选牌获得筹码强化与本场金币奖励（P0-6 同时入账，_rewardClaimed 防重复领取），按节点配置进商店或直接推进到下一节点。</summary>
         private void ContinueFromReward()
         {
             if (_journeyDeck == null || _rewardClaimed || !_journeyDeck.GrantRewardEnhancement(SelectedJourneyCard.Id)) return;
             _rewardClaimed = true;
+            var coinReward = RunRoute.CoinsRewardOf(_flow.NodeIndex);
+            if (coinReward > 0)
+            {
+                _journeyDeck.AddCoins(coinReward);
+                MusicManager.Instance.PlaySfx(MusicCatalog.SfxCoin); // coin 音效接线：金币奖励入账
+            }
             if (!_flow.ContinueFromReward()) return;
-            Debug.Log($"[Flow] 已领取节点 {_flow.NodeIndex} 的奖励强化（{SelectedJourneyCard.Id}），去向 {_flow.Stage}。");
+            Debug.Log($"[Flow] 已领取节点 {_flow.NodeIndex} 的奖励强化（{SelectedJourneyCard.Id}）{(coinReward > 0 ? $"与金币 +{coinReward}" : "")}，去向 {_flow.Stage}。");
             HandleStageEntry(); // 商店 / Boss 揭示 / 铸牌 / 直接开战，按去向分别处理
             Render();
         }
@@ -751,7 +761,8 @@ namespace PersonaCards.UI
                 ? BossEncounterCatalog.CreateFromPool(node.bossPoolId, seed) // P0-3：按池抽取（与揭示界面同种子，必得同一 Boss）
                 : null;
             battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss,
-                playsLimit, discardsLimit, selectionLimit: GlobalConfig.SelectionLimit, journeyCoins: _journeyDeck.Coins); // P0-1I：当前金币注入战斗信息显示（3.3.9）
+                playsLimit, discardsLimit, selectionLimit: GlobalConfig.SelectionLimit, journeyCoins: _journeyDeck.Coins,
+                coinsReward: RunRoute.CoinsRewardOf(_flow.NodeIndex)); // P0-1I：当前金币注入战斗信息显示（3.3.9）；P0-6：本场金币奖励同源注入
             battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}"; // 进度只计战斗，生成节点不计入
             Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，出牌 {playsLimit} 弃牌 {discardsLimit}，场次种子 {seed}" +
                       (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));
@@ -1435,7 +1446,8 @@ namespace PersonaCards.UI
                     BeginMidRunForge(); // 同种子派生重建铸牌：骰值与退出前一致
                 if (stage == PrototypeFlowStage.Battle && data.battle != null && data.battle.hasSnapshot)
                 {
-                    battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout(), journeyCoins: _journeyDeck.Coins); // P0-1I：读档同步当前金币显示
+                    battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout(), journeyCoins: _journeyDeck.Coins,
+                        coinsReward: RunRoute.CoinsRewardOf(_flow.NodeIndex)); // P0-1I：读档同步当前金币显示；P0-6：本场金币奖励同源注入
                     // 快照恢复不经过 StartCurrentBattle，进度文案需在此显式刷新（走查反馈修复：否则残留场景默认文案）
                     battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}";
                 }
@@ -1688,6 +1700,23 @@ namespace PersonaCards.UI
             }
             battleScreen.SetActive(_flow.Stage == PrototypeFlowStage.Battle);
             rewardScreen.SetActive(_flow.Stage == PrototypeFlowStage.Reward);
+            if (_flow.Stage == PrototypeFlowStage.Reward)
+            {
+                // P0-6：奖励屏金币结算行——基础句取场景静态原文，运行时追加本场金币奖励；Find 失败静默跳过（美术重排容错）
+                if (!_rewardRuleResolved)
+                {
+                    _rewardRuleText = rewardScreen.transform.Find("Reward Card/Reward Rule")?.GetComponent<Text>();
+                    _rewardRuleBaseText = _rewardRuleText != null ? _rewardRuleText.text : null;
+                    _rewardRuleResolved = true;
+                }
+                if (_rewardRuleText != null)
+                {
+                    var coinReward = RunRoute.CoinsRewardOf(_flow.NodeIndex);
+                    _rewardRuleText.text = coinReward > 0
+                        ? _rewardRuleBaseText + $"\n本场金币奖励 +{coinReward}"
+                        : _rewardRuleBaseText;
+                }
+            }
             shopScreen.SetActive(_flow.Stage == PrototypeFlowStage.Shop);
             if (_flow.Stage == PrototypeFlowStage.Shop && ShopContinueLabel != null)
             {

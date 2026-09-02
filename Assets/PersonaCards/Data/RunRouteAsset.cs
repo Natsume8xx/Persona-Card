@@ -109,28 +109,28 @@ namespace PersonaCards.Data
 
         /// <summary>
         /// 内置白盒路线（= 配表"关卡流程"当前初值）：17 个阶段 = 12 场普通战斗 + 4 个人格牌生成节点（顺序 4/8/12/16）+ 最终 Boss（顺序 17）。
-        /// 奖励 4 列暂留空（白盒只兜底流程骨架，奖励接线留给后续阶段）。RunRoute 门面兜底与"Regenerate Run Route Asset"菜单共用此工厂，
-        /// 消灭多份拷贝漂移；正式数据以 xlsx 导入命令写入为准。
+        /// P0-6：普通战金币奖励列按配表补齐（3,3,4 三组 + 末组 2,3,4）；生成节点与最终 Boss 奖励为「无」，留空等价。
+        /// RunRoute 门面兜底与"Regenerate Run Route Asset"菜单共用此工厂，消灭多份拷贝漂移；正式数据以 xlsx 导入命令写入为准。
         /// </summary>
         public static List<RunBattleNode> CreateDefaultNodes()
         {
             return new List<RunBattleNode>
             {
-                new RunBattleNode(RunNodeKind.NormalBattle, 950, BossPoolId.None, true, stageId: "STAGE_01"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1100, BossPoolId.None, true, stageId: "STAGE_02"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1250, BossPoolId.None, true, stageId: "STAGE_03"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 950, BossPoolId.None, true, stageId: "STAGE_01", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1100, BossPoolId.None, true, stageId: "STAGE_02", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1250, BossPoolId.None, true, stageId: "STAGE_03", rewardType1: "金币", rewardParam1: "4"),
                 new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_04"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1350, BossPoolId.None, true, stageId: "STAGE_05"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1500, BossPoolId.None, true, stageId: "STAGE_06"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1650, BossPoolId.None, true, stageId: "STAGE_07"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1350, BossPoolId.None, true, stageId: "STAGE_05", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1500, BossPoolId.None, true, stageId: "STAGE_06", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1650, BossPoolId.None, true, stageId: "STAGE_07", rewardType1: "金币", rewardParam1: "4"),
                 new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_08"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1750, BossPoolId.None, true, stageId: "STAGE_09"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 1950, BossPoolId.None, true, stageId: "STAGE_10"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 2150, BossPoolId.None, true, stageId: "STAGE_11"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1750, BossPoolId.None, true, stageId: "STAGE_09", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 1950, BossPoolId.None, true, stageId: "STAGE_10", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2150, BossPoolId.None, true, stageId: "STAGE_11", rewardType1: "金币", rewardParam1: "4"),
                 new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_12"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 2300, BossPoolId.None, true, stageId: "STAGE_13"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 2500, BossPoolId.None, true, stageId: "STAGE_14"),
-                new RunBattleNode(RunNodeKind.NormalBattle, 2750, BossPoolId.None, true, stageId: "STAGE_15"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2300, BossPoolId.None, true, stageId: "STAGE_13", rewardType1: "金币", rewardParam1: "2"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2500, BossPoolId.None, true, stageId: "STAGE_14", rewardType1: "金币", rewardParam1: "3"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 2750, BossPoolId.None, true, stageId: "STAGE_15", rewardType1: "金币", rewardParam1: "4"),
                 new RunBattleNode(RunNodeKind.PersonaGen, 0, BossPoolId.None, false, genCount: 1, stageId: "STAGE_16"),
                 new RunBattleNode(RunNodeKind.BossBattle, 3200, BossPoolId.Primary, false, stageId: "STAGE_17")
             };

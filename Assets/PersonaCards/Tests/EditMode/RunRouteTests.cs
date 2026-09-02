@@ -37,6 +37,10 @@ namespace PersonaCards.Tests.EditMode
             {
                 950, 1100, 1250, null, 1350, 1500, 1650, null, 1750, 1950, 2150, null, 2300, 2500, 2750, null, 3200
             };
+            var expectedCoinRewards = new int?[]
+            {
+                3, 3, 4, null, 3, 3, 4, null, 3, 3, 4, null, 2, 3, 4, null, 0
+            };
             for (var index = 0; index < RunRoute.StageCount; index++)
             {
                 var node = RunRoute.GetNode(index);
@@ -52,7 +56,8 @@ namespace PersonaCards.Tests.EditMode
                 {
                     Assert.That(node.targetScore, Is.EqualTo(expectedScores[index].Value), $"节点 {index} 目标分与配表白盒不符");
                     Assert.That(node.hasShopAfter, Is.EqualTo(index != 16), $"节点 {index} 商店标记不符（非最终战斗都带商店）");
-                    Assert.That(node.rewardType1, Is.Empty, $"节点 {index} 白盒奖励列应为空（奖励接线留给后续阶段）");
+                    Assert.That(RunRoute.CoinsRewardOf(index), Is.EqualTo(expectedCoinRewards[index].Value),
+                        $"节点 {index} 金币奖励与配表白盒不符（3,3,4 三组 + 末组 2,3,4，生成节点与最终 Boss 为 0）");
                 }
             }
 
@@ -247,6 +252,32 @@ namespace PersonaCards.Tests.EditMode
             RunRoute.Configure(asset);
             Assert.That(RunRoute.PlaysLimitOf(0), Is.EqualTo(5));
             Assert.That(RunRoute.DiscardsLimitOf(0), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void CoinsRewardOfSumsCoinColumnsAndFallsBackOnInvalidParams()
+        {
+            // 白盒路线金币组已在 DefaultRouteHasExpectedStructure 逐节点断言；本测试聚焦门面语义：
+            // 两列金币累加、参数非法回落 0、非金币类型不计入、无奖励列的节点为 0
+            var asset = ScriptableObject.CreateInstance<RunRouteAsset>();
+            asset.battleNodes = new List<RunBattleNode>
+            {
+                new RunBattleNode(RunNodeKind.NormalBattle, 100, BossPoolId.None, false,
+                    rewardType1: "金币", rewardParam1: "3", rewardType2: "金币", rewardParam2: "4"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 200, BossPoolId.None, false,
+                    rewardType1: "金币", rewardParam1: "不是数字"),
+                new RunBattleNode(RunNodeKind.NormalBattle, 300, BossPoolId.None, false,
+                    rewardType1: "无", rewardParam1: "5"),
+                new RunBattleNode(RunNodeKind.BossBattle, 400, BossPoolId.Primary, false)
+            };
+
+            RunRoute.Configure(asset);
+
+            Assert.That(RunRoute.CoinsRewardOf(0), Is.EqualTo(7)); // 奖励 2 列都是金币 → 累加
+            Assert.That(RunRoute.CoinsRewardOf(1), Is.EqualTo(0)); // 参数非法 → 回落 0
+            Assert.That(RunRoute.CoinsRewardOf(2), Is.EqualTo(0)); // 类型「无」不是金币
+            Assert.That(RunRoute.CoinsRewardOf(3), Is.EqualTo(0)); // Boss 关无奖励列
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => RunRoute.CoinsRewardOf(4)); // 越界与 GetNode 同规则
         }
 
         [Test]

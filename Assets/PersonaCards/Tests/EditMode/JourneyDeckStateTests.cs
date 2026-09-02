@@ -45,6 +45,27 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void AddCoinsIncreasesBalanceAndAllowsZero()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create(), 3);
+
+            journey.AddCoins(3);
+            Assert.That(journey.Coins, Is.EqualTo(6));
+
+            journey.AddCoins(0); // 零额发放为幂等空操作
+            Assert.That(journey.Coins, Is.EqualTo(6));
+        }
+
+        [Test]
+        public void AddCoinsRejectsNegativeAmounts()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create(), 3);
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => journey.AddCoins(-1));
+            Assert.That(journey.Coins, Is.EqualTo(3)); // 非法调用不改变余额
+        }
+
+        [Test]
         public void PersonaSlotCycleSwapsDefinitionsAndPreservesUniqueLoadout()
         {
             var state = new PersonaLoadoutState();

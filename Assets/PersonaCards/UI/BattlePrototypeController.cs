@@ -209,7 +209,7 @@ namespace PersonaCards.UI
         public void BeginBattle(long targetScore, uint seed, IEnumerable<PlayingCardInstance> cards = null,
             PersonaLoadout personaLoadout = null, BossEncounterRuntime bossEncounter = null,
             int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards,
-            int selectionLimit = BattleStateMachine.DefaultSelectionLimit, int journeyCoins = 0)
+            int selectionLimit = BattleStateMachine.DefaultSelectionLimit, int journeyCoins = 0, int coinsReward = 0)
         {
             _battle = new BattleStateMachine(cards ?? StandardDeckFactory.Create(), seed, targetScore,
                 personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(), bossEncounter: bossEncounter,
@@ -219,9 +219,9 @@ namespace PersonaCards.UI
             // P0-1I：新战斗开局重置手牌显示排序为默认「大小」（排序偏好不落档），并刷新按钮文案
             _handSortMode = HandSortMode.RankFirst;
             RefreshHandSortButtonLabel();
-            // P0-1I：当前金币由 FlowController 注入（来源 JourneyDeckState）；本场获得金币预留 P0-6 接入
+            // P0-1I：当前金币由 FlowController 注入（来源 JourneyDeckState）；本场金币奖励按节点配置注入（P0-6）
             _journeyCoins = journeyCoins;
-            _battleCoinsGained = 0;
+            _battleCoinsGained = coinsReward;
             deckViewerOverlay.SetActive(false);
             handReferenceOverlay.SetActive(false);
             resultOverlay.SetActive(false);
@@ -231,7 +231,7 @@ namespace PersonaCards.UI
             RefreshBossRule();
         }
 
-        public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout, int journeyCoins = 0)
+        public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout, int journeyCoins = 0, int coinsReward = 0)
         {
             _battle = new BattleStateMachine(snapshot, personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(),
                 selectionLimit: GlobalConfig.SelectionLimit);
@@ -240,11 +240,11 @@ namespace PersonaCards.UI
             resultOverlay.SetActive(false);
             deckViewerOverlay.SetActive(false);
             handReferenceOverlay.SetActive(false);
-            // P0-1I：读档恢复默认「大小」排序；金币与 BeginBattle 同源注入
+            // P0-1I：读档恢复默认「大小」排序；金币与本场金币奖励与 BeginBattle 同源注入（P0-6）
             _handSortMode = HandSortMode.RankFirst;
             RefreshHandSortButtonLabel();
             _journeyCoins = journeyCoins;
-            _battleCoinsGained = 0;
+            _battleCoinsGained = coinsReward;
             scoringLogText.text = "战斗已从存档恢复";
             messageText.text = _battle.SelectedCardIds.Count > 0 ? "已恢复上次选择" : $"选择 1—{_battle.SelectionLimit} 张牌，然后出牌或弃牌";
             RefreshAll();
@@ -300,7 +300,7 @@ namespace PersonaCards.UI
                     Mathf.Lerp(_progressFillLeftX, _progressFillRightX, progressRatio),
                     _scoreProgressFillRect.anchorMax.y);
             }
-            // P0-1I 金币两行（3.3.9）：获得金币=本场累计（P0-6 接入前恒 +0），当前金币=旅程持有总量
+            // P0-1I 金币两行（3.3.9）：获得金币=本场金币奖励（P0-6 按节点配置注入，奖励屏领取时入账），当前金币=旅程持有总量
             resourceText.text = $"剩余出牌：{_battle.PlaysRemaining} / {_battle.PlaysLimit}\n\n剩余弃牌：{_battle.DiscardsRemaining} / {_battle.DiscardsLimit}\n\n牌堆：{_battle.Deck.DrawPile.Count}\n\n获得金币：+{_battleCoinsGained}\n\n当前金币：{_journeyCoins}";
             var playerCanInspect = _battle.Status == BattleStatus.PlayerTurn && !_battle.IsPresentationLocked && !_modalOpen;
             var canAct = playerCanInspect && _battle.SelectedCardIds.Count > 0;

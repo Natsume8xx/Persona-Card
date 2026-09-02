@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using PersonaCards.Battle;
 using PersonaCards.Data;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace PersonaCards.UI
         /// <summary>弃牌次数默认值：节点配置为 0（未指定）时回落此值；单一来源 = GlobalConfig 门面（RULE_002，白盒回落 BattleStateMachine.StartingDiscards）。</summary>
         public static int DefaultDiscardsLimit => GlobalConfig.StartingDiscards;
 
-        /// <summary>内置默认路线（= 配表"关卡流程"当前初值，与 RunRouteAsset.CreateDefaultNodes() 同源）：13 个阶段 = 10 场战斗 + 3 个人格牌生成节点（顺序 4/8/12）。</summary>
+        /// <summary>内置默认路线（= 配表"关卡流程"当前初值，与 RunRouteAsset.CreateDefaultNodes() 同源）：17 个阶段 = 12 场普通战斗 + 4 个人格牌生成节点（顺序 4/8/12/16）+ 最终 Boss。</summary>
         private static readonly IReadOnlyList<RunBattleNode> DefaultNodes = RunRouteAsset.CreateDefaultNodes();
 
         private static IReadOnlyList<RunBattleNode> _nodes = DefaultNodes;
@@ -132,6 +133,21 @@ namespace PersonaCards.UI
             if (!RunRouteAsset.IsBattleKind(node.kind))
                 throw new InvalidOperationException($"节点 {index} 是人格牌生成节点，没有弃牌限制。");
             return node.discardsLimit > 0 ? node.discardsLimit : DefaultDiscardsLimit;
+        }
+
+        /// <summary>节点的金币奖励（P0-6）：奖励 2 列中类型为「金币」的参数之和；参数非法回落 0。生成节点与 Boss 关等无金币奖励的节点返回 0。</summary>
+        public static int CoinsRewardOf(int index)
+        {
+            var node = GetNode(index);
+            return CoinParam(node.rewardType1, node.rewardParam1) + CoinParam(node.rewardType2, node.rewardParam2);
+        }
+
+        private static int CoinParam(string rewardType, string rewardParam)
+        {
+            if (!string.Equals(rewardType, RunRouteTableContract.RewardGold, StringComparison.Ordinal)) return 0;
+            return int.TryParse(rewardParam, NumberStyles.Integer, CultureInfo.InvariantCulture, out var coins) && coins > 0
+                ? coins
+                : 0;
         }
     }
 }

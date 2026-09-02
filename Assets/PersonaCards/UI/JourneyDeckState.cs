@@ -30,6 +30,13 @@ namespace PersonaCards.UI
         public IReadOnlyList<PlayingCardInstance> Cards => _cards.AsReadOnly();
         public int Coins { get; private set; }
 
+        /// <summary>发放金币（P0-6 战斗奖励入账）：负数拒绝，非法调用必须暴露。</summary>
+        public void AddCoins(int amount)
+        {
+            if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount));
+            Coins += amount;
+        }
+
         public bool GrantRewardEnhancement(string cardId)
         {
             return ReplaceCard(cardId, card => new PlayingCardInstance(card.Id, card.Suit, card.Rank, CardEnhancement.ChipBoost));
