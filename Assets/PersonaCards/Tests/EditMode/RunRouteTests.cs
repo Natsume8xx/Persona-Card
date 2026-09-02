@@ -234,6 +234,20 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void GenerationNodeCountBeforeCountsOnlyPreviousNodes()
+        {
+            RunRoute.Configure(null);
+
+            Assert.That(RunRoute.GenerationNodeCountBefore(0), Is.EqualTo(0)); // 首节点之前无生成节点
+            Assert.That(RunRoute.GenerationNodeCountBefore(3), Is.EqualTo(0));
+            Assert.That(RunRoute.GenerationNodeCountBefore(4), Is.EqualTo(1)); // 节点 4（生成节点）之前已过节点 3
+            Assert.That(RunRoute.GenerationNodeCountBefore(8), Is.EqualTo(2));
+            Assert.That(RunRoute.GenerationNodeCountBefore(12), Is.EqualTo(3));
+            Assert.That(RunRoute.GenerationNodeCountBefore(16), Is.EqualTo(4)); // 最终 Boss 之前已过全部 4 个生成节点
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => RunRoute.GenerationNodeCountBefore(17));
+        }
+
+        [Test]
         public void PlaysLimitOfResolvesDefaultAndCustom()
         {
             RunRoute.Configure(null);

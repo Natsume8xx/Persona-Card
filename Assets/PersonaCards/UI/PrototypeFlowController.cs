@@ -85,6 +85,12 @@ namespace PersonaCards.UI
         [SerializeField] private PersonaConfigAsset personaConfig;
         /// <summary>全局配置资产（P0-1F 数据驱动）：Awake 时注入 GlobalConfig；未配置或校验失败时回落白盒（= 空配置，出牌/弃牌回落 4/3）。</summary>
         [SerializeField] private GlobalConfigAsset globalConfig;
+        /// <summary>商店商品资产（P0-7 数据驱动）：Awake 时注入 ShopCatalog；未配置时回落空列表（商店位全部「无货」）。</summary>
+        [SerializeField] private ShopProductAsset shopProducts;
+        /// <summary>商店商品刷新规则资产（P0-7 数据驱动）：同上，空配置回落空列表。</summary>
+        [SerializeField] private ShopPoolRefreshAsset shopPools;
+        /// <summary>商店商品槽位刷新规则资产（P0-7 数据驱动）：同上，空配置回落空列表。</summary>
+        [SerializeField] private ShopSlotRefreshAsset shopSlots;
         /// <summary>教程遮罩根（P0-1G，Battle 屏子对象）：仅教程激活时显示，遮罩 Image 拦截下层战斗按钮点击。</summary>
         [SerializeField] private GameObject tutorialOverlay;
         /// <summary>教程面板内：步骤文本（右上「教学 n / 5」）/标题/正文。</summary>
@@ -166,6 +172,12 @@ namespace PersonaCards.UI
         private int _selectedEquipmentSlot;
         /// <summary>商店继续按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
         private Text _shopContinueLabel;
+        /// <summary>商店运行时状态（P0-7）：进入商店时按节点种子生成商品位，读档同种子重建可复现；售罄态不随存档走（P0-8 入快照）。</summary>
+        private ShopState _shopState;
+        /// <summary>商店三个服务按钮（P0-7 起复用为商品位，顺序 = ShopState 槽位序：卡牌/人格牌/服务）。</summary>
+        private Button[] _shopSlotButtons;
+        /// <summary>三个商品位按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
+        private readonly Text[] _shopSlotLabels = new Text[3];
         // P0-9：揭示屏 Boss 名牌/台词（场景静态文本按名查找缓存；Find 失败后不再重试，显示场景默认值）
         private Text _bossRevealNameText;
         private Text _bossRevealLineText;
@@ -344,6 +356,17 @@ namespace PersonaCards.UI
             quitGameButton = quitGame;
         }
 
+        /// <summary>
+        /// 商店三资产引用注入（P0-7）：同 ConfigureSettings 惯例独立注入，不膨胀主 Configure 签名。
+        /// SceneBuilder 在 Configure 后调用；null 时 ShopCatalog 回落空配置（商店位全部「无货」）。
+        /// </summary>
+        public void ConfigureShop(ShopProductAsset products, ShopPoolRefreshAsset pools, ShopSlotRefreshAsset slots)
+        {
+            shopProducts = products;
+            shopPools = pools;
+            shopSlots = slots;
+        }
+
         private void Awake()
         {
             // 路线资产注入：null 时 RunRoute 回落内置默认路线，流程仍可跑（P0-1 数据驱动）
@@ -424,6 +447,29 @@ namespace PersonaCards.UI
                 if (!string.IsNullOrEmpty(summary))
                     Debug.Log($"[Global] 全局配置已注入：{summary}");
             }
+            // 商店三资产注入（P0-7 数据驱动）：null 或校验失败 → 门面回落空列表（商店位全部「无货」），流程仍可跑
+            if (shopProducts == null || shopPools == null || shopSlots == null)
+            {
+                Debug.LogWarning("[Shop] 商店三资产未配置完整：商品/池/槽位刷新规则回落空配置（商店位「无货」）。");
+                ShopCatalog.Configure(null, null, null);
+            }
+            else
+            {
+                var productValid = shopProducts.Validate(out var shopProductError);
+                var poolValid = shopPools.Validate(out var shopPoolError);
+                var slotValid = shopSlots.Validate(out var shopSlotError);
+                if (!productValid || !poolValid || !slotValid)
+                {
+                    Debug.LogWarning($"[Shop] 商店资产校验失败（{shopProductError ?? shopPoolError ?? shopSlotError}）：回落空配置（商店位「无货」）。");
+                    ShopCatalog.Configure(null, null, null);
+                }
+                else
+                {
+                    ShopCatalog.Configure(shopProducts.entries, shopPools.entries, shopSlots.entries);
+                    Debug.Log($"[Shop] 商店配置已注入：商品 {shopProducts.entries.Count} 条、池规则 {shopPools.entries.Count} 条、槽位规则 {shopSlots.entries.Count} 条。");
+                }
+            }
+            _shopSlotButtons = new[] { shopDeleteButton, shopReforgeButton, shopEnhanceButton }; // 三按钮复用为商品位（顺序 = 槽位序）
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
             startButton.onClick.AddListener(StartNewRun);
@@ -455,9 +501,10 @@ namespace PersonaCards.UI
             rewardNextButton.onClick.AddListener(SelectNextJourneyCard);
             shopPreviousButton.onClick.AddListener(SelectPreviousJourneyCard);
             shopNextButton.onClick.AddListener(SelectNextJourneyCard);
-            shopDeleteButton.onClick.AddListener(() => Purchase(JourneyDeckAction.Delete));
-            shopReforgeButton.onClick.AddListener(() => Purchase(JourneyDeckAction.Reforge));
-            shopEnhanceButton.onClick.AddListener(() => Purchase(JourneyDeckAction.Enhance));
+            // P0-7：三个服务按钮改为商品位按钮，点击按槽位购买（槽位序 0/1/2 = 卡牌/人格牌/服务）
+            shopDeleteButton.onClick.AddListener(() => PurchaseShopSlot(0));
+            shopReforgeButton.onClick.AddListener(() => PurchaseShopSlot(1));
+            shopEnhanceButton.onClick.AddListener(() => PurchaseShopSlot(2));
             for (var index = 0; index < personaSlotButtons.Length; index++)
             {
                 var slotIndex = index;
@@ -724,7 +771,7 @@ namespace PersonaCards.UI
             Render();
         }
 
-        /// <summary>节点推进后的入场处理：普通战直接开战；Boss 战停留在揭示界面；生成节点初始化铸牌。</summary>
+        /// <summary>节点推进后的入场处理：普通战直接开战；Boss 战停留在揭示界面；生成节点初始化铸牌；商店生成商品位。</summary>
         private void HandleStageEntry()
         {
             if (_flow.Stage == PrototypeFlowStage.Battle)
@@ -736,7 +783,24 @@ namespace PersonaCards.UI
             {
                 BeginMidRunForge();
             }
-            SaveActiveRun(); // Boss 揭示 / 铸牌：战斗未开始，仅保存流程位置与牌库
+            else if (_flow.Stage == PrototypeFlowStage.Shop)
+            {
+                EnterShop(); // P0-7：按节点派生种子生成商品位（同节点同种子必得同商品）
+            }
+            SaveActiveRun(); // Boss 揭示 / 铸牌 / 商店：战斗未开始，仅保存流程位置与牌库
+        }
+
+        /// <summary>
+        /// 进入商店（P0-7）：商品位种子 = 局种子 + 节点序号 + 2000（与战斗 +1、铸牌 +1000 错开）；
+        /// 存档恢复同节点重建（同种子必得同商品），售罄态不随存档走（P0-8 入快照）。
+        /// </summary>
+        private void EnterShop()
+        {
+            var node = RunRoute.GetNode(_flow.NodeIndex);
+            var generationCount = RunRoute.GenerationNodeCountBefore(_flow.NodeIndex);
+            var seed = unchecked(_runSeed + (uint)(node.Index + 2000));
+            _shopState = new ShopState(ShopCatalog.Products, ShopCatalog.PoolRules, ShopCatalog.SlotRules, generationCount, seed);
+            Debug.Log($"[Flow] 进入商店：节点 {_flow.NodeIndex}（AI 分组 {ShopState.GroupNameOf(generationCount)}），商品位 {_shopState.Slots.Count} 个。");
         }
 
         /// <summary>进入人格牌生成节点：按节点派生种子初始化铸牌状态（+1000 与战斗种子错开；存档恢复后同种子重建，骰值可复现）。</summary>
@@ -1392,18 +1456,62 @@ namespace PersonaCards.UI
             RefreshJourneyCardText();
         }
 
-        private void Purchase(JourneyDeckAction action)
+        /// <summary>
+        /// 商品位购买（P0-7，策划案 10.6 语义）：无货/已售罄/金币不足不生效；效果应用失败（如该牌已在牌组）不扣款不售罄；
+        /// 成功才扣款并标记售罄（限购 1 = 即买即售罄）。售罄态不随存档走，读档后商店重置（P0-8 入快照）。
+        /// </summary>
+        private void PurchaseShopSlot(int slotIndex)
         {
-            var card = SelectedJourneyCard;
-            if (!_journeyDeck.TryPurchase(action, card.Id))
+            if (_shopState == null || slotIndex < 0 || slotIndex >= _shopState.Slots.Count) return;
+            var slot = _shopState.Slots[slotIndex];
+            var product = slot.Product;
+            if (product == null || slot.SoldOut)
             {
-                shopStatusText.text = "购买失败：金币不足或目标无效";
+                shopStatusText.text = "该商品位已售罄";
                 return;
             }
-            _selectedJourneyCardIndex = Mathf.Clamp(_selectedJourneyCardIndex, 0, _journeyDeck.Cards.Count - 1);
-            shopStatusText.text = $"已完成{ActionName(action)}，剩余金币 {_journeyDeck.Coins}";
+            if (_journeyDeck.Coins < product.price)
+            {
+                shopStatusText.text = "购买失败：金币不足";
+                return;
+            }
+            if (!ApplyProductEffect(product))
+            {
+                shopStatusText.text = product.effectType == ShopState.EffectAddCard
+                    ? "购买失败：该牌已在牌组（先移除才能买回）"
+                    : "购买失败：牌组不可再删（已达手牌下限）";
+                return;
+            }
+            slot.MarkSold();
+            shopStatusText.text = $"已购买 {product.productName}，剩余金币 {_journeyDeck.Coins}";
             RefreshJourneyCardText();
+            Render(); // 商品位刷新：已购位变「已售罄」，其余位按新金币余额重算灰态
             SaveActiveRun();
+        }
+
+        /// <summary>商品效果应用（P0-7 白名单分派）：成功时内部完成扣款；失败返回 false 且不扣款（策划案 10.6 扣款失败不生效）。</summary>
+        private bool ApplyProductEffect(ShopProductEntry product)
+        {
+            switch (product.effectType)
+            {
+                case ShopState.EffectAddCard:
+                {
+                    // 商品配置无 id 列：按商品名解析花色点数（临时口径，待策划确认）；牌组已有同 id 牌时 AddCard 拒绝
+                    if (!ShopState.TryParseCardName(product.productName, out var suit, out var rank)) return false;
+                    var card = new PlayingCardInstance(StandardDeckFactory.CreateId(suit, rank), suit, rank);
+                    if (!_journeyDeck.AddCard(card)) return false;
+                    return _journeyDeck.TrySpend(product.price); // 购买校验已保证余额足够，此处必成功
+                }
+                case ShopState.EffectRemoveCard:
+                {
+                    var card = SelectedJourneyCard;
+                    if (!_journeyDeck.TryPurchase(JourneyDeckAction.Delete, card.Id, product.price)) return false;
+                    _selectedJourneyCardIndex = Mathf.Clamp(_selectedJourneyCardIndex, 0, _journeyDeck.Cards.Count - 1);
+                    return true;
+                }
+                default:
+                    return false; // 白名单外效果不可能上架（PickProduct 已过滤），防御性拒绝
+            }
         }
 
         private void ContinueSavedRun()
@@ -1444,6 +1552,8 @@ namespace PersonaCards.UI
                     _forgeState = new PersonaForgeState(_behaviorTracker.CreateReport(), 20260820u);
                 else if (stage == PrototypeFlowStage.PersonaGen)
                     BeginMidRunForge(); // 同种子派生重建铸牌：骰值与退出前一致
+                else if (stage == PrototypeFlowStage.Shop)
+                    EnterShop(); // P0-7：同种子重建商品位（售罄态不随存档走，P0-8 入快照）
                 if (stage == PrototypeFlowStage.Battle && data.battle != null && data.battle.hasSnapshot)
                 {
                     battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout(), journeyCoins: _journeyDeck.Coins,
@@ -1639,18 +1749,7 @@ namespace PersonaCards.UI
             rewardCardText.text = description;
             shopCardText.text = description + $"\n金币：{_journeyDeck.Coins}";
             shopCoinsText.text = $"当前金币：{_journeyDeck.Coins}";
-            var canPurchase = _journeyDeck.Coins >= 2;
-            shopDeleteButton.interactable = canPurchase;
-            shopReforgeButton.interactable = canPurchase;
-            shopEnhanceButton.interactable = canPurchase;
         }
-
-        private static string ActionName(JourneyDeckAction action) => action switch
-        {
-            JourneyDeckAction.Delete => "删除",
-            JourneyDeckAction.Reforge => "重刻",
-            _ => "强化"
-        };
 
         private static string SuitName(Suit suit) => suit switch
         {
@@ -1671,6 +1770,40 @@ namespace PersonaCards.UI
 
         /// <summary>商店继续按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
         private Text ShopContinueLabel => _shopContinueLabel ??= shopContinueButton.GetComponentInChildren<Text>(true);
+
+        /// <summary>商品位按钮的文案标签（按钮子对象，延迟获取并缓存；Find 失败保持 null，静默不刷新）。</summary>
+        private Text ShopSlotLabel(int slotIndex)
+        {
+            if (_shopSlotLabels[slotIndex] == null && _shopSlotButtons != null && slotIndex < _shopSlotButtons.Length)
+                _shopSlotLabels[slotIndex] = _shopSlotButtons[slotIndex].GetComponentInChildren<Text>(true);
+            return _shopSlotLabels[slotIndex];
+        }
+
+        /// <summary>商品位渲染（P0-7）：文本 = 商品名 + 价格；无货/已售罄灰态；金币不足灰态。槽位多于按钮时只渲染前 3 位。</summary>
+        private void RefreshShopSlots()
+        {
+            for (var i = 0; i < _shopSlotButtons.Length; i++)
+            {
+                var button = _shopSlotButtons[i];
+                var label = ShopSlotLabel(i);
+                var slot = _shopState != null && i < _shopState.Slots.Count ? _shopState.Slots[i] : null;
+                if (slot == null || slot.Product == null)
+                {
+                    if (label != null) label.text = "无货";
+                    button.interactable = false;
+                }
+                else if (slot.SoldOut)
+                {
+                    if (label != null) label.text = $"{slot.Product.productName} · 已售罄";
+                    button.interactable = false;
+                }
+                else
+                {
+                    if (label != null) label.text = $"{slot.Product.productName} · 费用 {slot.Product.price}";
+                    button.interactable = _journeyDeck != null && _journeyDeck.Coins >= slot.Product.price;
+                }
+            }
+        }
 
         private void Render()
         {
@@ -1718,13 +1851,17 @@ namespace PersonaCards.UI
                 }
             }
             shopScreen.SetActive(_flow.Stage == PrototypeFlowStage.Shop);
-            if (_flow.Stage == PrototypeFlowStage.Shop && ShopContinueLabel != null)
+            if (_flow.Stage == PrototypeFlowStage.Shop)
             {
-                // 商店继续按钮文案按下一节点类型提示去向（配表可指定任意后续节点）
-                var nextKind = RunRoute.NextNodeKindOf(_flow.NodeIndex);
-                ShopContinueLabel.text = nextKind == RunNodeKind.BossBattle ? "离开商店 · 前往 Boss"
-                    : nextKind == RunNodeKind.PersonaGen ? "离开商店 · 前往铸牌"
-                    : "离开商店 · 继续旅程";
+                if (ShopContinueLabel != null)
+                {
+                    // 商店继续按钮文案按下一节点类型提示去向（配表可指定任意后续节点）
+                    var nextKind = RunRoute.NextNodeKindOf(_flow.NodeIndex);
+                    ShopContinueLabel.text = nextKind == RunNodeKind.BossBattle ? "离开商店 · 前往 Boss"
+                        : nextKind == RunNodeKind.PersonaGen ? "离开商店 · 前往铸牌"
+                        : "离开商店 · 继续旅程";
+                }
+                RefreshShopSlots(); // P0-7：商品位渲染（无货/售罄/金币不足灰态）
             }
             runReportScreen.SetActive(_flow.Stage == PrototypeFlowStage.RunReport);
             personaForgeScreen.SetActive(_flow.Stage == PrototypeFlowStage.PersonaForge || _flow.Stage == PrototypeFlowStage.PersonaGen); // 中局铸牌复用铸牌界面

@@ -135,6 +135,18 @@ namespace PersonaCards.UI
             return node.discardsLimit > 0 ? node.discardsLimit : DefaultDiscardsLimit;
         }
 
+        /// <summary>节点之前已过的生成节点数（P0-7 商店 AI 分组临时口径：0→AI1、1→AI2、≥2→AI3，映射见 ShopState.GroupNameOf）。</summary>
+        public static int GenerationNodeCountBefore(int index)
+        {
+            GetNode(index); // 越界校验与 GetNode 同规则
+            var count = 0;
+            for (var i = 0; i < index; i++)
+            {
+                if (_nodes[i].kind == RunNodeKind.PersonaGen) count++;
+            }
+            return count;
+        }
+
         /// <summary>节点的金币奖励（P0-6）：奖励 2 列中类型为「金币」的参数之和；参数非法回落 0。生成节点与 Boss 关等无金币奖励的节点返回 0。</summary>
         public static int CoinsRewardOf(int index)
         {

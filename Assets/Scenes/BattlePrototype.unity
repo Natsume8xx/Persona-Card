@@ -18518,6 +18518,9 @@ MonoBehaviour:
   cardConfig: {fileID: 11400000, guid: 2706a2ebe6de2488ca49a5f134344148, type: 2}
   personaConfig: {fileID: 11400000, guid: 17a0e44f23bd343dda0d37b46ba47c14, type: 2}
   globalConfig: {fileID: 11400000, guid: baf2bc243a9dd4a8392114d16ae707d6, type: 2}
+  shopProducts: {fileID: 11400000, guid: 0b4bd9eb771014cd4a8850ba54ab4bfa, type: 2}
+  shopPools: {fileID: 11400000, guid: fe981483a769a48cdadc49bca87bca17, type: 2}
+  shopSlots: {fileID: 11400000, guid: 63a21508a353b4855ae86828fbca96d4, type: 2}
   tutorialOverlay: {fileID: 6022627}
   tutorialStepText: {fileID: 1294659455}
   tutorialTitleText: {fileID: 1833995878}

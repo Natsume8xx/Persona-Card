@@ -42,9 +42,17 @@ namespace PersonaCards.UI
             return ReplaceCard(cardId, card => new PlayingCardInstance(card.Id, card.Suit, card.Rank, CardEnhancement.ChipBoost));
         }
 
+        /// <summary>按固定商店价（2 金币）购买旧三类服务；成功才扣款。</summary>
         public bool TryPurchase(JourneyDeckAction action, string cardId)
         {
-            if (Coins < ShopCost) return false;
+            return TryPurchase(action, cardId, ShopCost);
+        }
+
+        /// <summary>按商品价购买旧三类服务（P0-7 商店商品位分派用）：成功才扣款，扣款失败不生效（策划案 10.6）。负数价格拒绝。</summary>
+        public bool TryPurchase(JourneyDeckAction action, string cardId, int cost)
+        {
+            if (cost < 0) throw new ArgumentOutOfRangeException(nameof(cost));
+            if (Coins < cost) return false;
             var succeeded = action switch
             {
                 JourneyDeckAction.Delete => Delete(cardId),
@@ -52,8 +60,26 @@ namespace PersonaCards.UI
                 JourneyDeckAction.Enhance => ReplaceCard(cardId, card => new PlayingCardInstance(card.Id, card.Suit, card.Rank, CardEnhancement.MultBoost)),
                 _ => false
             };
-            if (succeeded) Coins -= ShopCost;
+            if (succeeded) Coins -= cost;
             return succeeded;
+        }
+
+        /// <summary>按商品价扣款（P0-7 增加卡牌类商品分派用，效果应用成功后调用）：金币不足返回 false 不扣款。负数价格拒绝。</summary>
+        public bool TrySpend(int cost)
+        {
+            if (cost < 0) throw new ArgumentOutOfRangeException(nameof(cost));
+            if (Coins < cost) return false;
+            Coins -= cost;
+            return true;
+        }
+
+        /// <summary>商店购买「增加卡牌」（P0-7）：牌组未含同 id 牌时加入（同一张牌不可重复持有）；返回是否成功。</summary>
+        public bool AddCard(PlayingCardInstance card)
+        {
+            if (card == null) throw new ArgumentNullException(nameof(card));
+            if (FindIndex(card.Id) >= 0) return false;
+            _cards.Add(card);
+            return true;
         }
 
         public IReadOnlyList<PlayingCardInstance> CreateBattleDeck()

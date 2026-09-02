@@ -209,6 +209,8 @@ namespace PersonaCards.UI.Editor
                 flowReferences.TutorialNextLabel,
                 flowReferences.TutorialReplay,
                 flowReferences.TutorialReplayLabel);
+            // P0-7 商店三资产注入：独立于主 Configure 签名（已满），与 ConfigureSettings 同惯例
+            flow.ConfigureShop(EnsureShopProductAsset(), EnsureShopPoolRefreshAsset(), EnsureShopSlotRefreshAsset());
             // P0-1H 设置系统接线：22 个设置引用独立注入（Configure 签名已满）
             flow.ConfigureSettings(
                 flowReferences.Settings.MainMenuEntry,
@@ -318,6 +320,78 @@ namespace PersonaCards.UI.Editor
             return asset;
         }
 
+        /// <summary>确保商店商品资产存在并返回引用：缺失时创建空条目资产（P0-7，白盒 = 商店位全部「无货」，导入菜单补数据后生效）。</summary>
+        private static ShopProductAsset EnsureShopProductAsset()
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<ShopProductAsset>(ShopProductImportCommand.AssetPath);
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<ShopProductAsset>();
+                asset.name = "ShopProduct";
+                AssetDatabase.CreateAsset(asset, ShopProductImportCommand.AssetPath);
+                AssetDatabase.SaveAssets();
+                Debug.Log("[Shop] 场景重建时发现商品资产缺失，已创建空条目资产（商店位「无货」）。");
+            }
+            return asset;
+        }
+
+        /// <summary>确保商店商品刷新规则资产存在并返回引用：缺失时创建空条目资产（同上）。</summary>
+        private static ShopPoolRefreshAsset EnsureShopPoolRefreshAsset()
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<ShopPoolRefreshAsset>(ShopPoolRefreshImportCommand.AssetPath);
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<ShopPoolRefreshAsset>();
+                asset.name = "ShopPoolRefresh";
+                AssetDatabase.CreateAsset(asset, ShopPoolRefreshImportCommand.AssetPath);
+                AssetDatabase.SaveAssets();
+                Debug.Log("[Shop] 场景重建时发现商品刷新规则资产缺失，已创建空条目资产（商店位「无货」）。");
+            }
+            return asset;
+        }
+
+        /// <summary>确保商店商品槽位刷新规则资产存在并返回引用：缺失时创建空条目资产（同上）。</summary>
+        private static ShopSlotRefreshAsset EnsureShopSlotRefreshAsset()
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<ShopSlotRefreshAsset>(ShopSlotRefreshImportCommand.AssetPath);
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<ShopSlotRefreshAsset>();
+                asset.name = "ShopSlotRefresh";
+                AssetDatabase.CreateAsset(asset, ShopSlotRefreshImportCommand.AssetPath);
+                AssetDatabase.SaveAssets();
+                Debug.Log("[Shop] 场景重建时发现商品槽位刷新规则资产缺失，已创建空条目资产（商店位「无货」）。");
+            }
+            return asset;
+        }
+
+        [MenuItem("Persona Cards/接线商店资产到场景（P0-7）")]
+        public static void WireShopAssetsIntoScene()
+        {
+            // 2026-08-26 起 Build 重建禁用（美术保护）：本菜单只把商店三资产赋给场景里 Prototype Flow Controller
+            // 的 3 个引用字段（shopProducts/shopPools/shopSlots）并保存——不重建 UI、不触碰任何美术节点。
+            // 场景重建恢复后此接线由 flow.ConfigureShop(...) 自动完成，本菜单无需再点。
+            var scene = EditorSceneManager.GetActiveScene();
+            if (scene.path != ScenePath)
+            {
+                scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            }
+            var flowController = FindInScene(scene, "Prototype Flow Controller")?.GetComponent<PrototypeFlowController>();
+            if (flowController == null)
+            {
+                Debug.LogError("[Shop] 接线失败：场景中找不到 Prototype Flow Controller。");
+                return;
+            }
+            var serialized = new SerializedObject(flowController);
+            serialized.FindProperty("shopProducts").objectReferenceValue = EnsureShopProductAsset();
+            serialized.FindProperty("shopPools").objectReferenceValue = EnsureShopPoolRefreshAsset();
+            serialized.FindProperty("shopSlots").objectReferenceValue = EnsureShopSlotRefreshAsset();
+            serialized.ApplyModifiedProperties();
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[Shop] 商店三资产已接线到场景 Prototype Flow Controller 并保存（仅引用字段，不触碰美术节点）。");
+        }
+
         [MenuItem("Persona Cards/Validate Run Route Journey %#v")]
         public static void ValidateRunRouteJourney()
         {
@@ -374,6 +448,8 @@ namespace PersonaCards.UI.Editor
                 "shopDeleteButton", "shopReforgeButton", "shopEnhanceButton",
                 "forgeRollsText", "forgeStatusText", "forgeConfirmButton", "battleController", "runRoute",
                 "handTypes", "cardConfig", "personaConfig", "globalConfig",
+                // P0-7 商店三资产绑定字段
+                "shopProducts", "shopPools", "shopSlots",
                 "tutorialOverlay", "tutorialStepText", "tutorialTitleText", "tutorialBodyText",
                 "tutorialNextButton", "tutorialSkipButton", "tutorialNextLabel", "tutorialReplayButton", "tutorialReplayLabel",
                 // P0-1H 设置系统 22 个绑定字段

@@ -45,6 +45,53 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void PurchaseWithCustomPriceChargesThatPrice()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create(), 10);
+            var target = journey.Cards.First();
+
+            Assert.That(journey.TryPurchase(JourneyDeckAction.Enhance, target.Id, 5), Is.True); // 按商品价 5 扣款
+            Assert.That(journey.Coins, Is.EqualTo(5));
+
+            Assert.That(journey.TryPurchase(JourneyDeckAction.Delete, target.Id, 6), Is.False); // 余额不足不扣款不生效
+            Assert.That(journey.Coins, Is.EqualTo(5));
+            Assert.That(journey.Cards.Count, Is.EqualTo(52));
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => journey.TryPurchase(JourneyDeckAction.Delete, target.Id, -1));
+        }
+
+        [Test]
+        public void TrySpendDeductsAndRejectsInsufficientOrNegative()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create(), 10);
+
+            Assert.That(journey.TrySpend(7), Is.True);
+            Assert.That(journey.Coins, Is.EqualTo(3));
+
+            Assert.That(journey.TrySpend(4), Is.False); // 余额不足不扣款
+            Assert.That(journey.Coins, Is.EqualTo(3));
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => journey.TrySpend(-1));
+        }
+
+        [Test]
+        public void AddCardAddsCardAndRejectsDuplicateOrNull()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create(), 10);
+            var removed = journey.Cards.First();
+            Assert.That(journey.TryPurchase(JourneyDeckAction.Delete, removed.Id, 5), Is.True); // 先移除一张
+
+            var boughtBack = new PlayingCardInstance(removed.Id, removed.Suit, removed.Rank);
+            Assert.That(journey.AddCard(boughtBack), Is.True); // 买回：同 id 牌不在牌组时可加入
+            Assert.That(journey.Cards.Count, Is.EqualTo(52));
+            Assert.That(journey.Cards.Any(card => card.Id == boughtBack.Id), Is.True);
+
+            Assert.That(journey.AddCard(boughtBack), Is.False); // 同 id 不可重复持有
+            Assert.That(journey.AddCard(journey.Cards.First()), Is.False); // 已在牌组的牌拒绝
+            Assert.Throws<System.ArgumentNullException>(() => journey.AddCard(null));
+        }
+
+        [Test]
         public void AddCoinsIncreasesBalanceAndAllowsZero()
         {
             var journey = new JourneyDeckState(StandardDeckFactory.Create(), 3);
