@@ -97,8 +97,36 @@ MonoBehaviour:
     playsLimit: 0
     discardsLimit: 0
     genCount: 1
+  - kind: 0
+    targetScore: 2300
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 2500
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 0
+    targetScore: 2750
+    bossPoolId: 0
+    hasShopAfter: 1
+    playsLimit: 4
+    discardsLimit: 3
+    genCount: 0
+  - kind: 2
+    targetScore: 0
+    bossPoolId: 0
+    hasShopAfter: 0
+    playsLimit: 0
+    discardsLimit: 0
+    genCount: 1
   - kind: 1
-    targetScore: 2600
+    targetScore: 3200
     bossPoolId: 1
     hasShopAfter: 0
     playsLimit: 4
