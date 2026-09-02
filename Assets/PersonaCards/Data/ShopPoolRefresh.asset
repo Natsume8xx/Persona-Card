@@ -1,0 +1,210 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ffd6f1a27f504992bab404810b9f241, type: 3}
+  m_Name: ShopPoolRefresh
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.ShopPoolRefreshAsset
+  entries:
+  - poolId: POLL_CARD_001
+    productId: SHOP_CARD_001
+    weight: 1
+  - poolId: POLL_CARD_002
+    productId: SHOP_CARD_002
+    weight: 1
+  - poolId: POLL_CARD_003
+    productId: SHOP_CARD_003
+    weight: 1
+  - poolId: POLL_CARD_004
+    productId: SHOP_CARD_004
+    weight: 1
+  - poolId: POLL_CARD_005
+    productId: SHOP_CARD_005
+    weight: 1
+  - poolId: POLL_CARD_006
+    productId: SHOP_CARD_006
+    weight: 1
+  - poolId: POLL_CARD_007
+    productId: SHOP_CARD_007
+    weight: 1
+  - poolId: POLL_CARD_008
+    productId: SHOP_CARD_008
+    weight: 1
+  - poolId: POLL_CARD_009
+    productId: SHOP_CARD_009
+    weight: 1
+  - poolId: POLL_CARD_010
+    productId: SHOP_CARD_010
+    weight: 1
+  - poolId: POLL_CARD_011
+    productId: SHOP_CARD_011
+    weight: 1
+  - poolId: POLL_CARD_012
+    productId: SHOP_CARD_012
+    weight: 1
+  - poolId: POLL_CARD_013
+    productId: SHOP_CARD_013
+    weight: 1
+  - poolId: POLL_CARD_014
+    productId: SHOP_CARD_014
+    weight: 1
+  - poolId: POLL_CARD_015
+    productId: SHOP_CARD_015
+    weight: 1
+  - poolId: POLL_CARD_016
+    productId: SHOP_CARD_016
+    weight: 1
+  - poolId: POLL_CARD_017
+    productId: SHOP_CARD_017
+    weight: 1
+  - poolId: POLL_CARD_018
+    productId: SHOP_CARD_018
+    weight: 1
+  - poolId: POLL_CARD_019
+    productId: SHOP_CARD_019
+    weight: 1
+  - poolId: POLL_CARD_020
+    productId: SHOP_CARD_020
+    weight: 1
+  - poolId: POLL_CARD_021
+    productId: SHOP_CARD_021
+    weight: 1
+  - poolId: POLL_CARD_022
+    productId: SHOP_CARD_022
+    weight: 1
+  - poolId: POLL_CARD_023
+    productId: SHOP_CARD_023
+    weight: 1
+  - poolId: POLL_CARD_024
+    productId: SHOP_CARD_024
+    weight: 1
+  - poolId: POLL_CARD_025
+    productId: SHOP_CARD_025
+    weight: 1
+  - poolId: POLL_CARD_026
+    productId: SHOP_CARD_026
+    weight: 1
+  - poolId: POLL_CARD_027
+    productId: SHOP_CARD_027
+    weight: 1
+  - poolId: POLL_CARD_028
+    productId: SHOP_CARD_028
+    weight: 1
+  - poolId: POLL_CARD_029
+    productId: SHOP_CARD_029
+    weight: 1
+  - poolId: POLL_CARD_030
+    productId: SHOP_CARD_030
+    weight: 1
+  - poolId: POLL_CARD_031
+    productId: SHOP_CARD_031
+    weight: 1
+  - poolId: POLL_CARD_032
+    productId: SHOP_CARD_032
+    weight: 1
+  - poolId: POLL_CARD_033
+    productId: SHOP_CARD_033
+    weight: 1
+  - poolId: POLL_CARD_034
+    productId: SHOP_CARD_034
+    weight: 1
+  - poolId: POLL_CARD_035
+    productId: SHOP_CARD_035
+    weight: 1
+  - poolId: POLL_CARD_036
+    productId: SHOP_CARD_036
+    weight: 1
+  - poolId: POLL_CARD_037
+    productId: SHOP_CARD_037
+    weight: 1
+  - poolId: POLL_CARD_038
+    productId: SHOP_CARD_038
+    weight: 1
+  - poolId: POLL_CARD_039
+    productId: SHOP_CARD_039
+    weight: 1
+  - poolId: POLL_CARD_040
+    productId: SHOP_CARD_040
+    weight: 1
+  - poolId: POLL_CARD_041
+    productId: SHOP_CARD_041
+    weight: 1
+  - poolId: POLL_CARD_042
+    productId: SHOP_CARD_042
+    weight: 1
+  - poolId: POLL_CARD_043
+    productId: SHOP_CARD_043
+    weight: 1
+  - poolId: POLL_CARD_044
+    productId: SHOP_CARD_044
+    weight: 1
+  - poolId: POLL_CARD_045
+    productId: SHOP_CARD_045
+    weight: 1
+  - poolId: POLL_CARD_046
+    productId: SHOP_CARD_046
+    weight: 1
+  - poolId: POLL_CARD_047
+    productId: SHOP_CARD_047
+    weight: 1
+  - poolId: POLL_CARD_048
+    productId: SHOP_CARD_048
+    weight: 1
+  - poolId: POLL_CARD_049
+    productId: SHOP_CARD_049
+    weight: 1
+  - poolId: POLL_CARD_050
+    productId: SHOP_CARD_050
+    weight: 1
+  - poolId: POLL_CARD_051
+    productId: SHOP_CARD_051
+    weight: 1
+  - poolId: POLL_CARD_052
+    productId: SHOP_CARD_052
+    weight: 1
+  - poolId: POOL_PERSONA_001
+    productId: SHOP_PER_001
+    weight: 10
+  - poolId: POOL_PERSONA_002
+    productId: SHOP_PER_002
+    weight: 10
+  - poolId: POOL_PERSONA_003
+    productId: SHOP_PER_003
+    weight: 10
+  - poolId: POOL_PERSONA_004
+    productId: SHOP_PER_004
+    weight: 10
+  - poolId: POOL_PERSONA_005
+    productId: SHOP_PER_005
+    weight: 10
+  - poolId: POOL_PERSONA_006
+    productId: SHOP_PER_006
+    weight: 10
+  - poolId: POOL_PERSONA_007
+    productId: SHOP_PER_007
+    weight: 10
+  - poolId: POOL_PERSONA_008
+    productId: SHOP_PER_008
+    weight: 10
+  - poolId: POOL_SERVICE_001
+    productId: SHOP_SERVICE_001
+    weight: 20
+  - poolId: POOL_SERVICE_002
+    productId: SHOP_SERVICE_002
+    weight: 20
+  - poolId: POOL_SERVICE_003
+    productId: SHOP_SERVICE_003
+    weight: 20
+  - poolId: POOL_SERVICE_004
+    productId: SHOP_SERVICE_004
+    weight: 20
+  - poolId: POOL_SERVICE_005
+    productId: SHOP_SERVICE_005
+    weight: 20

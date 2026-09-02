@@ -30,34 +30,54 @@ MonoBehaviour:
     valueType: "\u6574\u6570"
     valueText: 8
   - ruleId: RULE_005
+    ruleName: "\u5546\u5E97\u5546\u54C1\u69FD\u6570\u91CF"
+    valueType: "\u6574\u6570"
+    valueText: 4
+  - ruleId: RULE_006
     ruleName: "\u6BCF\u5C40AI\u4EBA\u683C\u751F\u6210\u603B\u91CF"
     valueType: "\u6574\u6570"
     valueText: 3
-  - ruleId: RULE_006
+  - ruleId: RULE_007
     ruleName: "\u6BCF\u5C40AI\u4EBA\u683C\u53EF\u5E26\u51FA\u6570\u91CF"
     valueType: "\u6574\u6570"
     valueText: 1
-  - ruleId: RULE_007
+  - ruleId: RULE_008
     ruleName: "\u4EBA\u683C\u5E93\u5B58\u4E0A\u9650"
     valueType: "\u6574\u6570"
     valueText: 99
-  - ruleId: RULE_008
+  - ruleId: RULE_009
     ruleName: "\u4EBA\u683C\u878D\u5408\u6D88\u8017\u6570\u91CF"
     valueType: "\u6574\u6570"
     valueText: 3
-  - ruleId: RULE_009
+  - ruleId: RULE_010
     ruleName: "\u4EBA\u683C\u878D\u5408\u751F\u6210\u6570\u91CF"
     valueType: "\u6574\u6570"
     valueText: 1
-  - ruleId: RULE_010
+  - ruleId: RULE_011
     ruleName: "\u6700\u8FD13\u5173\u884C\u4E3A\u6743\u91CD"
     valueType: "\u5C0F\u6570"
     valueText: 0.65
-  - ruleId: RULE_011
+  - ruleId: RULE_012
     ruleName: "\u672C\u5C40\u7D2F\u8BA1\u884C\u4E3A\u6743\u91CD"
     valueType: "\u5C0F\u6570"
     valueText: 0.35
-  - ruleId: RULE_012
+  - ruleId: RULE_013
     ruleName: "\u96F7\u540C\u4EBA\u683C\u751F\u6210\u964D\u91CD"
     valueType: "\u5C0F\u6570"
     valueText: 0.15
+  - ruleId: RULE_014
+    ruleName: "\u5269\u4F59\u51FA\u724C\u5151\u6362\u5355\u4F4D"
+    valueType: "\u6574\u6570"
+    valueText: 1
+  - ruleId: RULE_015
+    ruleName: "\u5269\u4F59\u51FA\u724C\u5956\u52B1\u91D1\u5E01"
+    valueType: "\u6574\u6570"
+    valueText: 1
+  - ruleId: RULE_016
+    ruleName: "\u5269\u4F59\u5F03\u724C\u5151\u6362\u5355\u4F4D"
+    valueType: "\u6574\u6570"
+    valueText: 1
+  - ruleId: RULE_017
+    ruleName: "\u5269\u4F59\u5F03\u724C\u5956\u52B1\u91D1\u5E01"
+    valueType: "\u6574\u6570"
+    valueText: 1

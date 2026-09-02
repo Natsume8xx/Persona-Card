@@ -20,6 +20,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_01
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 1100
     bossPoolId: 0
@@ -27,6 +32,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_02
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 1250
     bossPoolId: 0
@@ -34,6 +44,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_03
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 4
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 2
     targetScore: 0
     bossPoolId: 0
@@ -41,6 +56,11 @@ MonoBehaviour:
     playsLimit: 0
     discardsLimit: 0
     genCount: 1
+    stageId: STAGE_04
+    rewardType1: "\u65E0"
+    rewardParam1: 0
+    rewardType2: "\u4EBA\u683C\u724C"
+    rewardParam2: 1
   - kind: 0
     targetScore: 1350
     bossPoolId: 0
@@ -48,6 +68,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_05
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 1500
     bossPoolId: 0
@@ -55,6 +80,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_06
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 1650
     bossPoolId: 0
@@ -62,6 +92,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_07
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 4
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 2
     targetScore: 0
     bossPoolId: 0
@@ -69,6 +104,11 @@ MonoBehaviour:
     playsLimit: 0
     discardsLimit: 0
     genCount: 1
+    stageId: STAGE_08
+    rewardType1: "\u65E0"
+    rewardParam1: 0
+    rewardType2: "\u4EBA\u683C\u724C"
+    rewardParam2: 1
   - kind: 0
     targetScore: 1750
     bossPoolId: 0
@@ -76,6 +116,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_09
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 1950
     bossPoolId: 0
@@ -83,6 +128,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_10
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 2150
     bossPoolId: 0
@@ -90,6 +140,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_11
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 4
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 2
     targetScore: 0
     bossPoolId: 0
@@ -97,6 +152,11 @@ MonoBehaviour:
     playsLimit: 0
     discardsLimit: 0
     genCount: 1
+    stageId: STAGE_12
+    rewardType1: "\u65E0"
+    rewardParam1: 0
+    rewardType2: "\u4EBA\u683C\u724C"
+    rewardParam2: 1
   - kind: 0
     targetScore: 2300
     bossPoolId: 0
@@ -104,6 +164,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_13
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 2
+    rewardType2: "\u65E0"
+    rewardParam2: 
   - kind: 0
     targetScore: 2500
     bossPoolId: 0
@@ -111,6 +176,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_14
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 3
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 0
     targetScore: 2750
     bossPoolId: 0
@@ -118,6 +188,11 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_15
+    rewardType1: "\u91D1\u5E01"
+    rewardParam1: 4
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 2
     targetScore: 0
     bossPoolId: 0
@@ -125,6 +200,11 @@ MonoBehaviour:
     playsLimit: 0
     discardsLimit: 0
     genCount: 1
+    stageId: STAGE_16
+    rewardType1: "\u65E0"
+    rewardParam1: 0
+    rewardType2: "\u65E0"
+    rewardParam2: 0
   - kind: 1
     targetScore: 3200
     bossPoolId: 1
@@ -132,3 +212,8 @@ MonoBehaviour:
     playsLimit: 4
     discardsLimit: 3
     genCount: 0
+    stageId: STAGE_17
+    rewardType1: "\u65E0"
+    rewardParam1: 0
+    rewardType2: "\u65E0"
+    rewardParam2: 0

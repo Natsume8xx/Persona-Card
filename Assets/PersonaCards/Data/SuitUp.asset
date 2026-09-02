@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6625efcb54f5644c180ccd61f30154b6, type: 3}
+  m_Name: SuitUp
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.SuitUpAsset
+  entries:
+  - suitUpId: SUIT_UP_001
+    suitId: SUIT_001
+    suitName: "\u9ED1\u6843"
+    level: Lv.1
+    extraChips: 5
+    price: 8
+  - suitUpId: SUIT_UP_002
+    suitId: SUIT_001
+    suitName: "\u9ED1\u6843"
+    level: Lv.2
+    extraChips: 10
+    price: 11
+  - suitUpId: SUIT_UP_003
+    suitId: SUIT_001
+    suitName: "\u9ED1\u6843"
+    level: Lv.3
+    extraChips: 15
+    price: 14
+  - suitUpId: SUIT_UP_004
+    suitId: SUIT_001
+    suitName: "\u9ED1\u6843"
+    level: Lv.4
+    extraChips: 20
+    price: 17
+  - suitUpId: SUIT_UP_005
+    suitId: SUIT_002
+    suitName: "\u7EA2\u6843"
+    level: Lv.1
+    extraChips: 5
+    price: 8
+  - suitUpId: SUIT_UP_006
+    suitId: SUIT_002
+    suitName: "\u7EA2\u6843"
+    level: Lv.2
+    extraChips: 10
+    price: 11
+  - suitUpId: SUIT_UP_007
+    suitId: SUIT_002
+    suitName: "\u7EA2\u6843"
+    level: Lv.3
+    extraChips: 15
+    price: 14
+  - suitUpId: SUIT_UP_008
+    suitId: SUIT_002
+    suitName: "\u7EA2\u6843"
+    level: Lv.4
+    extraChips: 20
+    price: 17
+  - suitUpId: SUIT_UP_009
+    suitId: SUIT_003
+    suitName: "\u6885\u82B1"
+    level: Lv.1
+    extraChips: 5
+    price: 8
+  - suitUpId: SUIT_UP_010
+    suitId: SUIT_003
+    suitName: "\u6885\u82B1"
+    level: Lv.2
+    extraChips: 10
+    price: 11
+  - suitUpId: SUIT_UP_011
+    suitId: SUIT_003
+    suitName: "\u6885\u82B1"
+    level: Lv.3
+    extraChips: 15
+    price: 14
+  - suitUpId: SUIT_UP_012
+    suitId: SUIT_003
+    suitName: "\u6885\u82B1"
+    level: Lv.4
+    extraChips: 20
+    price: 17
+  - suitUpId: SUIT_UP_013
+    suitId: SUIT_004
+    suitName: "\u65B9\u5757"
+    level: Lv.1
+    extraChips: 5
+    price: 8
+  - suitUpId: SUIT_UP_014
+    suitId: SUIT_004
+    suitName: "\u65B9\u5757"
+    level: Lv.2
+    extraChips: 10
+    price: 11
+  - suitUpId: SUIT_UP_015
+    suitId: SUIT_004
+    suitName: "\u65B9\u5757"
+    level: Lv.3
+    extraChips: 15
+    price: 14
+  - suitUpId: SUIT_UP_016
+    suitId: SUIT_004
+    suitName: "\u65B9\u5757"
+    level: Lv.4
+    extraChips: 20
+    price: 17

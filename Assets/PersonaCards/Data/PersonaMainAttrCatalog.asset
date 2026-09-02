@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 654247175a8a147f3bb252bc819fe51c, type: 3}
+  m_Name: PersonaMainAttrCatalog
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.PersonaMainAttrAsset
+  entries:
+  - attrId: MAIN_001
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 15
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_002
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_003
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 40
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_004
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 30
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_005
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_006
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 20
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_007
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 20
+    unlockNode: "\u9ED8\u8BA4"
+  - attrId: MAIN_008
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.05
+    unlockNode: "\u9ED8\u8BA4"

@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a57f32089952f47d8a77afbc3f8c2d7a, type: 3}
+  m_Name: PersonaCardCatalog
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.PersonaCardAsset
+  entries:
+  - personaId: PER_001
+    personaName: "\u4EBA\u683C\u724C01"
+    entryId: ENTRY_001
+    mainAttrId: MAIN_001
+    subAttrId: SUB_001
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_002
+    personaName: "\u4EBA\u683C\u724C02"
+    entryId: ENTRY_002
+    mainAttrId: MAIN_002
+    subAttrId: SUB_006
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_003
+    personaName: "\u4EBA\u683C\u724C03"
+    entryId: ENTRY_003
+    mainAttrId: MAIN_003
+    subAttrId: SUB_011
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_004
+    personaName: "\u4EBA\u683C\u724C04"
+    entryId: ENTRY_004
+    mainAttrId: MAIN_004
+    subAttrId: SUB_016
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_005
+    personaName: "\u4EBA\u683C\u724C05"
+    entryId: ENTRY_005
+    mainAttrId: MAIN_005
+    subAttrId: SUB_021
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_006
+    personaName: "\u4EBA\u683C\u724C06"
+    entryId: ENTRY_006
+    mainAttrId: MAIN_006
+    subAttrId: SUB_026
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_007
+    personaName: "\u4EBA\u683C\u724C07"
+    entryId: ENTRY_007
+    mainAttrId: MAIN_007
+    subAttrId: SUB_031
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5
+  - personaId: PER_008
+    personaName: "\u4EBA\u683C\u724C08"
+    entryId: ENTRY_008
+    mainAttrId: MAIN_008
+    subAttrId: SUB_036
+    maxAttrs: 3
+    maxSubAttrs: 2
+    subPoolSize: 5

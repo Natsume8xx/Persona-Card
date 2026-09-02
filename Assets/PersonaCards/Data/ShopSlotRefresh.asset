@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4602c47fd16e46409a074f103ab1501, type: 3}
+  m_Name: ShopSlotRefresh
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.ShopSlotRefreshAsset
+  entries:
+  - refreshId: REFRESH_001
+    node: AI1
+    productType: "\u5361\u724C"
+    count: 1
+    weight: 45
+  - refreshId: REFRESH_002
+    node: AI1
+    productType: "\u4EBA\u683C\u724C"
+    count: 1
+    weight: 20
+  - refreshId: REFRESH_003
+    node: AI1
+    productType: "\u670D\u52A1"
+    count: 1
+    weight: 35
+  - refreshId: REFRESH_005
+    node: AI2
+    productType: "\u5361\u724C"
+    count: 1
+    weight: 40
+  - refreshId: REFRESH_006
+    node: AI2
+    productType: "\u4EBA\u683C\u724C"
+    count: 1
+    weight: 25
+  - refreshId: REFRESH_007
+    node: AI2
+    productType: "\u670D\u52A1"
+    count: 1
+    weight: 35
+  - refreshId: REFRESH_008
+    node: AI3
+    productType: "\u5361\u724C"
+    count: 1
+    weight: 30
+  - refreshId: REFRESH_009
+    node: AI3
+    productType: "\u4EBA\u683C\u724C"
+    count: 1
+    weight: 30
+  - refreshId: REFRESH_010
+    node: AI3
+    productType: "\u670D\u52A1"
+    count: 1
+    weight: 40

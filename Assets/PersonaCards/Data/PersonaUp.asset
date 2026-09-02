@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c4dda06f48448e3861a3a7acc4b918, type: 3}
+  m_Name: PersonaUp
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.PersonaUpAsset
+  entries:
+  - personaId: PER_001
+    personaName: "\u4EBA\u683C\u724C01"
+    mainAttrType: "\u7B79\u7801\u578B"
+    lv0: 15
+    lv1: 25
+    lv2: 35
+    lv3: 45
+    lv4: 55
+  - personaId: PER_002
+    personaName: "\u4EBA\u683C\u724C02"
+    mainAttrType: "\u500D\u7387\u578B"
+    lv0: 1
+    lv1: 1.3
+    lv2: 1.6
+    lv3: 1.9
+    lv4: 2.2000000000000002
+  - personaId: PER_003
+    personaName: "\u4EBA\u683C\u724C03"
+    mainAttrType: "\u7B79\u7801\u578B"
+    lv0: 40
+    lv1: 50
+    lv2: 60
+    lv3: 70
+    lv4: 80
+  - personaId: PER_004
+    personaName: "\u4EBA\u683C\u724C04"
+    mainAttrType: "\u7B79\u7801\u578B"
+    lv0: 30
+    lv1: 40
+    lv2: 50
+    lv3: 60
+    lv4: 70
+  - personaId: PER_005
+    personaName: "\u4EBA\u683C\u724C05"
+    mainAttrType: "\u500D\u7387\u578B"
+    lv0: 1
+    lv1: 1.3
+    lv2: 1.6
+    lv3: 1.9
+    lv4: 2.2000000000000002
+  - personaId: PER_006
+    personaName: "\u4EBA\u683C\u724C06"
+    mainAttrType: "\u7B79\u7801\u578B"
+    lv0: 20
+    lv1: 30
+    lv2: 40
+    lv3: 50
+    lv4: 60
+  - personaId: PER_007
+    personaName: "\u4EBA\u683C\u724C07"
+    mainAttrType: "\u7B79\u7801\u578B"
+    lv0: 20
+    lv1: 30
+    lv2: 40
+    lv3: 50
+    lv4: 60
+  - personaId: PER_008
+    personaName: "\u4EBA\u683C\u724C08"
+    mainAttrType: "\u72EC\u7ACB\u500D\u7387\u578B"
+    lv0: 0.05
+    lv1: 0.15
+    lv2: 0.25
+    lv3: 0.35
+    lv4: 0.45

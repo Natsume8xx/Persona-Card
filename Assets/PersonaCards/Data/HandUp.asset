@@ -1,0 +1,323 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ee1272ffe2e445f9f09c22922b2fe8, type: 3}
+  m_Name: HandUp
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.HandUpAsset
+  entries:
+  - handUpId: HAND_UP_001
+    handId: HAND_01
+    handName: "\u9AD8\u724C"
+    level: Lv.1
+    baseChips: 61
+    baseMult: 1.1000000000000001
+    price: 8
+  - handUpId: HAND_UP_002
+    handId: HAND_01
+    handName: "\u9AD8\u724C"
+    level: Lv.2
+    baseChips: 67
+    baseMult: 1.2
+    price: 11
+  - handUpId: HAND_UP_003
+    handId: HAND_01
+    handName: "\u9AD8\u724C"
+    level: Lv.3
+    baseChips: 73
+    baseMult: 1.3
+    price: 14
+  - handUpId: HAND_UP_004
+    handId: HAND_01
+    handName: "\u9AD8\u724C"
+    level: Lv.4
+    baseChips: 79
+    baseMult: 1.4
+    price: 17
+  - handUpId: HAND_UP_005
+    handId: HAND_02
+    handName: "\u5BF9\u5B50"
+    level: Lv.1
+    baseChips: 53
+    baseMult: 2.2000000000000002
+    price: 8
+  - handUpId: HAND_UP_006
+    handId: HAND_02
+    handName: "\u5BF9\u5B50"
+    level: Lv.2
+    baseChips: 58
+    baseMult: 2.4
+    price: 11
+  - handUpId: HAND_UP_007
+    handId: HAND_02
+    handName: "\u5BF9\u5B50"
+    level: Lv.3
+    baseChips: 63
+    baseMult: 2.6
+    price: 14
+  - handUpId: HAND_UP_008
+    handId: HAND_02
+    handName: "\u5BF9\u5B50"
+    level: Lv.4
+    baseChips: 68
+    baseMult: 2.8
+    price: 17
+  - handUpId: HAND_UP_009
+    handId: HAND_03
+    handName: "\u4E24\u5BF9"
+    level: Lv.1
+    baseChips: 57
+    baseMult: 2.75
+    price: 8
+  - handUpId: HAND_UP_010
+    handId: HAND_03
+    handName: "\u4E24\u5BF9"
+    level: Lv.2
+    baseChips: 62
+    baseMult: 3
+    price: 11
+  - handUpId: HAND_UP_011
+    handId: HAND_03
+    handName: "\u4E24\u5BF9"
+    level: Lv.3
+    baseChips: 67
+    baseMult: 3.25
+    price: 14
+  - handUpId: HAND_UP_012
+    handId: HAND_03
+    handName: "\u4E24\u5BF9"
+    level: Lv.4
+    baseChips: 72
+    baseMult: 3.5
+    price: 17
+  - handUpId: HAND_UP_013
+    handId: HAND_04
+    handName: "\u4E09\u6761"
+    level: Lv.1
+    baseChips: 63
+    baseMult: 3.3
+    price: 8
+  - handUpId: HAND_UP_014
+    handId: HAND_04
+    handName: "\u4E09\u6761"
+    level: Lv.2
+    baseChips: 69
+    baseMult: 3.6
+    price: 11
+  - handUpId: HAND_UP_015
+    handId: HAND_04
+    handName: "\u4E09\u6761"
+    level: Lv.3
+    baseChips: 75
+    baseMult: 3.9
+    price: 14
+  - handUpId: HAND_UP_016
+    handId: HAND_04
+    handName: "\u4E09\u6761"
+    level: Lv.4
+    baseChips: 81
+    baseMult: 4.2
+    price: 17
+  - handUpId: HAND_UP_017
+    handId: HAND_05
+    handName: "\u987A\u5B50"
+    level: Lv.1
+    baseChips: 66
+    baseMult: 4.4000000000000004
+    price: 8
+  - handUpId: HAND_UP_018
+    handId: HAND_05
+    handName: "\u987A\u5B50"
+    level: Lv.2
+    baseChips: 72
+    baseMult: 4.8
+    price: 11
+  - handUpId: HAND_UP_019
+    handId: HAND_05
+    handName: "\u987A\u5B50"
+    level: Lv.3
+    baseChips: 78
+    baseMult: 5.2
+    price: 14
+  - handUpId: HAND_UP_020
+    handId: HAND_05
+    handName: "\u987A\u5B50"
+    level: Lv.4
+    baseChips: 84
+    baseMult: 5.6
+    price: 17
+  - handUpId: HAND_UP_021
+    handId: HAND_06
+    handName: "\u540C\u82B1"
+    level: Lv.1
+    baseChips: 72
+    baseMult: 4.4000000000000004
+    price: 8
+  - handUpId: HAND_UP_022
+    handId: HAND_06
+    handName: "\u540C\u82B1"
+    level: Lv.2
+    baseChips: 79
+    baseMult: 4.8
+    price: 11
+  - handUpId: HAND_UP_023
+    handId: HAND_06
+    handName: "\u540C\u82B1"
+    level: Lv.3
+    baseChips: 86
+    baseMult: 5.2
+    price: 14
+  - handUpId: HAND_UP_024
+    handId: HAND_06
+    handName: "\u540C\u82B1"
+    level: Lv.4
+    baseChips: 93
+    baseMult: 5.6
+    price: 17
+  - handUpId: HAND_UP_025
+    handId: HAND_07
+    handName: "\u846B\u82A6"
+    level: Lv.1
+    baseChips: 81
+    baseMult: 5.5
+    price: 8
+  - handUpId: HAND_UP_026
+    handId: HAND_07
+    handName: "\u846B\u82A6"
+    level: Lv.2
+    baseChips: 88
+    baseMult: 6
+    price: 11
+  - handUpId: HAND_UP_027
+    handId: HAND_07
+    handName: "\u846B\u82A6"
+    level: Lv.3
+    baseChips: 95
+    baseMult: 6.5
+    price: 14
+  - handUpId: HAND_UP_028
+    handId: HAND_07
+    handName: "\u846B\u82A6"
+    level: Lv.4
+    baseChips: 102
+    baseMult: 7
+    price: 17
+  - handUpId: HAND_UP_029
+    handId: HAND_08
+    handName: "\u56DB\u6761"
+    level: Lv.1
+    baseChips: 110
+    baseMult: 6.6
+    price: 8
+  - handUpId: HAND_UP_030
+    handId: HAND_08
+    handName: "\u56DB\u6761"
+    level: Lv.2
+    baseChips: 120
+    baseMult: 7.2
+    price: 11
+  - handUpId: HAND_UP_031
+    handId: HAND_08
+    handName: "\u56DB\u6761"
+    level: Lv.3
+    baseChips: 130
+    baseMult: 7.8
+    price: 14
+  - handUpId: HAND_UP_032
+    handId: HAND_08
+    handName: "\u56DB\u6761"
+    level: Lv.4
+    baseChips: 140
+    baseMult: 8.4
+    price: 17
+  - handUpId: HAND_UP_033
+    handId: HAND_09
+    handName: "\u540C\u82B1\u987A"
+    level: Lv.1
+    baseChips: 105
+    baseMult: 11
+    price: 8
+  - handUpId: HAND_UP_034
+    handId: HAND_09
+    handName: "\u540C\u82B1\u987A"
+    level: Lv.2
+    baseChips: 115
+    baseMult: 12
+    price: 11
+  - handUpId: HAND_UP_035
+    handId: HAND_09
+    handName: "\u540C\u82B1\u987A"
+    level: Lv.3
+    baseChips: 125
+    baseMult: 13
+    price: 14
+  - handUpId: HAND_UP_036
+    handId: HAND_09
+    handName: "\u540C\u82B1\u987A"
+    level: Lv.4
+    baseChips: 135
+    baseMult: 14
+    price: 17
+  - handUpId: HAND_UP_037
+    handId: HAND_10
+    handName: "\u540C\u82B1\u846B\u82A6"
+    level: Lv.1
+    baseChips: 77
+    baseMult: 13.2
+    price: 8
+  - handUpId: HAND_UP_038
+    handId: HAND_10
+    handName: "\u540C\u82B1\u846B\u82A6"
+    level: Lv.2
+    baseChips: 84
+    baseMult: 14.4
+    price: 11
+  - handUpId: HAND_UP_039
+    handId: HAND_10
+    handName: "\u540C\u82B1\u846B\u82A6"
+    level: Lv.3
+    baseChips: 91
+    baseMult: 15.6
+    price: 14
+  - handUpId: HAND_UP_040
+    handId: HAND_10
+    handName: "\u540C\u82B1\u846B\u82A6"
+    level: Lv.4
+    baseChips: 98
+    baseMult: 16.8
+    price: 17
+  - handUpId: HAND_UP_041
+    handId: HAND_11
+    handName: "\u7687\u5BB6\u540C\u82B1\u987A"
+    level: Lv.1
+    baseChips: 110
+    baseMult: 13.2
+    price: 8
+  - handUpId: HAND_UP_042
+    handId: HAND_11
+    handName: "\u7687\u5BB6\u540C\u82B1\u987A"
+    level: Lv.2
+    baseChips: 120
+    baseMult: 14.4
+    price: 11
+  - handUpId: HAND_UP_043
+    handId: HAND_11
+    handName: "\u7687\u5BB6\u540C\u82B1\u987A"
+    level: Lv.3
+    baseChips: 130
+    baseMult: 15.6
+    price: 14
+  - handUpId: HAND_UP_044
+    handId: HAND_11
+    handName: "\u7687\u5BB6\u540C\u82B1\u987A"
+    level: Lv.4
+    baseChips: 140
+    baseMult: 16.8
+    price: 17

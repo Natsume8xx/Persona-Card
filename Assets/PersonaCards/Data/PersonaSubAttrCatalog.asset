@@ -1,0 +1,295 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f6d1cd5910074ff09fee7f673a77614, type: 3}
+  m_Name: PersonaSubAttrCatalog
+  m_EditorClassIdentifier: PersonaCards.Data::PersonaCards.Data.PersonaSubAttrAsset
+  entries:
+  - subAttrId: SUB_001
+    ownerPersona: "\u4EBA\u683C\u724C01"
+    weight: 40
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 8
+    unlockNode: AI1
+  - subAttrId: SUB_002
+    ownerPersona: "\u4EBA\u683C\u724C01"
+    weight: 25
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.3
+    unlockNode: AI1
+  - subAttrId: SUB_003
+    ownerPersona: "\u4EBA\u683C\u724C01"
+    weight: 20
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 10
+    unlockNode: AI2
+  - subAttrId: SUB_004
+    ownerPersona: "\u4EBA\u683C\u724C01"
+    weight: 10
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 20
+    unlockNode: AI1
+  - subAttrId: SUB_005
+    ownerPersona: "\u4EBA\u683C\u724C01"
+    weight: 5
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI1
+  - subAttrId: SUB_006
+    ownerPersona: "\u4EBA\u683C\u724C02"
+    weight: 35
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.3
+    unlockNode: AI2
+  - subAttrId: SUB_007
+    ownerPersona: "\u4EBA\u683C\u724C02"
+    weight: 30
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 8
+    unlockNode: AI1
+  - subAttrId: SUB_008
+    ownerPersona: "\u4EBA\u683C\u724C02"
+    weight: 20
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 12
+    unlockNode: AI2
+  - subAttrId: SUB_009
+    ownerPersona: "\u4EBA\u683C\u724C02"
+    weight: 10
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 15
+    unlockNode: AI3
+  - subAttrId: SUB_010
+    ownerPersona: "\u4EBA\u683C\u724C02"
+    weight: 5
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI1
+  - subAttrId: SUB_011
+    ownerPersona: "\u4EBA\u683C\u724C03"
+    weight: 40
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 15
+    unlockNode: AI2
+  - subAttrId: SUB_012
+    ownerPersona: "\u4EBA\u683C\u724C03"
+    weight: 25
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.5
+    unlockNode: AI3
+  - subAttrId: SUB_013
+    ownerPersona: "\u4EBA\u683C\u724C03"
+    weight: 15
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI1
+  - subAttrId: SUB_014
+    ownerPersona: "\u4EBA\u683C\u724C03"
+    weight: 10
+    attrType: "\u51FA\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_015
+    ownerPersona: "\u4EBA\u683C\u724C03"
+    weight: 10
+    attrType: "\u91D1\u5E01"
+    param1: "\u589E\u52A0"
+    param2: 5
+    unlockNode: AI3
+  - subAttrId: SUB_016
+    ownerPersona: "\u4EBA\u683C\u724C04"
+    weight: 35
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 10
+    unlockNode: AI1
+  - subAttrId: SUB_017
+    ownerPersona: "\u4EBA\u683C\u724C04"
+    weight: 25
+    attrType: "\u5F03\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_018
+    ownerPersona: "\u4EBA\u683C\u724C04"
+    weight: 20
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.3
+    unlockNode: AI3
+  - subAttrId: SUB_019
+    ownerPersona: "\u4EBA\u683C\u724C04"
+    weight: 10
+    attrType: "\u51FA\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI1
+  - subAttrId: SUB_020
+    ownerPersona: "\u4EBA\u683C\u724C04"
+    weight: 10
+    attrType: "\u91D1\u5E01"
+    param1: "\u589E\u52A0"
+    param2: 5
+    unlockNode: AI2
+  - subAttrId: SUB_021
+    ownerPersona: "\u4EBA\u683C\u724C05"
+    weight: 35
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.5
+    unlockNode: AI3
+  - subAttrId: SUB_022
+    ownerPersona: "\u4EBA\u683C\u724C05"
+    weight: 25
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 15
+    unlockNode: AI1
+  - subAttrId: SUB_023
+    ownerPersona: "\u4EBA\u683C\u724C05"
+    weight: 15
+    attrType: "\u5F03\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_024
+    ownerPersona: "\u4EBA\u683C\u724C05"
+    weight: 15
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI3
+  - subAttrId: SUB_025
+    ownerPersona: "\u4EBA\u683C\u724C05"
+    weight: 10
+    attrType: "\u51FA\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_026
+    ownerPersona: "\u4EBA\u683C\u724C06"
+    weight: 35
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 10
+    unlockNode: AI1
+  - subAttrId: SUB_027
+    ownerPersona: "\u4EBA\u683C\u724C06"
+    weight: 25
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.3
+    unlockNode: AI2
+  - subAttrId: SUB_028
+    ownerPersona: "\u4EBA\u683C\u724C06"
+    weight: 15
+    attrType: "\u51FA\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_029
+    ownerPersona: "\u4EBA\u683C\u724C06"
+    weight: 15
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI2
+  - subAttrId: SUB_030
+    ownerPersona: "\u4EBA\u683C\u724C06"
+    weight: 10
+    attrType: "\u91D1\u5E01"
+    param1: "\u589E\u52A0"
+    param2: 5
+    unlockNode: AI3
+  - subAttrId: SUB_031
+    ownerPersona: "\u4EBA\u683C\u724C07"
+    weight: 40
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 8
+    unlockNode: AI1
+  - subAttrId: SUB_032
+    ownerPersona: "\u4EBA\u683C\u724C07"
+    weight: 25
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.3
+    unlockNode: AI1
+  - subAttrId: SUB_033
+    ownerPersona: "\u4EBA\u683C\u724C07"
+    weight: 15
+    attrType: "\u51FA\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_034
+    ownerPersona: "\u4EBA\u683C\u724C07"
+    weight: 10
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI2
+  - subAttrId: SUB_035
+    ownerPersona: "\u4EBA\u683C\u724C07"
+    weight: 10
+    attrType: "\u91D1\u5E01"
+    param1: "\u589E\u52A0"
+    param2: 5
+    unlockNode: AI2
+  - subAttrId: SUB_036
+    ownerPersona: "\u4EBA\u683C\u724C08"
+    weight: 35
+    attrType: "\u72EC\u7ACB\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.03
+    unlockNode: AI1
+  - subAttrId: SUB_037
+    ownerPersona: "\u4EBA\u683C\u724C08"
+    weight: 25
+    attrType: "\u57FA\u7840\u500D\u7387"
+    param1: "\u589E\u52A0"
+    param2: 0.5
+    unlockNode: AI1
+  - subAttrId: SUB_038
+    ownerPersona: "\u4EBA\u683C\u724C08"
+    weight: 20
+    attrType: "\u57FA\u7840\u7B79\u7801"
+    param1: "\u589E\u52A0"
+    param2: 20
+    unlockNode: AI2
+  - subAttrId: SUB_039
+    ownerPersona: "\u4EBA\u683C\u724C08"
+    weight: 10
+    attrType: "\u51FA\u724C\u6B21\u6570"
+    param1: "\u589E\u52A0"
+    param2: 1
+    unlockNode: AI2
+  - subAttrId: SUB_040
+    ownerPersona: "\u4EBA\u683C\u724C08"
+    weight: 10
+    attrType: "\u91D1\u5E01"
+    param1: "\u589E\u52A0"
+    param2: 8
+    unlockNode: AI2
