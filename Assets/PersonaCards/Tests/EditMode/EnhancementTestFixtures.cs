@@ -5,7 +5,7 @@ namespace PersonaCards.Tests.EditMode
 {
     /// <summary>
     /// 三线强化配表真实值夹具（P0-11）：与 PersonaUpRule.asset / SuitUp.asset / HandUp.asset 当前行一致。
-    /// 供 EnhancementTablesBuilderTests / ShopEnhancementSessionTests / ShopCatalogTests 共用。
+    /// 供 EnhancementTablesBuilderTests / ShopCatalogTests 共用。
     /// </summary>
     internal static class EnhancementTestFixtures
     {

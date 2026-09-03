@@ -181,25 +181,26 @@ namespace PersonaCards.UI
         private Button[] _shopSlotButtons;
         /// <summary>三个商品位按钮的文案标签（按钮子对象，延迟获取并缓存）。</summary>
         private readonly Text[] _shopSlotLabels = new Text[3];
-        // P0-11：强化选择模式——点强化服务槽位进入，slot0=确认/slot1=取消/slot2=服务名，轮换复用 Prev/Next；离开商店强制回 Normal
-        private ShopScreenMode _shopMode = ShopScreenMode.Normal;
-        /// <summary>强化选择会话（仅 EnhancementSelect 模式非 null；瞬态不入存档，读档回 Normal）。</summary>
-        private ShopEnhancementSession _shopEnhancement;
-        /// <summary>被选择的强化服务槽位（确认成功后标记售罄）。</summary>
-        private int _shopEnhancementSlotIndex;
+        // —— UI 重排第二批：商店服务强化 overlay（选牌弹窗 / 牌型面板 / 主词条面板，替换旧 EnhancementSelect 槽位语义模式）——
+        private CardPickPopupView _cardPickPrefab;
+        private CardPickPopupView _cardPickPopup;
+        private CardPickSession _cardPickSession;
+        private EnhanceListPanelView _handPanelPrefab;
+        private EnhanceListPanelView _handPanel;
+        private HandEnhanceScreenSession _handSession;
+        private EnhanceListPanelView _personaPanelPrefab;
+        private EnhanceListPanelView _personaPanel;
+        private PersonaMainAttrSession _personaSession;
+        /// <summary>被点击的服务槽位（确认成功后标记售罄；瞬态不入存档）。</summary>
+        private int _serviceOverlaySlotIndex = -1;
+        /// <summary>被点击的服务商品（确认成功后状态文案用）。</summary>
+        private ShopProductEntry _serviceOverlayProduct;
         /// <summary>获得新人格牌弹窗会话（UI 重排第一批）：弹窗打开期间非 null，关闭后置 null；瞬态不入存档（读档回铸牌屏重铸）。</summary>
         private PersonaEquipPromptSession _equipPromptSession;
         /// <summary>获得新人格牌弹窗视图实例（Resources/Prefabs/PersonaEquipPopup 的运行时实例，Canvas 最末兄弟节点覆盖全屏）。</summary>
         private PersonaEquipPopupView _equipPrompt;
         /// <summary>弹窗 prefab（Awake 缓存；缺失时确认铸造降级为不装备直接推进，收藏已入不受损）。</summary>
         private PersonaEquipPopupView _equipPromptPrefab;
-
-        /// <summary>商店屏模式（P0-11）：Normal = 普通商品位；EnhancementSelect = 强化目标选择（零新节点，纯语义切换）。</summary>
-        private enum ShopScreenMode
-        {
-            Normal,
-            EnhancementSelect
-        }
         // P0-9：揭示屏 Boss 名牌/台词（场景静态文本按名查找缓存；Find 失败后不再重试，显示场景默认值）
         private Text _bossRevealNameText;
         private Text _bossRevealLineText;
@@ -497,6 +498,12 @@ namespace PersonaCards.UI
             _equipPromptPrefab = Resources.Load<PersonaEquipPopupView>("Prefabs/PersonaEquipPopup");
             if (_equipPromptPrefab == null)
                 Debug.LogError("[EquipPrompt] 弹窗 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/PersonaEquipPopup.prefab）：确认铸造后不装备直接推进。");
+            // 商店服务强化界面 prefab 缓存（UI 重排第二批）：缺失时 LogError，服务购买降级为状态提示失败
+            _cardPickPrefab = Resources.Load<CardPickPopupView>("Prefabs/CardPickPopup");
+            _handPanelPrefab = Resources.Load<EnhanceListPanelView>("Prefabs/HandEnhancePanel");
+            _personaPanelPrefab = Resources.Load<EnhanceListPanelView>("Prefabs/PersonaMainAttrPanel");
+            if (_cardPickPrefab == null || _handPanelPrefab == null || _personaPanelPrefab == null)
+                Debug.LogError("[ShopOverlay] 服务强化界面 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/ 下 CardPickPopup / HandEnhancePanel / PersonaMainAttrPanel）：服务购买降级为提示失败。");
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
             startButton.onClick.AddListener(StartNewRun);
@@ -526,7 +533,7 @@ namespace PersonaCards.UI
             bossBackButton.onClick.AddListener(ReturnToPersonaSetup);
             rewardPreviousButton.onClick.AddListener(SelectPreviousJourneyCard);
             rewardNextButton.onClick.AddListener(SelectNextJourneyCard);
-            // P0-11：商店屏 Prev/Next 改路由——选择模式轮换强化目标，普通模式沿用选牌语义（与奖励屏同函数，无副作用）
+            // 商店屏 Prev/Next：沿用选牌语义（与奖励屏同函数，无副作用）
             shopPreviousButton.onClick.AddListener(() => OnShopDirectionButton(-1));
             shopNextButton.onClick.AddListener(() => OnShopDirectionButton(1));
             // P0-7：三个服务按钮改为商品位按钮，点击按槽位购买（槽位序 0/1/2 = 卡牌/人格牌/服务）
@@ -796,7 +803,7 @@ namespace PersonaCards.UI
         private void ContinueFromShop()
         {
             if (!_flow.ContinueFromShop()) return;
-            CancelEnhancementSelection(); // P0-11：离开商店强制回 Normal（防下次进店残留选择模式）
+            CloseServiceOverlay(); // UI 重排第二批：离开商店销毁服务强化界面（防下次进店残留）
             HandleStageEntry();
             Render();
         }
@@ -830,7 +837,7 @@ namespace PersonaCards.UI
             var generationCount = RunRoute.GenerationNodeCountBefore(_flow.NodeIndex);
             var seed = unchecked(_runSeed + (uint)(node.Index + 2000));
             _shopState = new ShopState(ShopCatalog.Products, ShopCatalog.PoolRules, ShopCatalog.SlotRules, generationCount, seed);
-            CancelEnhancementSelection(); // P0-11：进入/读档回商店时选择模式强制回 Normal（会话瞬态不入存档）
+            CloseServiceOverlay(); // UI 重排第二批：进入/读档回商店时销毁服务强化界面（会话瞬态不入存档）
             Debug.Log($"[Flow] 进入商店：节点 {_flow.NodeIndex}（AI 分组 {ShopState.GroupNameOf(generationCount)}），商品位 {_shopState.Slots.Count} 个。");
         }
 
@@ -1508,22 +1515,16 @@ namespace PersonaCards.UI
         /// <summary>
         /// 商品位购买（P0-7，策划案 10.6 语义）：无货/已售罄/金币不足不生效；效果应用失败（如该牌已在牌组）不扣款不售罄；
         /// 成功才扣款并标记售罄（限购 1 = 即买即售罄）。售罄态不随存档走，读档后商店重置（P0-8 入快照）。
-        /// P0-11 强化服务拦截：普通模式点强化服务 → 进入选择模式（不扣款不售罄）；选择模式下 slot0=确认/slot1·slot2=取消。
+        /// UI 重排第二批：服务商品（8 种强化服务）点击 → 打开对应强化界面（不扣款不售罄，界面内确认后走统一后置）。
         /// </summary>
         private void PurchaseShopSlot(int slotIndex)
         {
             if (_shopState == null || slotIndex < 0 || slotIndex >= _shopState.Slots.Count) return;
-            if (_shopMode == ShopScreenMode.EnhancementSelect)
-            {
-                if (slotIndex == 0) ConfirmEnhancement();
-                else CancelEnhancementSelection();
-                return;
-            }
             var slot = _shopState.Slots[slotIndex];
             var product = slot.Product;
-            if (product != null && !slot.SoldOut && ShopState.IsEnhancementEffect(product.effectType))
+            if (product != null && !slot.SoldOut && ShopServiceResolver.Resolve(product) != ShopServiceKind.None)
             {
-                EnterEnhancementSelection(slotIndex, product);
+                OpenServiceOverlay(slotIndex);
                 return;
             }
             if (product == null || slot.SoldOut)
@@ -1551,72 +1552,195 @@ namespace PersonaCards.UI
         }
 
         /// <summary>
-        /// 进入强化选择模式（P0-11）：候选 = 服务类型对应线的未满级目标；全满级/无候选 → 提示「无可强化对象」且不进入
-        /// （商品位保持可点，再次点击重复提示）。价格按目标当前等级动态定价，展示价（商品价 8）只作普通显示。
+        /// 打开服务强化界面（UI 重排第二批）：未售罄服务按 Resolve 分派三类界面（选牌弹窗 / 牌型面板 / 主词条面板）；
+        /// 未知服务 → 状态提示不弹界面。扣款、售罄、存档统一在 OnServiceConfirm → CompleteServicePurchase 后置。
         /// </summary>
-        private void EnterEnhancementSelection(int slotIndex, ShopProductEntry product)
+        private void OpenServiceOverlay(int slotIndex)
         {
-            var session = ShopEnhancementSession.TryCreate(product, _personaLoadout, _enhancements);
+            if (_shopState == null || slotIndex < 0 || slotIndex >= _shopState.Slots.Count) return;
+            var slot = _shopState.Slots[slotIndex];
+            var product = slot.Product;
+            if (product == null || slot.SoldOut)
+            {
+                shopStatusText.text = "该商品位已售罄";
+                return;
+            }
+            var kind = ShopServiceResolver.Resolve(product);
+            if (kind == ShopServiceKind.None)
+            {
+                shopStatusText.text = "购买失败：未知服务";
+                return;
+            }
+            _serviceOverlaySlotIndex = slotIndex;
+            _serviceOverlayProduct = product;
+            if (ShopServiceResolver.IsCardPickKind(kind)) OpenCardPickOverlay(kind, product);
+            else if (kind == ShopServiceKind.Hand) OpenHandEnhanceOverlay(product);
+            else OpenPersonaMainAttrOverlay(product);
+        }
+
+        /// <summary>选牌弹窗（UI 重排第二批）：6 种单卡类服务共用；可选数为 0 → 提示不弹界面。</summary>
+        private void OpenCardPickOverlay(ShopServiceKind kind, ShopProductEntry product)
+        {
+            if (_cardPickPrefab == null)
+            {
+                Debug.LogError("[ShopOverlay] 选牌弹窗 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/CardPickPopup.prefab）：服务购买降级为提示失败。");
+                shopStatusText.text = "购买失败：界面资源缺失";
+                ResetServiceOverlayTarget();
+                return;
+            }
+            var session = CardPickSession.TryCreate(kind, product.price, _enhancements, _journeyDeck);
             if (session == null)
             {
                 shopStatusText.text = "无可强化对象";
+                ResetServiceOverlayTarget();
                 return;
             }
-            _shopMode = ShopScreenMode.EnhancementSelect;
-            _shopEnhancement = session;
-            _shopEnhancementSlotIndex = slotIndex;
-            RefreshShopSlots();
+            _cardPickSession = session;
+            var canvas = shopScreen.GetComponentInParent<Canvas>();
+            _cardPickPopup = Instantiate(_cardPickPrefab, canvas != null ? canvas.transform : shopScreen.transform.parent);
+            _cardPickPopup.gameObject.SetActive(true);
+            _cardPickPopup.Configure(session, OnServiceCancel, OnServiceConfirm);
         }
 
-        /// <summary>
-        /// 确认升级（P0-11）：真实价格扣款 + 升 1 级（失败无副作用，留在模式内提示金币不足）；成功后商品位仅标记售罄
-        /// （TryMarkSold 不校验余额——真实价格 ≠ 商品展示价），回 Normal 并立即存档（等级与金币入档）。
-        /// </summary>
-        private void ConfirmEnhancement()
+        /// <summary>牌型强化面板（UI 重排第二批）：候选 = 配表牌型序剔除满级/无价；全空 → 提示不弹界面。</summary>
+        private void OpenHandEnhanceOverlay(ShopProductEntry product)
         {
-            if (_shopEnhancement == null) return;
-            if (!_shopEnhancement.TryConfirm(_journeyDeck))
+            if (_handPanelPrefab == null)
             {
-                shopStatusText.text = "购买失败：金币不足";
+                Debug.LogError("[ShopOverlay] 牌型强化面板 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/HandEnhancePanel.prefab）：服务购买降级为提示失败。");
+                shopStatusText.text = "购买失败：界面资源缺失";
+                ResetServiceOverlayTarget();
                 return;
             }
-            _shopState.TryMarkSold(_shopEnhancementSlotIndex);
-            shopStatusText.text = $"已升级 {_shopEnhancement.Current.DisplayName} 至 Lv{_shopEnhancement.Current.Level + 1}，剩余金币 {_journeyDeck.Coins}";
-            CancelEnhancementSelection();
-            Render();
+            var session = HandEnhanceScreenSession.TryCreate(product, _enhancements);
+            if (session == null)
+            {
+                shopStatusText.text = "无可强化对象";
+                ResetServiceOverlayTarget();
+                return;
+            }
+            _handSession = session;
+            var canvas = shopScreen.GetComponentInParent<Canvas>();
+            _handPanel = Instantiate(_handPanelPrefab, canvas != null ? canvas.transform : shopScreen.transform.parent);
+            _handPanel.gameObject.SetActive(true);
+            _handPanel.Configure(session, EnhanceListHighlightStyle.BlueBorder, OnServiceCancel, OnServiceConfirm);
+        }
+
+        /// <summary>人格主词条强化面板（UI 重排第二批）：候选 = 装备槽非空且未满级人格；全空 → 提示不弹界面。</summary>
+        private void OpenPersonaMainAttrOverlay(ShopProductEntry product)
+        {
+            if (_personaPanelPrefab == null)
+            {
+                Debug.LogError("[ShopOverlay] 主词条强化面板 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/PersonaMainAttrPanel.prefab）：服务购买降级为提示失败。");
+                shopStatusText.text = "购买失败：界面资源缺失";
+                ResetServiceOverlayTarget();
+                return;
+            }
+            var session = PersonaMainAttrSession.TryCreate(product, _personaLoadout, _enhancements);
+            if (session == null)
+            {
+                shopStatusText.text = "无可强化对象";
+                ResetServiceOverlayTarget();
+                return;
+            }
+            _personaSession = session;
+            var canvas = shopScreen.GetComponentInParent<Canvas>();
+            _personaPanel = Instantiate(_personaPanelPrefab, canvas != null ? canvas.transform : shopScreen.transform.parent);
+            _personaPanel.gameObject.SetActive(true);
+            _personaPanel.Configure(session, EnhanceListHighlightStyle.PaleGoldFill, OnServiceCancel, OnServiceConfirm);
+        }
+
+        /// <summary>服务确认（UI 重排第二批）：按打开的界面分派对应会话 TryConfirm；失败留在界面内提示金币不足。</summary>
+        private void OnServiceConfirm()
+        {
+            if (_cardPickSession != null)
+            {
+                if (!_cardPickSession.TryConfirm(_journeyDeck))
+                {
+                    shopStatusText.text = "购买失败：金币不足";
+                    return;
+                }
+                CompleteServicePurchase();
+                return;
+            }
+            if (_handSession != null)
+            {
+                if (!_handSession.TryConfirm(_journeyDeck))
+                {
+                    shopStatusText.text = "购买失败：金币不足";
+                    return;
+                }
+                CompleteServicePurchase();
+                return;
+            }
+            if (_personaSession != null)
+            {
+                if (!_personaSession.TryConfirm(_journeyDeck))
+                {
+                    shopStatusText.text = "购买失败：金币不足";
+                    return;
+                }
+                CompleteServicePurchase();
+            }
+        }
+
+        /// <summary>服务取消（UI 重排第二批）：销毁界面回到商店主屏，无副作用。</summary>
+        private void OnServiceCancel()
+        {
+            CloseServiceOverlay();
+        }
+
+        /// <summary>服务购买成功统一后置（UI 重排第二批）：标记售罄 → 销毁界面 → 状态文案 → 刷新商店 → 存档。</summary>
+        private void CompleteServicePurchase()
+        {
+            var productName = _serviceOverlayProduct != null ? _serviceOverlayProduct.productName : "服务";
+            if (_shopState != null && _serviceOverlaySlotIndex >= 0)
+                _shopState.TryMarkSold(_serviceOverlaySlotIndex);
+            CloseServiceOverlay();
+            _selectedJourneyCardIndex = Mathf.Clamp(_selectedJourneyCardIndex, 0, Mathf.Max(0, _journeyDeck.Cards.Count - 1)); // 移除卡牌后索引防越界
+            shopStatusText.text = $"已购买 {productName}，剩余金币 {_journeyDeck.Coins}";
+            Render(); // 商品位刷新：已购位变「已售罄」，其余位按新金币余额重算灰态
             SaveActiveRun();
         }
 
-        /// <summary>退出选择模式回普通商品位渲染（P0-11）。</summary>
-        private void CancelEnhancementSelection()
+        /// <summary>销毁服务强化界面实例并清空瞬态会话（清场点：离开商店/进入商店/读档回商店前调用）。</summary>
+        private void CloseServiceOverlay()
         {
-            _shopMode = ShopScreenMode.Normal;
-            _shopEnhancement = null;
-            RefreshShopSlots();
+            if (_cardPickPopup != null)
+            {
+                Destroy(_cardPickPopup.gameObject);
+                _cardPickPopup = null;
+            }
+            if (_handPanel != null)
+            {
+                Destroy(_handPanel.gameObject);
+                _handPanel = null;
+            }
+            if (_personaPanel != null)
+            {
+                Destroy(_personaPanel.gameObject);
+                _personaPanel = null;
+            }
+            _cardPickSession = null;
+            _handSession = null;
+            _personaSession = null;
+            _serviceOverlaySlotIndex = -1;
+            _serviceOverlayProduct = null;
         }
 
-        /// <summary>商店屏 Prev/Next 路由（P0-11）：选择模式轮换强化目标；普通模式沿用原选牌语义（与奖励屏同函数）。</summary>
+        /// <summary>服务界面打开失败兜底：复位目标槽位簿记（界面未创建，仅清标记）。</summary>
+        private void ResetServiceOverlayTarget()
+        {
+            _serviceOverlaySlotIndex = -1;
+            _serviceOverlayProduct = null;
+        }
+
+        /// <summary>商店屏 Prev/Next 路由：沿用选牌语义（与奖励屏同函数）。</summary>
         private void OnShopDirectionButton(int delta)
         {
             if (_flow.Stage != PrototypeFlowStage.Shop) return;
-            if (_shopMode == ShopScreenMode.EnhancementSelect && _shopEnhancement != null)
-            {
-                _shopEnhancement.Cycle(delta);
-                RefreshEnhancementSelection();
-                return;
-            }
             if (delta < 0) SelectPreviousJourneyCard();
             else SelectNextJourneyCard();
-        }
-
-        /// <summary>轮换后刷新选择模式文案（P0-11）：状态/细节文本 + slot2 服务名跟随当前目标。</summary>
-        private void RefreshEnhancementSelection()
-        {
-            if (_shopEnhancement == null) return;
-            shopStatusText.text = _shopEnhancement.StatusText;
-            shopCardText.text = _shopEnhancement.DetailText;
-            var label = ShopSlotLabel(2);
-            if (label != null) label.text = $"{_shopEnhancement.Current.DisplayName} · 升级";
         }
 
         /// <summary>商品效果应用（P0-7 白名单分派）：成功时内部完成扣款；失败返回 false 且不扣款（策划案 10.6 扣款失败不生效）。</summary>
@@ -1932,15 +2056,9 @@ namespace PersonaCards.UI
             return _shopSlotLabels[slotIndex];
         }
 
-        /// <summary>商品位渲染（P0-7）：文本 = 商品名 + 价格；无货/已售罄灰态；金币不足灰态。槽位多于按钮时只渲染前 3 位。
-        /// P0-11：选择模式下 slot0=「确认升级」/slot1=「取消」/slot2=服务名（点击=取消），状态与细节文本跟随当前目标。</summary>
+        /// <summary>商品位渲染（P0-7）：文本 = 商品名 + 价格；无货/已售罄灰态；金币不足灰态。槽位多于按钮时只渲染前 3 位。</summary>
         private void RefreshShopSlots()
         {
-            if (_shopMode == ShopScreenMode.EnhancementSelect)
-            {
-                RefreshEnhancementSlots();
-                return;
-            }
             for (var i = 0; i < _shopSlotButtons.Length; i++)
             {
                 var button = _shopSlotButtons[i];
@@ -1962,23 +2080,6 @@ namespace PersonaCards.UI
                     button.interactable = _journeyDeck != null && _journeyDeck.Coins >= slot.Product.price;
                 }
             }
-        }
-
-        /// <summary>选择模式槽位渲染（P0-11）：三个商品位按钮语义切换为 确认/取消/取消；状态文案写 shopStatusText、细节写 shopCardText。</summary>
-        private void RefreshEnhancementSlots()
-        {
-            for (var i = 0; i < _shopSlotButtons.Length; i++)
-            {
-                var button = _shopSlotButtons[i];
-                var label = ShopSlotLabel(i);
-                button.interactable = i <= 2; // 只有前 3 个槽位按钮参与选择模式
-                if (label == null) continue;
-                if (i == 0) label.text = "确认升级";
-                else if (i == 1) label.text = "取消";
-                else if (i == 2) label.text = _shopEnhancement != null ? $"{_shopEnhancement.Current.DisplayName} · 升级" : "—";
-                else label.text = "";
-            }
-            if (_shopEnhancement != null) RefreshEnhancementSelection();
         }
 
         private void Render()
