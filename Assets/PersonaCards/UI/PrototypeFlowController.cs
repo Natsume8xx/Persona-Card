@@ -195,6 +195,13 @@ namespace PersonaCards.UI
         private int _serviceOverlaySlotIndex = -1;
         /// <summary>被点击的服务商品（确认成功后状态文案用）。</summary>
         private ShopProductEntry _serviceOverlayProduct;
+        // —— UI 重排第二批：商店主界面（商品页 + 人格铸造标签页，替换旧商店屏 Shop Card 的运行时展示）——
+        private ShopUiView _shopUiPrefab;
+        private ShopUiView _shopUi;
+        /// <summary>商店主界面会话（每次进店新 ShopState 时 Configure 一次，此后仅刷新视图）。</summary>
+        private readonly ShopUiSession _shopUiSession = new ShopUiSession();
+        /// <summary>人格铸造副属性解锁状态（随活动局存档；新局重置）。</summary>
+        private ForgeUnlockState _forgeUnlocks = new ForgeUnlockState();
         /// <summary>获得新人格牌弹窗会话（UI 重排第一批）：弹窗打开期间非 null，关闭后置 null；瞬态不入存档（读档回铸牌屏重铸）。</summary>
         private PersonaEquipPromptSession _equipPromptSession;
         /// <summary>获得新人格牌弹窗视图实例（Resources/Prefabs/PersonaEquipPopup 的运行时实例，Canvas 最末兄弟节点覆盖全屏）。</summary>
@@ -504,6 +511,11 @@ namespace PersonaCards.UI
             _personaPanelPrefab = Resources.Load<EnhanceListPanelView>("Prefabs/PersonaMainAttrPanel");
             if (_cardPickPrefab == null || _handPanelPrefab == null || _personaPanelPrefab == null)
                 Debug.LogError("[ShopOverlay] 服务强化界面 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/ 下 CardPickPopup / HandEnhancePanel / PersonaMainAttrPanel）：服务购买降级为提示失败。");
+            // 商店主界面 prefab 缓存（UI 重排第二批）：缺失时 LogError，商店阶段回落旧商店屏展示
+            _shopUiPrefab = Resources.Load<ShopUiView>("Prefabs/ShopUi");
+            if (_shopUiPrefab == null)
+                Debug.LogError("[ShopUi] 商店主界面 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/ShopUi.prefab）：商店阶段回落旧商店屏。");
+            PersonaForgeCatalogBootstrap.Load(); // UI 重排第二批：人格铸造目录注入（铸造页数据源；非 Editor 静默跳过）
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
             startButton.onClick.AddListener(StartNewRun);
@@ -752,6 +764,7 @@ namespace PersonaCards.UI
             _rewardClaimed = false;
             _selectedJourneyCardIndex = 0;
             _enhancements = new EnhancementState(); // P0-11：新局三线强化全 0 级
+            _forgeUnlocks = new ForgeUnlockState(); // UI 重排第二批：新局副属性解锁清零（新开局与"返回准备"重开共用）
             _runSeed = unchecked((uint)System.Environment.TickCount);
             Debug.Log($"[Flow] 新旅程初始化：牌库 {_journeyDeck.Cards.Count} 张，金币 {_journeyDeck.Coins}，局种子 {_runSeed}。");
         }
@@ -1743,6 +1756,61 @@ namespace PersonaCards.UI
             else SelectNextJourneyCard();
         }
 
+        // —— UI 重排第二批：商店主界面运行时（会话注入 + 回调委托旧流程）——
+
+        /// <summary>商店离开按钮去向后缀（旧屏 ShopContinueLabel 与商店主界面离开按钮共用）。</summary>
+        private string ShopLeaveLabel()
+        {
+            var nextKind = RunRoute.NextNodeKindOf(_flow.NodeIndex);
+            return nextKind == RunNodeKind.BossBattle ? "离开商店 · 前往 Boss"
+                : nextKind == RunNodeKind.PersonaGen ? "离开商店 · 前往铸牌"
+                : "离开商店 · 继续旅程";
+        }
+
+        /// <summary>首次进店实例化商店主界面（UI 重排第二批）：挂在画布最末兄弟节点，覆盖旧商店屏之上。</summary>
+        private void EnsureShopUi()
+        {
+            if (_shopUi != null || _shopUiPrefab == null) return;
+            var canvas = shopScreen.GetComponentInParent<Canvas>();
+            _shopUi = Instantiate(_shopUiPrefab, canvas != null ? canvas.transform : shopScreen.transform.parent);
+            _shopUi.gameObject.SetActive(false);
+            _shopUi.Configure(_shopUiSession, OnShopUiBuy, ContinueFromShop, OnShopUiServiceRow, OnShopUiForgeChanged);
+        }
+
+        /// <summary>刷新商店主界面：每次进店（新 ShopState）Configure 会话一次，此后只刷视图与去向文案；状态行镜像旧屏文案单一来源。</summary>
+        private void RefreshShopUi()
+        {
+            if (_shopUi == null || _shopState == null) return;
+            if (!ReferenceEquals(_shopUiSession.Shop, _shopState))
+            {
+                _shopUiSession.Configure(_shopState, _journeyDeck, _personaLoadout, _forgeUnlocks,
+                    RunRoute.GenerationNodeCountBefore(_flow.NodeIndex));
+            }
+            _shopUiSession.LeaveLabel = ShopLeaveLabel();
+            _shopUi.SetStatus(shopStatusText.text);
+            _shopUi.Refresh();
+        }
+
+        /// <summary>主界面购买按钮（UI 重排第二批）：委托旧商品位购买流程（内部 Render → 主界面自动刷新）。</summary>
+        private void OnShopUiBuy()
+        {
+            PurchaseShopSlot(_shopUiSession.SelectedProductIndex);
+        }
+
+        /// <summary>主界面服务行点击（UI 重排第二批）：服务槽位 = 商品行数 + 服务行序，打开对应强化界面。</summary>
+        private void OnShopUiServiceRow(int rowIndex)
+        {
+            OpenServiceOverlay(ShopUiSession.ProductRowCount + rowIndex);
+        }
+
+        /// <summary>主界面副属性解锁成功回调（UI 重排第二批）：状态文案 + 立即存档（视图自行刷新）。</summary>
+        private void OnShopUiForgeChanged()
+        {
+            shopStatusText.text = $"已解锁副属性，剩余金币 {_journeyDeck.Coins}";
+            if (_shopUi != null) _shopUi.SetStatus(shopStatusText.text);
+            SaveActiveRun();
+        }
+
         /// <summary>商品效果应用（P0-7 白名单分派）：成功时内部完成扣款；失败返回 false 且不扣款（策划案 10.6 扣款失败不生效）。</summary>
         private bool ApplyProductEffect(ShopProductEntry product)
         {
@@ -1789,6 +1857,7 @@ namespace PersonaCards.UI
                 _selectedJourneyCardIndex = Mathf.Clamp(data.selectedJourneyCardIndex, 0, _journeyDeck.Cards.Count - 1);
                 _rewardClaimed = data.rewardClaimed;
                 _enhancements = EnhancementSaveCodec.Restore(data); // P0-11：旧档缺字段 → 全 0 级（null-guard 在辅助方法内）
+                _forgeUnlocks = ForgeUnlockSaveCodec.Restore(data.forgeUnlocks); // UI 重排第二批：副属性解锁恢复（旧档缺字段 → 全未解锁）
                 _runSeed = data.runSeed; // 旧档无该字段时为 0：场次种子退化为 节点序号+1，仍可复现
                 var stage = (PrototypeFlowStage)data.stage;
                 _flow.Restore(stage, data.battleNumber, data.personaSetupReturnsToBossReveal); // JSON 字段名沿用 battleNumber，语义为节点索引（P0-8 重命名）
@@ -1883,6 +1952,7 @@ namespace PersonaCards.UI
             data.schemaVersion = 3;
             data.collection = _personaCollection.Select(ToSavedPersona).ToList();
             data.equipped = _personaLoadout.Slots.Select(ToSavedPersona).ToList();
+            data.forgeUnlocks = new List<SavedForgeUnlock>(); // UI 重排第二批：副属性解锁随活动局，档案单独保存时清空
             _saveStore.Save(data);
             continueButton.interactable = data.hasActiveRun;
         }
@@ -1921,7 +1991,8 @@ namespace PersonaCards.UI
                     isEmpty = false,
                     handType = (int)pair.Key,
                     level = pair.Value
-                }).ToList() // P0-11：三线强化等级随活动局存档（空字典 → 空列表，非 null）
+                }).ToList(), // P0-11：三线强化等级随活动局存档（空字典 → 空列表，非 null）
+                forgeUnlocks = ForgeUnlockSaveCodec.Save(_forgeUnlocks) // UI 重排第二批：副属性解锁随活动局存档（空状态 → 空列表）
             };
             if (_flow.Stage == PrototypeFlowStage.Battle && battleController.Battle != null &&
                 !battleController.Battle.IsPresentationLocked)
@@ -2127,18 +2198,19 @@ namespace PersonaCards.UI
                         : _rewardRuleBaseText;
                 }
             }
-            shopScreen.SetActive(_flow.Stage == PrototypeFlowStage.Shop);
+            // UI 重排第二批：商店主界面（Resources prefab）取代旧商店屏展示；旧屏节点保留不激活（美术回退位）
+            shopScreen.SetActive(false);
             if (_flow.Stage == PrototypeFlowStage.Shop)
             {
-                if (ShopContinueLabel != null)
-                {
-                    // 商店继续按钮文案按下一节点类型提示去向（配表可指定任意后续节点）
-                    var nextKind = RunRoute.NextNodeKindOf(_flow.NodeIndex);
-                    ShopContinueLabel.text = nextKind == RunNodeKind.BossBattle ? "离开商店 · 前往 Boss"
-                        : nextKind == RunNodeKind.PersonaGen ? "离开商店 · 前往铸牌"
-                        : "离开商店 · 继续旅程";
-                }
-                RefreshShopSlots(); // P0-7：商品位渲染（无货/售罄/金币不足灰态）
+                if (ShopContinueLabel != null) ShopContinueLabel.text = ShopLeaveLabel(); // 旧屏文案同步（隐藏屏，无害）
+                EnsureShopUi();
+                RefreshShopUi();
+                if (_shopUi != null) _shopUi.gameObject.SetActive(true);
+                RefreshShopSlots(); // 旧屏商品位渲染保留（隐藏屏文案同步，回退旧屏即见）
+            }
+            else if (_shopUi != null)
+            {
+                _shopUi.gameObject.SetActive(false);
             }
             runReportScreen.SetActive(_flow.Stage == PrototypeFlowStage.RunReport);
             personaForgeScreen.SetActive(_flow.Stage == PrototypeFlowStage.PersonaForge || _flow.Stage == PrototypeFlowStage.PersonaGen); // 中局铸牌复用铸牌界面

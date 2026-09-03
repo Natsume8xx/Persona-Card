@@ -30,6 +30,8 @@ namespace PersonaCards.UI
         public List<SavedSuitLevel> suitLevels = new List<SavedSuitLevel>();
         /// <summary>三线强化：牌型等级（同上）。</summary>
         public List<SavedHandLevel> handLevels = new List<SavedHandLevel>();
+        /// <summary>人格铸造：副属性解锁进度（UI 重排第二批；旧档缺字段为 null 或空列表，读取路径必须 null-guard）。</summary>
+        public List<SavedForgeUnlock> forgeUnlocks = new List<SavedForgeUnlock>();
     }
 
     /// <summary>三线强化：人格牌强化等级条目（isEmpty = 空占位行，防御旧档/手改档）。</summary>
@@ -57,6 +59,15 @@ namespace PersonaCards.UI
         public bool isEmpty;
         public int handType;
         public int level;
+    }
+
+    /// <summary>人格铸造：副属性解锁条目（isEmpty = 空占位行，防御旧档/手改档；personaId = PER_xxx）。</summary>
+    [Serializable]
+    public sealed class SavedForgeUnlock
+    {
+        public bool isEmpty;
+        public string personaId;
+        public int unlockedCount;
     }
 
     [Serializable]
