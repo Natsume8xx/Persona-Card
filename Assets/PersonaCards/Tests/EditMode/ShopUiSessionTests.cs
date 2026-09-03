@@ -180,6 +180,15 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(_session.Shop, Is.SameAs(other));
         }
 
+        [Test]
+        public void IsConfigured_未注入为假_注入后为真()
+        {
+            var fresh = new ShopUiSession();
+            Assert.That(fresh.IsConfigured, Is.False); // 视图在会话未注入时 Refresh 应跳过（配置顺序防御）
+            fresh.Configure(_shop, _deck, BuildLoadout(), new ForgeUnlockState(), 0);
+            Assert.That(fresh.IsConfigured, Is.True);
+        }
+
         // ---------- 商品页 ----------
 
         [Test]

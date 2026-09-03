@@ -1774,6 +1774,12 @@ namespace PersonaCards.UI
             var canvas = shopScreen.GetComponentInParent<Canvas>();
             _shopUi = Instantiate(_shopUiPrefab, canvas != null ? canvas.transform : shopScreen.transform.parent);
             _shopUi.gameObject.SetActive(false);
+            // 会话先于视图配置：视图 Configure 末尾立即 Refresh 读会话（会话未注入会空引用）
+            if (_shopState != null)
+            {
+                _shopUiSession.Configure(_shopState, _journeyDeck, _personaLoadout, _forgeUnlocks,
+                    RunRoute.GenerationNodeCountBefore(_flow.NodeIndex));
+            }
             _shopUi.Configure(_shopUiSession, OnShopUiBuy, ContinueFromShop, OnShopUiServiceRow, OnShopUiForgeChanged);
         }
 

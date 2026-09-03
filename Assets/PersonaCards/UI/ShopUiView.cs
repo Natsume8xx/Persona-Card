@@ -172,7 +172,7 @@ namespace PersonaCards.UI
         /// <summary>全量刷新：侧边栏/去向文案/标签态/区块显隐，按当前标签刷商品页或铸造页。</summary>
         public void Refresh()
         {
-            if (_session == null) return;
+            if (_session == null || !_session.IsConfigured) return; // 会话未注入时跳过（视图 Configure 早于会话 Configure 的防御）
             sidebarStatsText.text = _session.SidebarStatsText;
             leaveButtonLabel.text = _session.LeaveLabel;
             UpdateTabVisuals();

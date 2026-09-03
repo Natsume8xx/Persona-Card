@@ -49,6 +49,9 @@ namespace PersonaCards.UI
         /// <summary>当前注入的商店状态（FlowController 判断是否需要重新 Configure）。</summary>
         public ShopState Shop => _shop;
 
+        /// <summary>会话是否已完成注入（商店与牌库均非空）；视图 Refresh 前判空，防配置顺序颠倒时空引用。</summary>
+        public bool IsConfigured => _shop != null && _deck != null;
+
         /// <summary>当前是否铸造标签页（false = 商品页）。</summary>
         public bool IsForgeTab => _forgeTab;
 
