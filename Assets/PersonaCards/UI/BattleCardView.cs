@@ -109,6 +109,10 @@ namespace PersonaCards.UI
             {
                 CardEnhancement.ChipBoost => "+20",
                 CardEnhancement.MultBoost => "×3",
+                CardEnhancement.ChipPlus => "+5",
+                CardEnhancement.MultPlus => "+0.5",
+                CardEnhancement.CoinBonus => "+2金",
+                CardEnhancement.IndependentMult => "×1.03",
                 _ => string.Empty
             };
         }

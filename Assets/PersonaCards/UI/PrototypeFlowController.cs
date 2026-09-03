@@ -775,12 +775,12 @@ namespace PersonaCards.UI
             Render();
         }
 
-        /// <summary>领取奖励强化：所选牌获得筹码强化与本场金币奖励（P0-6 同时入账，_rewardClaimed 防重复领取），按节点配置进商店或直接推进到下一节点。</summary>
+        /// <summary>领取奖励强化：所选牌获得筹码强化与本场金币奖励（P0-6 同时入账，_rewardClaimed 防重复领取），金币强化牌每张 +2 随金币奖励一并入账（UI 重排第二批），按节点配置进商店或直接推进到下一节点。</summary>
         private void ContinueFromReward()
         {
             if (_journeyDeck == null || _rewardClaimed || !_journeyDeck.GrantRewardEnhancement(SelectedJourneyCard.Id)) return;
             _rewardClaimed = true;
-            var coinReward = RunRoute.CoinsRewardOf(_flow.NodeIndex);
+            var coinReward = RunRoute.CoinsRewardOf(_flow.NodeIndex) + _journeyDeck.CoinBonusIncome(); // 金币强化牌收益并入本场金币奖励
             if (coinReward > 0)
             {
                 _journeyDeck.AddCoins(coinReward);
@@ -1914,6 +1914,10 @@ namespace PersonaCards.UI
         {
             CardEnhancement.ChipBoost => "筹码 +20",
             CardEnhancement.MultBoost => "倍率强化",
+            CardEnhancement.ChipPlus => "筹码 +5",
+            CardEnhancement.MultPlus => "倍率 +0.5",
+            CardEnhancement.CoinBonus => "金币 +2",
+            CardEnhancement.IndependentMult => "独立倍率 ×1.03",
             _ => "无"
         };
 

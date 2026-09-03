@@ -16,45 +16,45 @@ MonoBehaviour:
   - refreshId: REFRESH_001
     node: AI1
     productType: "\u5361\u724C"
-    count: 1
+    count: 2
     weight: 45
   - refreshId: REFRESH_002
     node: AI1
     productType: "\u4EBA\u683C\u724C"
-    count: 1
+    count: 2
     weight: 20
   - refreshId: REFRESH_003
     node: AI1
     productType: "\u670D\u52A1"
-    count: 1
+    count: 2
     weight: 35
   - refreshId: REFRESH_005
     node: AI2
     productType: "\u5361\u724C"
-    count: 1
+    count: 2
     weight: 40
   - refreshId: REFRESH_006
     node: AI2
     productType: "\u4EBA\u683C\u724C"
-    count: 1
+    count: 2
     weight: 25
   - refreshId: REFRESH_007
     node: AI2
     productType: "\u670D\u52A1"
-    count: 1
+    count: 2
     weight: 35
   - refreshId: REFRESH_008
     node: AI3
     productType: "\u5361\u724C"
-    count: 1
+    count: 2
     weight: 30
   - refreshId: REFRESH_009
     node: AI3
     productType: "\u4EBA\u683C\u724C"
-    count: 1
+    count: 2
     weight: 30
   - refreshId: REFRESH_010
     node: AI3
     productType: "\u670D\u52A1"
-    count: 1
+    count: 3
     weight: 40

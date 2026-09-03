@@ -27,7 +27,7 @@ namespace PersonaCards.Tests.EditMode
             };
         }
 
-        /// <summary>简化夹具：卡牌池 2 张（可售）+ 人格 1 张（效果未实装，白名单过滤）+ 服务 1 个（移除卡牌）。</summary>
+        /// <summary>简化夹具：卡牌池 2 张（可售）+ 人格 1 张（效果未实装，白名单过滤）+ 服务 2 个（移除卡牌/筹码强化，同权重）。</summary>
         private static List<ShopProductEntry> FixtureProducts()
         {
             return new List<ShopProductEntry>
@@ -36,7 +36,7 @@ namespace PersonaCards.Tests.EditMode
                 Product("SHOP_CARD_002", "卡牌", ShopState.EffectAddCard, 2, "梅花2"),
                 Product("SHOP_PER_001", "人格牌", "增加人格牌", 13, "人格牌01"),
                 Product("SHOP_SERVICE_005", "服务", ShopState.EffectRemoveCard, 5, "卡牌移除"),
-                Product("SHOP_SERVICE_001", "服务", "强化卡牌", 5, "筹码强化") // 效果未实装：不得上架
+                Product("SHOP_SERVICE_001", "服务", ShopState.EffectEnhanceCard, 5, "筹码强化") // 单卡强化已实装（UI 重排第二批）：与移除卡牌同为服务候选
             };
         }
 
@@ -121,7 +121,7 @@ namespace PersonaCards.Tests.EditMode
             // 类型无商品
             Assert.That(ShopState.PickProduct(FixtureProducts(), FixturePoolRules(), "不存在类型", 1u), Is.Null);
             // 商品全被白名单过滤（服务池里只有未实装效果时）
-            var products = new List<ShopProductEntry> { Product("SHOP_SERVICE_001", "服务", "强化卡牌", 5, "筹码强化") };
+            var products = new List<ShopProductEntry> { Product("SHOP_SERVICE_999", "服务", "未实装效果", 5, "未知服务") };
             Assert.That(ShopState.PickProduct(products, FixturePoolRules(), "服务", 1u), Is.Null);
             // 池规则为空：有商品但无池规则 → 不上架
             Assert.That(ShopState.PickProduct(FixtureProducts(), new List<ShopPoolRefreshEntry>(), "卡牌", 1u), Is.Null);
@@ -138,7 +138,7 @@ namespace PersonaCards.Tests.EditMode
 
                 var service = ShopState.PickProduct(FixtureProducts(), FixturePoolRules(), "服务", seed);
                 Assert.That(service, Is.Not.Null);
-                Assert.That(service.productId, Is.EqualTo("SHOP_SERVICE_005")); // 强化卡牌未实装不进候选
+                Assert.That(service.productId, Is.EqualTo("SHOP_SERVICE_001").Or.EqualTo("SHOP_SERVICE_005")); // 两个白名单内服务按权重抽取
 
                 // 人格商品效果「增加人格牌」未实装（模板→定义转换待 B7）：白名单过滤后无候选 → null
                 Assert.That(ShopState.PickProduct(FixtureProducts(), FixturePoolRules(), "人格牌", seed), Is.Null);
@@ -171,7 +171,7 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(state.Slots, Has.Count.EqualTo(3));
             Assert.That(state.Slots[0].Product.productType, Is.EqualTo("卡牌"));
             Assert.That(state.Slots[1].Product, Is.Null); // 人格位：效果未实装 → 无货
-            Assert.That(state.Slots[2].Product.productId, Is.EqualTo("SHOP_SERVICE_005")); // 服务位：唯一白名单内服务
+            Assert.That(state.Slots[2].Product.productId, Is.EqualTo("SHOP_SERVICE_001").Or.EqualTo("SHOP_SERVICE_005")); // 服务位：两个白名单内服务按权重抽取
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace PersonaCards.Tests.EditMode
         {
             var state = new ShopState(FixtureProducts(), FixturePoolRules(), FixtureSlotRules("AI1"), 0, 42u);
 
-            Assert.That(state.TryPurchase(2, 4), Is.False); // 移除卡牌 5 金，4 金不足 → 不生效
+            Assert.That(state.TryPurchase(2, 4), Is.False); // 服务位 5 金（两种服务同价），4 金不足 → 不生效
             Assert.That(state.Slots[2].SoldOut, Is.False);
             Assert.That(state.TryPurchase(2, 5), Is.True); // 恰好 5 金可购
         }
@@ -258,6 +258,29 @@ namespace PersonaCards.Tests.EditMode
                 var picked = ShopState.PickProduct(products, poolRules, "服务", seed);
                 Assert.That(picked, Is.Not.Null); // 白名单放行后按权重必抽中
                 Assert.That(ShopState.IsEnhancementEffect(picked.effectType), Is.True);
+            }
+        }
+
+        [Test]
+        public void EnhanceCardEffectIsWhitelistedForPick()
+        {
+            // 白名单放行「强化卡牌」后（UI 重排第二批）：与移除卡牌同池按权重抽取，任意种子均非空
+            var products = new List<ShopProductEntry>
+            {
+                Product("SHOP_SERVICE_001", "服务", ShopState.EffectEnhanceCard, 5, "筹码强化"),
+                Product("SHOP_SERVICE_005", "服务", ShopState.EffectRemoveCard, 5, "卡牌移除")
+            };
+            var poolRules = new List<ShopPoolRefreshEntry>
+            {
+                new ShopPoolRefreshEntry { poolId = "POOL_SERVICE_001", productId = "SHOP_SERVICE_001", weight = 20 },
+                new ShopPoolRefreshEntry { poolId = "POOL_SERVICE_005", productId = "SHOP_SERVICE_005", weight = 20 }
+            };
+
+            for (uint seed = 1u; seed <= 20u; seed++)
+            {
+                var picked = ShopState.PickProduct(products, poolRules, "服务", seed);
+                Assert.That(picked, Is.Not.Null);
+                Assert.That(picked.productId, Is.EqualTo("SHOP_SERVICE_001").Or.EqualTo("SHOP_SERVICE_005"));
             }
         }
 

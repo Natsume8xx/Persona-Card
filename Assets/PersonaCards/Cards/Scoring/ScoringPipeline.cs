@@ -84,6 +84,19 @@ namespace PersonaCards.Cards.Scoring
                         context.BeginSource(ScoringPhase.ScoringCards, ScoringSourceType.CardEnhancement, card.Id);
                         context.AddMultiplier(3m, "enhancement.mult_boost");
                         break;
+                    case CardEnhancement.ChipPlus: // UI 重排第二批：筹码强化 +5
+                        context.BeginSource(ScoringPhase.ScoringCards, ScoringSourceType.CardEnhancement, card.Id);
+                        context.AddChips(5m, "enhancement.chip_plus");
+                        break;
+                    case CardEnhancement.MultPlus: // UI 重排第二批：倍率强化 +0.5
+                        context.BeginSource(ScoringPhase.ScoringCards, ScoringSourceType.CardEnhancement, card.Id);
+                        context.AddMultiplier(0.5m, "enhancement.mult_plus");
+                        break;
+                    case CardEnhancement.IndependentMult: // UI 重排第二批：独立乘区强化，最终得分 ×1.03（多张叠乘）
+                        context.BeginSource(ScoringPhase.ScoringCards, ScoringSourceType.CardEnhancement, card.Id);
+                        context.MultiplyFinal(1.03m, "enhancement.independent_mult");
+                        break;
+                    // CoinBonus（金币强化）计分无效果：收益在胜利结算按牌库张数入账，见 JourneyDeckState.CoinBonusIncome
                 }
             }
         }

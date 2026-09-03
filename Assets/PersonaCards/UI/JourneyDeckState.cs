@@ -42,6 +42,18 @@ namespace PersonaCards.UI
             return ReplaceCard(cardId, card => new PlayingCardInstance(card.Id, card.Suit, card.Rank, CardEnhancement.ChipBoost));
         }
 
+        /// <summary>商店单卡强化服务（UI 重排第二批）：把指定牌替换为同花色同点数 + 目标增强；未知 id 返回 false。不扣款（扣款由 TrySpend 先行）。</summary>
+        public bool ApplyCardEnhancement(string cardId, CardEnhancement enhancement)
+        {
+            return ReplaceCard(cardId, card => new PlayingCardInstance(card.Id, card.Suit, card.Rank, enhancement));
+        }
+
+        /// <summary>金币强化牌收益（UI 重排第二批，暂定口径待策划确认）：每张金币强化牌 ×2 金币，胜利结算随本场金币奖励入账。纯查询不改状态。</summary>
+        public int CoinBonusIncome(int perCard = 2)
+        {
+            return _cards.Count(card => card.Enhancement == CardEnhancement.CoinBonus) * perCard;
+        }
+
         /// <summary>按固定商店价（2 金币）购买旧三类服务；成功才扣款。</summary>
         public bool TryPurchase(JourneyDeckAction action, string cardId)
         {

@@ -23,11 +23,14 @@ namespace PersonaCards.UI
         public const string EffectEnhanceSuit = "强化花色";
         public const string EffectEnhanceHand = "强化牌型";
 
-        /// <summary>本轮已实现接线效果的白名单：增加卡牌 / 移除卡牌 / 三线强化。未实装效果不进商品位（策划案商品池按效果过滤）。
+        /// <summary>单卡强化服务效果类型（配表原文：强化卡牌，SHOP_SERVICE_001~004；UI 重排第二批接线选牌弹窗）。</summary>
+        public const string EffectEnhanceCard = "强化卡牌";
+
+        /// <summary>本轮已实现接线效果的白名单：增加卡牌 / 移除卡牌 / 单卡强化 / 三线强化。未实装效果不进商品位（策划案商品池按效果过滤）。
         /// 增加人格牌待「模板→运行时定义」转换（B7 行为→词条映射）落地后放开；强化类服务经 P0-11 三线强化接线。
         /// 强化服务商品（SHOP_SERVICE_006~008）能否上架还取决于强化配表注入（ShopCatalog 合成池规则时过滤）。</summary>
         private static readonly string[] ImplementedEffects =
-            { EffectAddCard, EffectRemoveCard, EffectEnhancePersona, EffectEnhanceSuit, EffectEnhanceHand };
+            { EffectAddCard, EffectRemoveCard, EffectEnhanceCard, EffectEnhancePersona, EffectEnhanceSuit, EffectEnhanceHand };
 
         /// <summary>是否为三线强化服务效果（P0-11）：购买走选择模式（目标按当前等级动态定价），不走普通商品购买流程。</summary>
         public static bool IsEnhancementEffect(string effectType)

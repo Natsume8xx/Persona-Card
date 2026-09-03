@@ -61,6 +61,38 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
+        public void ApplyCardEnhancementReplacesEnhancementOnlyAndDoesNotCharge()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create());
+            var target = journey.Cards.First();
+
+            Assert.That(journey.ApplyCardEnhancement(target.Id, CardEnhancement.CoinBonus), Is.True);
+            var updated = journey.Cards.Single(card => card.Id == target.Id);
+            Assert.That(updated.Enhancement, Is.EqualTo(CardEnhancement.CoinBonus));
+            Assert.That(updated.Suit, Is.EqualTo(target.Suit));
+            Assert.That(updated.Rank, Is.EqualTo(target.Rank));
+            Assert.That(journey.Coins, Is.EqualTo(3)); // 不扣款：扣款由 TrySpend 先行（选择确认流程）
+
+            Assert.That(journey.ApplyCardEnhancement("不存在的牌", CardEnhancement.ChipPlus), Is.False);
+        }
+
+        [Test]
+        public void CoinBonusIncomeCountsCoinBonusCardsOnly()
+        {
+            var journey = new JourneyDeckState(StandardDeckFactory.Create());
+
+            Assert.That(journey.CoinBonusIncome(), Is.EqualTo(0)); // 无金币强化牌 → 0
+
+            journey.ApplyCardEnhancement(journey.Cards[0].Id, CardEnhancement.CoinBonus);
+            journey.ApplyCardEnhancement(journey.Cards[1].Id, CardEnhancement.CoinBonus);
+            journey.ApplyCardEnhancement(journey.Cards[2].Id, CardEnhancement.ChipPlus); // 其他增强不计入
+
+            Assert.That(journey.CoinBonusIncome(), Is.EqualTo(4)); // 2 张 × 2
+            Assert.That(journey.CoinBonusIncome(3), Is.EqualTo(6)); // 自定义单价
+            Assert.That(journey.Coins, Is.EqualTo(3)); // 纯查询不改状态
+        }
+
+        [Test]
         public void TrySpendDeductsAndRejectsInsufficientOrNegative()
         {
             var journey = new JourneyDeckState(StandardDeckFactory.Create(), 10);
