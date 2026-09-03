@@ -187,6 +187,12 @@ namespace PersonaCards.UI
         private ShopEnhancementSession _shopEnhancement;
         /// <summary>被选择的强化服务槽位（确认成功后标记售罄）。</summary>
         private int _shopEnhancementSlotIndex;
+        /// <summary>获得新人格牌弹窗会话（UI 重排第一批）：弹窗打开期间非 null，关闭后置 null；瞬态不入存档（读档回铸牌屏重铸）。</summary>
+        private PersonaEquipPromptSession _equipPromptSession;
+        /// <summary>获得新人格牌弹窗视图实例（Resources/Prefabs/PersonaEquipPopup 的运行时实例，Canvas 最末兄弟节点覆盖全屏）。</summary>
+        private PersonaEquipPopupView _equipPrompt;
+        /// <summary>弹窗 prefab（Awake 缓存；缺失时确认铸造降级为不装备直接推进，收藏已入不受损）。</summary>
+        private PersonaEquipPopupView _equipPromptPrefab;
 
         /// <summary>商店屏模式（P0-11）：Normal = 普通商品位；EnhancementSelect = 强化目标选择（零新节点，纯语义切换）。</summary>
         private enum ShopScreenMode
@@ -487,6 +493,10 @@ namespace PersonaCards.UI
                 }
             }
             _shopSlotButtons = new[] { shopDeleteButton, shopReforgeButton, shopEnhanceButton }; // 三按钮复用为商品位（顺序 = 槽位序）
+            // 获得新人格牌弹窗 prefab 缓存（UI 重排第一批）：缺失时 LogError，确认铸造降级为不装备直接推进
+            _equipPromptPrefab = Resources.Load<PersonaEquipPopupView>("Prefabs/PersonaEquipPopup");
+            if (_equipPromptPrefab == null)
+                Debug.LogError("[EquipPrompt] 弹窗 prefab 缺失（Assets/PersonaCards/Resources/Prefabs/PersonaEquipPopup.prefab）：确认铸造后不装备直接推进。");
             _saveStore = new PrototypeSaveStore();
             LoadProfile();
             startButton.onClick.AddListener(StartNewRun);
@@ -1251,29 +1261,64 @@ namespace PersonaCards.UI
             if (_selectedForgeCandidate < 0) return;
             var candidate = _forgeState.Candidates[_selectedForgeCandidate];
             _personaCollection.Add(candidate);
-            var slotIndex = _personaLoadout.Equip(candidate);
-            forgeStatusText.text = slotIndex >= 0
-                ? $"已获得 {candidate.DisplayName}，装备至 0{slotIndex + 1} 槽"
-                : $"已获得 {candidate.DisplayName}，装备已满，请选择替换槽位";
-            RefreshPersonaLoadout();
+            forgeStatusText.text = $"已获得 {candidate.DisplayName}";
+            // 弹窗（UI 重排第一批）：中局与局终均弹；确认/暂不替换回调闭环推进；prefab 缺失时降级为不装备直接推进
+            _equipPromptSession = new PersonaEquipPromptSession(candidate, _personaCollection.Count, _personaLoadout.Slots);
+            if (_equipPromptPrefab == null)
+            {
+                Debug.LogError($"[EquipPrompt] 弹窗 prefab 缺失：{candidate.DisplayName} 已入收藏，跳过装备确认直接推进。");
+                AdvanceAfterForgeConfirm();
+                return;
+            }
+            var canvas = personaForgeScreen.GetComponentInParent<Canvas>();
+            _equipPrompt = Instantiate(_equipPromptPrefab,
+                canvas != null ? canvas.transform : personaForgeScreen.transform.parent);
+            _equipPrompt.gameObject.SetActive(true);
+            _equipPrompt.Configure(_equipPromptSession, OnEquipPromptDecline, OnEquipPromptConfirm);
+        }
+
+        /// <summary>弹窗「暂不替换」：新牌只入收藏不装备，关闭弹窗后推进流程。</summary>
+        private void OnEquipPromptDecline()
+        {
+            CloseEquipPrompt();
+            AdvanceAfterForgeConfirm();
+        }
+
+        /// <summary>弹窗「替换并继续」：执行替换（EquipAt 语义：同 TemplateId 在其他槽则两槽互换）→ 刷装备 → 关闭弹窗推进流程。</summary>
+        private void OnEquipPromptConfirm()
+        {
+            if (_equipPromptSession != null)
+            {
+                _equipPromptSession.ExecuteReplace(_personaLoadout);
+                RefreshPersonaLoadout();
+            }
+            CloseEquipPrompt();
+            AdvanceAfterForgeConfirm();
+        }
+
+        /// <summary>销毁弹窗实例并清空瞬态会话。</summary>
+        private void CloseEquipPrompt()
+        {
+            if (_equipPrompt != null)
+            {
+                Destroy(_equipPrompt.gameObject);
+                _equipPrompt = null;
+            }
+            _equipPromptSession = null;
+        }
+
+        /// <summary>弹窗闭环后的流程推进：中局铸牌 → 推进下一节点（HandleStageEntry 内部落盘）；局终铸造 → 回主菜单（不再自动打开收藏页）。</summary>
+        private void AdvanceAfterForgeConfirm()
+        {
             if (_flow.Stage == PrototypeFlowStage.PersonaGen)
             {
-                // 中局铸牌：入收藏+装备后直接推进到下一节点，不回主菜单、不打开收藏（本局仍在进行）
                 if (!_flow.CompletePersonaGen()) return;
-                Debug.Log($"[Flow] 中局铸牌确认：获得 {candidate.DisplayName}，推进到节点 {_flow.NodeIndex}。");
+                Debug.Log($"[Flow] 中局铸牌确认：获得 {_personaCollection[_personaCollection.Count - 1].DisplayName}，推进到节点 {_flow.NodeIndex}。");
                 HandleStageEntry();
                 Render();
                 return;
             }
-            // 局终铸造：回主菜单并打开收藏页定位新牌
-            _flow.ReturnToMainMenu();
-            _collectionOpen = true;
-            _selectedCollectionIndex = _personaCollection.Count - 1;
-            _collectionPage = _selectedCollectionIndex / collectionCardButtons.Length;
-            _selectedEquipmentSlot = slotIndex >= 0 ? slotIndex : PersonaLoadout.SlotCount - 1;
-            SaveInactiveProfile();
-            Render();
-            RefreshCollection();
+            ReturnToMainMenu();
         }
 
         private void OnBattleCompleted(BattleStatus status, long score, long target)
@@ -1442,28 +1487,11 @@ namespace PersonaCards.UI
             rawImage.color = Color.white;
         }
 
-        private static string ForgeRule(PersonaCardDefinition definition)
-        {
-            return definition.EffectKind switch
-            {
-                PersonaEffectKind.AddChips => $"{HandName(definition.MinimumHandType)}或更高：+{definition.EffectValue:0} 筹码",
-                PersonaEffectKind.AddMultiplier => $"{HandName(definition.MinimumHandType)}或更高：+{definition.EffectValue:0.0} 倍率",
-                _ => $"{HandName(definition.MinimumHandType)}或更高：最终 ×{definition.EffectValue:0.00}"
-            };
-        }
+        /// <summary>规则文案单源委托（UI 重排第一批）：输出与弹窗会话逐字一致，由 PersonaEquipPromptSessionTests 锁定零漂移。</summary>
+        private static string ForgeRule(PersonaCardDefinition definition) => PersonaEquipPromptSession.RuleTextOf(definition);
 
-        private static string HandName(HandType handType) => handType switch
-        {
-            HandType.Pair => "对子",
-            HandType.TwoPair => "两对",
-            HandType.ThreeOfAKind => "三条",
-            HandType.Straight => "顺子",
-            HandType.Flush => "同花",
-            HandType.FullHouse => "葫芦",
-            HandType.FourOfAKind => "四条",
-            HandType.StraightFlush => "同花顺",
-            _ => "高牌"
-        };
+        /// <summary>牌型中文名单源委托（UI 重排第一批）：输出由 PersonaEquipPromptSessionTests 锁定。</summary>
+        private static string HandName(HandType handType) => PersonaEquipPromptSession.HandNameOf(handType);
 
         private void SelectPreviousJourneyCard()
         {
