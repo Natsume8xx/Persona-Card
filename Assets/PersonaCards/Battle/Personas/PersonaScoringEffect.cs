@@ -1,4 +1,5 @@
 using System;
+using PersonaCards.Battle.Enhancements;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
 using PersonaCards.Core;
@@ -9,8 +10,9 @@ namespace PersonaCards.Battle.Personas
     {
         private readonly PersonaSlot _slot;
         private readonly Func<int> _handsPlayed;
+        private readonly int _level;
 
-        public PersonaScoringEffect(PersonaSlot slot, Func<int> handsPlayed = null)
+        public PersonaScoringEffect(PersonaSlot slot, Func<int> handsPlayed = null, int level = 0)
         {
             _slot = slot ?? throw new ArgumentNullException(nameof(slot));
             if (slot.IsEmpty)
@@ -18,7 +20,13 @@ namespace PersonaCards.Battle.Personas
                 throw new ArgumentException("An empty persona slot has no scoring effect.", nameof(slot));
             }
 
+            if (level < 0 || level > EnhancementState.PersonaMaxLevel)
+            {
+                throw new ArgumentOutOfRangeException(nameof(level), level, "Persona enhancement level must be within 0..4.");
+            }
+
             _handsPlayed = handsPlayed ?? (() => 0);
+            _level = level; // P0-11 人格强化：按等级放大效果值（Lv0 = 旧行为，零差异）
         }
 
         public ScoringPhase Phase => ScoringPhase.Persona;
@@ -59,17 +67,24 @@ namespace PersonaCards.Battle.Personas
             switch (_slot.Definition.EffectKind)
             {
                 case PersonaEffectKind.AddChips:
-                    context.AddChips(_slot.Definition.EffectValue, "persona.add_chips");
+                    context.AddChips(UpgradedValue(), "persona.add_chips");
                     break;
                 case PersonaEffectKind.AddMultiplier:
-                    context.AddMultiplier(_slot.Definition.EffectValue, "persona.add_multiplier");
+                    context.AddMultiplier(UpgradedValue(), "persona.add_multiplier");
                     break;
                 case PersonaEffectKind.MultiplyFinal:
-                    context.MultiplyFinal(_slot.Definition.EffectValue, "persona.multiply_final");
+                    context.MultiplyFinal(UpgradedValue(), "persona.multiply_final");
                     break;
                 default:
                     throw new InvalidOperationException($"Unsupported persona effect {_slot.Definition.EffectKind}.");
             }
+        }
+
+        /// <summary>P0-11 人格强化：效果值 = Lv0 值 + 每级增量 × 等级（增量由 EnhancementConfig 按效果类型查表）。</summary>
+        private decimal UpgradedValue()
+        {
+            return _slot.Definition.EffectValue
+                   + EnhancementConfig.PersonaPerLevelIncreaseOf(_slot.Definition.EffectKind) * _level;
         }
 
         private bool ConditionMatches(HandEvaluationResult evaluation)

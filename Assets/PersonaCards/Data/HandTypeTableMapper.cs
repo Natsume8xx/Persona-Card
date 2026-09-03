@@ -229,8 +229,9 @@ namespace PersonaCards.Data
         };
 
         /// <summary>牌型_ID → HandType 固定映射：表行顺序改动、改 ID 都会在编译期锁定；
-        /// P0-1J：HAND_11 改为皇家同花顺（配表定稿）；HAND_12 容错映射同花五条（表补行即生效）。</summary>
-        private static bool TryMapHandId(string handId, out HandType handType)
+        /// P0-1J：HAND_11 改为皇家同花顺（配表定稿）；HAND_12 容错映射同花五条（表补行即生效）。
+        /// P0-11 起公开：牌型强化表（HandUp）的 handId 解析复用同一映射。</summary>
+        public static bool TryMapHandId(string handId, out HandType handType)
         {
             switch (handId)
             {

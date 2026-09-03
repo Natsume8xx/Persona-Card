@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PersonaCards.Battle;
 using PersonaCards.Battle.Bosses;
+using PersonaCards.Battle.Enhancements;
 using PersonaCards.Battle.Personas;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
@@ -209,11 +210,13 @@ namespace PersonaCards.UI
         public void BeginBattle(long targetScore, uint seed, IEnumerable<PlayingCardInstance> cards = null,
             PersonaLoadout personaLoadout = null, BossEncounterRuntime bossEncounter = null,
             int playsLimit = BattleStateMachine.StartingPlays, int discardsLimit = BattleStateMachine.StartingDiscards,
-            int selectionLimit = BattleStateMachine.DefaultSelectionLimit, int journeyCoins = 0, int coinsReward = 0)
+            int selectionLimit = BattleStateMachine.DefaultSelectionLimit, int journeyCoins = 0, int coinsReward = 0,
+            EnhancementState enhancements = null)
         {
             _battle = new BattleStateMachine(cards ?? StandardDeckFactory.Create(), seed, targetScore,
                 personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(), bossEncounter: bossEncounter,
-                playsLimit: playsLimit, discardsLimit: discardsLimit, selectionLimit: selectionLimit);
+                playsLimit: playsLimit, discardsLimit: discardsLimit, selectionLimit: selectionLimit,
+                enhancements: enhancements); // P0-11：强化等级由 FlowController 透传（null = 全 0 级）
             _completionRaised = false;
             _modalOpen = false;
             // P0-1I：新战斗开局重置手牌显示排序为默认「大小」（排序偏好不落档），并刷新按钮文案
@@ -231,10 +234,11 @@ namespace PersonaCards.UI
             RefreshBossRule();
         }
 
-        public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout, int journeyCoins = 0, int coinsReward = 0)
+        public void RestoreBattle(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout, int journeyCoins = 0, int coinsReward = 0,
+            EnhancementState enhancements = null)
         {
             _battle = new BattleStateMachine(snapshot, personaLoadout ?? InitialPersonaCatalog.CreateDefaultLoadout(),
-                selectionLimit: GlobalConfig.SelectionLimit);
+                selectionLimit: GlobalConfig.SelectionLimit, enhancements: enhancements); // P0-11：强化等级随存档还原由调用方重注
             _completionRaised = false;
             _modalOpen = false;
             resultOverlay.SetActive(false);

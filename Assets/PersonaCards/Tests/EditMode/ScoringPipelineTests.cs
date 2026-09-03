@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using PersonaCards.Battle.Enhancements;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
 using PersonaCards.Cards.Scoring;
@@ -156,6 +157,50 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(result.Chips, Is.EqualTo(69m));
             Assert.That(result.Multiplier, Is.EqualTo(2m));
             Assert.That(result.FinalScore, Is.EqualTo(138));
+        }
+
+        [Test]
+        public void EnhancementEffectsRunInLegalPhasesAlongsideOthers()
+        {
+            // P0-11：花色（ScoringCards 阶段）与牌型（HeldAndGlobal 阶段）效果走管线白名单，与其他效果并存
+            EnhancementConfig.Configure(EnhancementTablesWithDeltas());
+            try
+            {
+                var state = new EnhancementState();
+                state.SetSuitLevel(Suit.Spades, 1); // 黑桃 Lv1 = 每张计分黑桃 +5
+
+                var result = _pipeline.Score(
+                    new[]
+                    {
+                        Card("ace", Suit.Spades, Rank.Ace),
+                        Card("king", Suit.Spades, Rank.King),
+                        Card("queen", Suit.Spades, Rank.Queen),
+                        Card("jack", Suit.Spades, Rank.Jack),
+                        Card("ten", Suit.Spades, Rank.Ten)
+                    },
+                    new IScoringEffect[]
+                    {
+                        new HandEnhancementEffect(state), // 牌型 Lv0：零效果
+                        new SuitEnhancementEffect(state), // 黑桃 Lv1：5 张计分黑桃 × 5 = +25
+                        Effect(ScoringPhase.HeldAndGlobal, 0, "global", c => c.AddChips(3m, "global.chips"))
+                    });
+
+                // 皇家 100/12，面值 51，+25 花色 +3 全局 → (100+51+25+3) × 12 = 2148
+                Assert.That(result.FinalScore, Is.EqualTo(2148));
+            }
+            finally
+            {
+                EnhancementConfig.Configure(EnhancementTables.Empty);
+            }
+        }
+
+        /// <summary>黑桃 5/10/15/20 的花色表 + 空牌型表（本用例只验证花色线与其他效果并存）。</summary>
+        private static EnhancementTables EnhancementTablesWithDeltas()
+        {
+            var tables = new EnhancementTables();
+            tables.SuitChips[Suit.Spades] = new[] { 5, 10, 15, 20 };
+            tables.SuitPrices[Suit.Spades] = new[] { 8, 11, 14, 17 };
+            return tables;
         }
 
         [Test]

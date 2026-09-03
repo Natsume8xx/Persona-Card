@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using PersonaCards.Battle;
 using PersonaCards.Battle.Bosses;
+using PersonaCards.Battle.Enhancements;
 using PersonaCards.Battle.Personas;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
@@ -149,6 +150,8 @@ namespace PersonaCards.UI
         private readonly PrototypeFlowStateMachine _flow = new PrototypeFlowStateMachine();
         private JourneyDeckState _journeyDeck;
         private PersonaLoadoutState _personaLoadout;
+        /// <summary>三线强化等级（P0-11）：新局重置、读档还原、战斗/商店共用同一实例。</summary>
+        private EnhancementState _enhancements = new EnhancementState();
 
         // 槽位视觉配色（与场景构建器 BattlePrototypeSceneBuilder 的原始值一致）：
         // 有卡 = 金棕底 + PaleGold 名 + 白规则；空槽 = 灰底 + 灰文本
@@ -716,6 +719,7 @@ namespace PersonaCards.UI
             _selectedForgeCandidate = -1;
             _rewardClaimed = false;
             _selectedJourneyCardIndex = 0;
+            _enhancements = new EnhancementState(); // P0-11：新局三线强化全 0 级
             _runSeed = unchecked((uint)System.Environment.TickCount);
             Debug.Log($"[Flow] 新旅程初始化：牌库 {_journeyDeck.Cards.Count} 张，金币 {_journeyDeck.Coins}，局种子 {_runSeed}。");
         }
@@ -826,7 +830,7 @@ namespace PersonaCards.UI
                 : null;
             battleController.BeginBattle(node.targetScore, seed, _journeyDeck.CreateBattleDeck(), _personaLoadout.CreateLoadout(), boss,
                 playsLimit, discardsLimit, selectionLimit: GlobalConfig.SelectionLimit, journeyCoins: _journeyDeck.Coins,
-                coinsReward: RunRoute.CoinsRewardOf(_flow.NodeIndex)); // P0-1I：当前金币注入战斗信息显示（3.3.9）；P0-6：本场金币奖励同源注入
+                coinsReward: RunRoute.CoinsRewardOf(_flow.NodeIndex), enhancements: _enhancements); // P0-1I：当前金币注入战斗信息显示（3.3.9）；P0-6：本场金币奖励同源注入；P0-11：三线强化等级注入战斗计分
             battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}"; // 进度只计战斗，生成节点不计入
             Debug.Log($"[Flow] 开始节点 {node.Index}（{node.kind}）：目标分 {node.targetScore}，出牌 {playsLimit} 弃牌 {discardsLimit}，场次种子 {seed}" +
                       (boss == null ? "，无 Boss。" : $"，Boss：{boss.Definition.EncounterId}。"));
@@ -1534,6 +1538,7 @@ namespace PersonaCards.UI
                     data.behavior.cardsDiscarded, data.behavior.score, handCounts);
                 _selectedJourneyCardIndex = Mathf.Clamp(data.selectedJourneyCardIndex, 0, _journeyDeck.Cards.Count - 1);
                 _rewardClaimed = data.rewardClaimed;
+                _enhancements = EnhancementSaveCodec.Restore(data); // P0-11：旧档缺字段 → 全 0 级（null-guard 在辅助方法内）
                 _runSeed = data.runSeed; // 旧档无该字段时为 0：场次种子退化为 节点序号+1，仍可复现
                 var stage = (PrototypeFlowStage)data.stage;
                 _flow.Restore(stage, data.battleNumber, data.personaSetupReturnsToBossReveal); // JSON 字段名沿用 battleNumber，语义为节点索引（P0-8 重命名）
@@ -1557,7 +1562,7 @@ namespace PersonaCards.UI
                 if (stage == PrototypeFlowStage.Battle && data.battle != null && data.battle.hasSnapshot)
                 {
                     battleController.RestoreBattle(FromSavedBattle(data.battle), _personaLoadout.CreateLoadout(), journeyCoins: _journeyDeck.Coins,
-                        coinsReward: RunRoute.CoinsRewardOf(_flow.NodeIndex)); // P0-1I：读档同步当前金币显示；P0-6：本场金币奖励同源注入
+                        coinsReward: RunRoute.CoinsRewardOf(_flow.NodeIndex), enhancements: _enhancements); // P0-1I：读档同步当前金币显示；P0-6：本场金币奖励同源注入；P0-11：三线强化等级注入战斗计分
                     // 快照恢复不经过 StartCurrentBattle，进度文案需在此显式刷新（走查反馈修复：否则残留场景默认文案）
                     battleProgressText.text = $"旅程 {RunRoute.BattleOrdinalOf(_flow.NodeIndex)} / {RunRoute.BattleCount}";
                 }
@@ -1648,7 +1653,25 @@ namespace PersonaCards.UI
                 deck = _journeyDeck.Cards.Select(ToSavedCard).ToList(),
                 collection = _personaCollection.Select(ToSavedPersona).ToList(),
                 equipped = _personaLoadout.Slots.Select(ToSavedPersona).ToList(),
-                behavior = ToSavedBehavior(_behaviorTracker)
+                behavior = ToSavedBehavior(_behaviorTracker),
+                personaLevels = _enhancements.PersonaLevels.Select(pair => new SavedPersonaLevel
+                {
+                    isEmpty = false,
+                    templateId = pair.Key,
+                    level = pair.Value
+                }).ToList(),
+                suitLevels = _enhancements.SuitLevels.Select(pair => new SavedSuitLevel
+                {
+                    isEmpty = false,
+                    suit = (int)pair.Key,
+                    level = pair.Value
+                }).ToList(),
+                handLevels = _enhancements.HandLevels.Select(pair => new SavedHandLevel
+                {
+                    isEmpty = false,
+                    handType = (int)pair.Key,
+                    level = pair.Value
+                }).ToList() // P0-11：三线强化等级随活动局存档（空字典 → 空列表，非 null）
             };
             if (_flow.Stage == PrototypeFlowStage.Battle && battleController.Battle != null &&
                 !battleController.Battle.IsPresentationLocked)

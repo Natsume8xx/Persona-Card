@@ -36,7 +36,7 @@ namespace PersonaCards.Cards.Hands
             var handType = DetermineHandType(groupCounts, isFlush, isStraight, isRoyalFlush);
             var scoringCardIds = SelectScoringCardIds(cards, rankGroups, handType);
 
-            return new HandEvaluationResult(HandTypeCatalog.Get(handType), scoringCardIds);
+            return new HandEvaluationResult(HandTypeCatalog.Get(handType), scoringCardIds, cards);
         }
 
         private static HandType DetermineHandType(

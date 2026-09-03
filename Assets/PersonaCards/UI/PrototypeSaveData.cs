@@ -24,6 +24,39 @@ namespace PersonaCards.UI
         public List<SavedPersona> equipped = new List<SavedPersona>();
         public SavedBehavior behavior = new SavedBehavior();
         public SavedBattle battle = new SavedBattle();
+        /// <summary>三线强化：人格牌等级（P0-11；旧档缺字段为 null，读取路径必须 null-guard）。</summary>
+        public List<SavedPersonaLevel> personaLevels = new List<SavedPersonaLevel>();
+        /// <summary>三线强化：花色等级（同上）。</summary>
+        public List<SavedSuitLevel> suitLevels = new List<SavedSuitLevel>();
+        /// <summary>三线强化：牌型等级（同上）。</summary>
+        public List<SavedHandLevel> handLevels = new List<SavedHandLevel>();
+    }
+
+    /// <summary>三线强化：人格牌强化等级条目（isEmpty = 空占位行，防御旧档/手改档）。</summary>
+    [Serializable]
+    public sealed class SavedPersonaLevel
+    {
+        public bool isEmpty;
+        public string templateId;
+        public int level;
+    }
+
+    /// <summary>三线强化：花色强化等级条目（suit = Suit 枚举整数值）。</summary>
+    [Serializable]
+    public sealed class SavedSuitLevel
+    {
+        public bool isEmpty;
+        public int suit;
+        public int level;
+    }
+
+    /// <summary>三线强化：牌型强化等级条目（handType = HandType 枚举整数值）。</summary>
+    [Serializable]
+    public sealed class SavedHandLevel
+    {
+        public bool isEmpty;
+        public int handType;
+        public int level;
     }
 
     [Serializable]

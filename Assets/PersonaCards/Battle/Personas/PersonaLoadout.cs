@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PersonaCards.Battle.Enhancements;
 using PersonaCards.Cards.Scoring;
 
 namespace PersonaCards.Battle.Personas
@@ -36,11 +37,18 @@ namespace PersonaCards.Battle.Personas
 
         public IReadOnlyList<PersonaSlot> Slots => _slots;
 
-        public IReadOnlyList<IScoringEffect> CreateScoringEffects(Func<int> handsPlayed = null)
+        public IReadOnlyList<IScoringEffect> CreateScoringEffects(
+            Func<int> handsPlayed = null,
+            EnhancementState enhancements = null)
         {
+            // P0-11 人格强化：按 TemplateId 查等级（无强化状态 = 全 0 级，与旧行为零差异）
+            var levels = enhancements ?? new EnhancementState();
             return _slots
                 .Where(slot => !slot.IsEmpty)
-                .Select(slot => (IScoringEffect)new PersonaScoringEffect(slot, handsPlayed))
+                .Select(slot => (IScoringEffect)new PersonaScoringEffect(
+                    slot,
+                    handsPlayed,
+                    levels.PersonaLevelOf(slot.Definition.TemplateId)))
                 .ToArray();
         }
 

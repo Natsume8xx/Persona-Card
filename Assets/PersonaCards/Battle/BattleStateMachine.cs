@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PersonaCards.Battle.Bosses;
+using PersonaCards.Battle.Enhancements;
 using PersonaCards.Battle.Personas;
 using PersonaCards.Cards;
 using PersonaCards.Cards.Hands;
@@ -24,6 +25,7 @@ namespace PersonaCards.Battle
         private readonly PersonaLoadout _personaLoadout;
         private readonly BossEncounterRuntime _bossEncounter;
         private readonly IReadOnlyCollection<int> _disabledPersonaSlots;
+        private readonly EnhancementState _enhancements;
 
         public BattleStateMachine(
             IEnumerable<PlayingCardInstance> cards,
@@ -35,7 +37,8 @@ namespace PersonaCards.Battle
             int playsLimit = StartingPlays,
             int discardsLimit = StartingDiscards,
             int selectionLimit = DefaultSelectionLimit,
-            IReadOnlyCollection<int> disabledPersonaSlots = null)
+            IReadOnlyCollection<int> disabledPersonaSlots = null,
+            EnhancementState enhancements = null)
         {
             if (targetScore < 1)
             {
@@ -62,6 +65,7 @@ namespace PersonaCards.Battle
             _scoringPipeline = scoringPipeline ?? new ScoringPipeline();
             _bossEncounter = bossEncounter;
             _disabledPersonaSlots = disabledPersonaSlots; // P0-5 封印口子：槽号越界在 CreateScoringEffects 派生时校验
+            _enhancements = enhancements ?? new EnhancementState(); // P0-11 三线强化：null = 全 0 级，旧行为零差异
 
             Deck.ShuffleDrawPile(new XorShift32Rng(seed));
             DrawToHandLimit();
@@ -69,7 +73,8 @@ namespace PersonaCards.Battle
 
         public BattleStateMachine(BattleStateSnapshot snapshot, PersonaLoadout personaLoadout = null,
             ScoringPipeline scoringPipeline = null, int selectionLimit = DefaultSelectionLimit,
-            IReadOnlyCollection<int> disabledPersonaSlots = null)
+            IReadOnlyCollection<int> disabledPersonaSlots = null,
+            EnhancementState enhancements = null)
         {
             if (snapshot == null) throw new ArgumentNullException(nameof(snapshot));
             if (snapshot.TargetScore < 1) throw new ArgumentOutOfRangeException(nameof(snapshot));
@@ -95,6 +100,7 @@ namespace PersonaCards.Battle
             _scoringPipeline = scoringPipeline ?? new ScoringPipeline();
             _bossEncounter = BossEncounterCatalog.Restore(snapshot.BossEncounter);
             _disabledPersonaSlots = disabledPersonaSlots; // 封印为 Boss 战斗态，随 Boss 快照走（P0-8），此处由调用方重注
+            _enhancements = enhancements ?? new EnhancementState(); // P0-11 强化等级随存档由调用方还原后重注
             foreach (var cardId in snapshot.SelectedCardIds ?? Array.Empty<string>())
             {
                 if (!Deck.Hand.Any(card => string.Equals(card.Id, cardId, StringComparison.Ordinal)) ||
@@ -245,8 +251,11 @@ namespace PersonaCards.Battle
             var loadout = _disabledPersonaSlots == null || _disabledPersonaSlots.Count == 0
                 ? _personaLoadout
                 : _personaLoadout.WithDisabledSlots(_disabledPersonaSlots);
-            var effects = new List<IScoringEffect>(loadout.CreateScoringEffects(() => HandsPlayed));
+            var effects = new List<IScoringEffect>(loadout.CreateScoringEffects(() => HandsPlayed, _enhancements));
             if (_bossEncounter != null) effects.AddRange(_bossEncounter.CreateScoringEffects());
+            // P0-11 三线强化：花色（ScoringCards 阶段）与牌型（HeldAndGlobal 阶段）效果，等级全 0 时零值
+            effects.Add(new SuitEnhancementEffect(_enhancements));
+            effects.Add(new HandEnhancementEffect(_enhancements));
             return effects;
         }
 
