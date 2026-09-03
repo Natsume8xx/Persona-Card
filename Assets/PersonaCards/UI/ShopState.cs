@@ -18,9 +18,24 @@ namespace PersonaCards.UI
         public const string EffectAddCard = "增加卡牌";
         public const string EffectRemoveCard = "移除卡牌";
 
-        /// <summary>本轮已实现接线效果的白名单：增加卡牌 / 移除卡牌。未实装效果不进商品位（策划案商品池按效果过滤）。
-        /// 增加人格牌待「模板→运行时定义」转换（B7 行为→词条映射）落地后放开；强化类服务待对应系统立项（P0-11 三线强化）。</summary>
-        private static readonly string[] ImplementedEffects = { EffectAddCard, EffectRemoveCard };
+        /// <summary>P0-11 三线强化服务效果类型（配表原文：强化人格 / 强化花色 / 强化牌型）。</summary>
+        public const string EffectEnhancePersona = "强化人格";
+        public const string EffectEnhanceSuit = "强化花色";
+        public const string EffectEnhanceHand = "强化牌型";
+
+        /// <summary>本轮已实现接线效果的白名单：增加卡牌 / 移除卡牌 / 三线强化。未实装效果不进商品位（策划案商品池按效果过滤）。
+        /// 增加人格牌待「模板→运行时定义」转换（B7 行为→词条映射）落地后放开；强化类服务经 P0-11 三线强化接线。
+        /// 强化服务商品（SHOP_SERVICE_006~008）能否上架还取决于强化配表注入（ShopCatalog 合成池规则时过滤）。</summary>
+        private static readonly string[] ImplementedEffects =
+            { EffectAddCard, EffectRemoveCard, EffectEnhancePersona, EffectEnhanceSuit, EffectEnhanceHand };
+
+        /// <summary>是否为三线强化服务效果（P0-11）：购买走选择模式（目标按当前等级动态定价），不走普通商品购买流程。</summary>
+        public static bool IsEnhancementEffect(string effectType)
+        {
+            return string.Equals(effectType, EffectEnhancePersona, StringComparison.Ordinal)
+                || string.Equals(effectType, EffectEnhanceSuit, StringComparison.Ordinal)
+                || string.Equals(effectType, EffectEnhanceHand, StringComparison.Ordinal);
+        }
 
         /// <summary>槽位刷新节点分组（配表「商店刷新节点」列原文）。</summary>
         public const string NodeAi1 = "AI1";
@@ -74,6 +89,19 @@ namespace PersonaCards.UI
             var slot = _slots[slotIndex];
             if (slot.Product == null || slot.SoldOut) return false;
             if (coins < slot.Product.price) return false;
+            slot.MarkSold();
+            return true;
+        }
+
+        /// <summary>
+        /// 仅标记售罄不校验余额（P0-11 强化服务专用）：真实扣款发生在目标选择确认时（价格按目标当前等级动态定价，
+        /// 商品位价格仅为展示价），确认成功后此处只落限购 1 = 即买即售罄语义。
+        /// </summary>
+        public bool TryMarkSold(int slotIndex)
+        {
+            if (slotIndex < 0 || slotIndex >= _slots.Count) return false;
+            var slot = _slots[slotIndex];
+            if (slot.Product == null || slot.SoldOut) return false;
             slot.MarkSold();
             return true;
         }

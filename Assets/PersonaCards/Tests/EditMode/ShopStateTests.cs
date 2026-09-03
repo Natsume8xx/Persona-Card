@@ -234,5 +234,57 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(state.TryPurchase(3, 100), Is.False);
             Assert.That(state.TryPurchase(1, 100), Is.False); // 人格位无货
         }
+
+        // —— P0-11：三线强化白名单 / 判定 / 仅售罄标记 ——
+
+        [Test]
+        public void EnhancementEffectsAreWhitelistedForPick()
+        {
+            var products = new List<ShopProductEntry>
+            {
+                Product("SHOP_SERVICE_006", "服务", ShopState.EffectEnhancePersona, 8, "强化人格"),
+                Product("SHOP_SERVICE_007", "服务", ShopState.EffectEnhanceSuit, 8, "强化花色"),
+                Product("SHOP_SERVICE_008", "服务", ShopState.EffectEnhanceHand, 8, "强化牌型")
+            };
+            var poolRules = new List<ShopPoolRefreshEntry>
+            {
+                new ShopPoolRefreshEntry { poolId = "POOL_SERVICE_006", productId = "SHOP_SERVICE_006", weight = 20 },
+                new ShopPoolRefreshEntry { poolId = "POOL_SERVICE_007", productId = "SHOP_SERVICE_007", weight = 20 },
+                new ShopPoolRefreshEntry { poolId = "POOL_SERVICE_008", productId = "SHOP_SERVICE_008", weight = 20 }
+            };
+
+            for (uint seed = 1u; seed <= 20u; seed++)
+            {
+                var picked = ShopState.PickProduct(products, poolRules, "服务", seed);
+                Assert.That(picked, Is.Not.Null); // 白名单放行后按权重必抽中
+                Assert.That(ShopState.IsEnhancementEffect(picked.effectType), Is.True);
+            }
+        }
+
+        [Test]
+        public void IsEnhancementEffectRecognizesOnlyThreeKinds()
+        {
+            Assert.That(ShopState.IsEnhancementEffect(ShopState.EffectEnhancePersona), Is.True);
+            Assert.That(ShopState.IsEnhancementEffect(ShopState.EffectEnhanceSuit), Is.True);
+            Assert.That(ShopState.IsEnhancementEffect(ShopState.EffectEnhanceHand), Is.True);
+            Assert.That(ShopState.IsEnhancementEffect(ShopState.EffectAddCard), Is.False);
+            Assert.That(ShopState.IsEnhancementEffect(ShopState.EffectRemoveCard), Is.False);
+            Assert.That(ShopState.IsEnhancementEffect("强化卡牌"), Is.False);
+            Assert.That(ShopState.IsEnhancementEffect(null), Is.False);
+            Assert.That(ShopState.IsEnhancementEffect(""), Is.False);
+        }
+
+        [Test]
+        public void TryMarkSoldMarksWithoutCoinCheck()
+        {
+            var state = new ShopState(FixtureProducts(), FixturePoolRules(), FixtureSlotRules("AI1"), 0, 42u);
+
+            Assert.That(state.TryMarkSold(0), Is.True); // 不校验余额（P0-11：强化真实扣款发生在选择确认时）
+            Assert.That(state.Slots[0].SoldOut, Is.True);
+            Assert.That(state.TryMarkSold(0), Is.False); // 已售罄拒绝
+            Assert.That(state.TryMarkSold(-1), Is.False);
+            Assert.That(state.TryMarkSold(3), Is.False);
+            Assert.That(state.TryMarkSold(1), Is.False); // 无货位拒绝
+        }
     }
 }
