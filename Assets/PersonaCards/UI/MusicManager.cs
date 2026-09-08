@@ -73,7 +73,7 @@ namespace PersonaCards.UI
 
             // 场景为纯 UI 布局（无相机、无 AudioListener），Unity 音频引擎没有监听器不运行——
             // 运行时自动补一个，音乐系统自包含，场景零改动
-            if (FindObjectsOfType<AudioListener>().Length == 0)
+            if (FindObjectsByType<AudioListener>().Length == 0)
             {
                 gameObject.AddComponent<AudioListener>();
             }

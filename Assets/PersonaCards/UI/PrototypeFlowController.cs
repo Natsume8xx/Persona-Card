@@ -1800,13 +1800,13 @@ namespace PersonaCards.UI
         /// <summary>主界面购买按钮（UI 重排第二批）：委托旧商品位购买流程（内部 Render → 主界面自动刷新）。</summary>
         private void OnShopUiBuy()
         {
-            PurchaseShopSlot(_shopUiSession.SelectedProductIndex);
+            PurchaseShopSlot(_shopUiSession.ProductSlotIndexOf(_shopUiSession.SelectedProductIndex));
         }
 
-        /// <summary>主界面服务行点击（UI 重排第二批）：服务槽位 = 商品行数 + 服务行序，打开对应强化界面。</summary>
+        /// <summary>主界面服务行点击（UI 重排第二批）：服务槽位随权重随机上架（行序 ≠ 绝对下标），按会话换算后打开对应强化界面。</summary>
         private void OnShopUiServiceRow(int rowIndex)
         {
-            OpenServiceOverlay(ShopUiSession.ProductRowCount + rowIndex);
+            OpenServiceOverlay(_shopUiSession.ServiceSlotIndexOf(rowIndex));
         }
 
         /// <summary>主界面副属性解锁成功回调（UI 重排第二批）：状态文案 + 立即存档（视图自行刷新）。</summary>

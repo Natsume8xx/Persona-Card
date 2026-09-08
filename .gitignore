@@ -17,6 +17,7 @@
 # ---------- Unity 构建与录制输出 ----------
 /[Bb]uild/
 /[Bb]uilds/
+/[Ww]eb[Gg][Ll][Bb]uild/
 /[Mm]emoryCaptures/
 /[Rr]ecordings/
 *.unitypackage

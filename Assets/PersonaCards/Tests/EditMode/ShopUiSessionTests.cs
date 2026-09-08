@@ -77,9 +77,9 @@ namespace PersonaCards.Tests.EditMode
                 pool.Add(new ShopPoolRefreshEntry { poolId = $"POOL_{product.productId}", productId = product.productId, weight = 1 });
             var slots = new List<ShopSlotRefreshEntry>
             {
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_1", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypeCard, count = 2, weight = 20 },
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_2", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypePersona, count = 2, weight = 20 },
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_3", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypeService, count = 2, weight = 20 }
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_1", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypeCard, drawCount = 1, refreshCap = 2, weight = 100 },
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_2", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypePersona, drawCount = 1, refreshCap = 2, weight = 100 },
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_3", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypeService, drawCount = 1, refreshCap = 2, weight = 100 }
             };
             return new ShopState(products, pool, slots, 0, 12345u);
         }
@@ -274,6 +274,19 @@ namespace PersonaCards.Tests.EditMode
             _shop.Slots[4].MarkSold();
             Assert.That(_session.CanOpenService(0), Is.False);
             Assert.That(_session.ServiceRowText(0), Is.EqualTo("筹码强化 · 已售罄"));
+        }
+
+        [Test]
+        public void 槽位绝对下标_行序与类型切分()
+        {
+            // FlowController 购买/开服务界面用绝对下标换算：商品行 0~3 → 槽 0~3，服务行 0~1 → 槽 4~5
+            Assert.That(_session.ProductSlotIndexOf(0), Is.EqualTo(0));
+            Assert.That(_session.ProductSlotIndexOf(1), Is.EqualTo(1));
+            Assert.That(_session.ProductSlotIndexOf(3), Is.EqualTo(3));
+            Assert.That(_session.ServiceSlotIndexOf(0), Is.EqualTo(4));
+            Assert.That(_session.ServiceSlotIndexOf(1), Is.EqualTo(5));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _session.ProductSlotIndexOf(4));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _session.ServiceSlotIndexOf(2));
         }
 
         // ---------- 铸造页 ----------

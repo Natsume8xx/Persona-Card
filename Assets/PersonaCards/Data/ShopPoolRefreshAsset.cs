@@ -17,7 +17,7 @@ namespace PersonaCards.Data
         [Tooltip("商品_ID（引用商品配置表；不 join，断链检查留给后续阶段）。")]
         public string productId;
 
-        [Tooltip("权重（≥1；当前配表三档 1/10/20）。")]
+        [Tooltip("权重（≥1；当前配表全 1 等概率）。")]
         public int weight;
     }
 
@@ -28,7 +28,7 @@ namespace PersonaCards.Data
     [CreateAssetMenu(menuName = "PersonaCards/ShopPoolRefresh", fileName = "ShopPoolRefresh")]
     public sealed class ShopPoolRefreshAsset : ScriptableObject
     {
-        [Tooltip("刷新规则条目列表（当前配表 65 行，按商品池_ID 升序）。")]
+        [Tooltip("刷新规则条目列表（当前配表 68 行，按商品池_ID 升序）。")]
         public List<ShopPoolRefreshEntry> entries = new List<ShopPoolRefreshEntry>();
 
         /// <summary>

@@ -8,6 +8,8 @@ namespace PersonaCards.Data
     /// 商店商品槽位刷新规则配表契约（P0-1J）：与策划表格「商店_商品槽位刷新规则」sheet 的表头与枚举值约定。
     /// 修改表格结构或枚举值必须同步此处（契约变更需双方确认，并在 Docs/KF/P0-1J.md 记录）。
     /// 商品类型旧写法「人格」（商品表为「人格牌」）导入时归一为「人格牌」并发一条全局警告。
+    /// 最新版表头 6 列（策划已确认）：「出现数量」拆为「单次抽取数量 + 单次刷新上限」，运行时语义 =
+    /// 按出现权重随机上架 0~上限 个（见代策划确认）；旧 5 列版本导入会因缺列报错中止。
     /// </summary>
     public static class ShopSlotRefreshTableContract
     {
@@ -23,10 +25,13 @@ namespace PersonaCards.Data
         /// <summary>列名：商品类型（卡牌/人格牌/服务；旧写法「人格」归一为「人格牌」）。</summary>
         public const string ColProductType = "商品类型";
 
-        /// <summary>列名：出现数量（必填，非负整数）。</summary>
-        public const string ColCount = "出现数量";
+        /// <summary>列名：单次抽取数量（必填，非负整数；每次抽签成功上架数）。</summary>
+        public const string ColDrawCount = "单次抽取数量";
 
-        /// <summary>列名：出现权重（必填，≥1；当前配表 20~45）。</summary>
+        /// <summary>列名：单次刷新上限（必填，非负整数；抽签次数 = 上架数量上限）。</summary>
+        public const string ColRefreshCap = "单次刷新上限";
+
+        /// <summary>列名：出现权重（必填，≥1；每次抽签成功率 = 权重/100，当前配表 8~58）。</summary>
         public const string ColWeight = "出现权重";
 
         /// <summary>商品类型旧写法：旧表用「人格」表示人格牌，导入时归一为「人格牌」并提示策划改名。</summary>
@@ -60,7 +65,7 @@ namespace PersonaCards.Data
     /// <summary>
     /// 商店商品槽位刷新规则配表映射器：把 XlsxTableReader 输出的行字典列表转成 ShopSlotRefreshEntry 列表。
     /// 规则：刷新_ID 必填唯一（不透明字符串，跳号合法）；商店刷新节点必填原文；商品类型只认「卡牌/人格牌/服务」，
-    /// 旧写法「人格」归一为「人格牌」（结束后一条全局警告）；出现数量必填非负整数；出现权重必填 ≥1。
+    /// 旧写法「人格」归一为「人格牌」（结束后一条全局警告）；单次抽取数量/单次刷新上限必填非负整数；出现权重必填 ≥1。
     /// </summary>
     public static class ShopSlotRefreshTableMapper
     {
@@ -118,11 +123,19 @@ namespace PersonaCards.Data
                     continue;
                 }
 
-                // 出现数量：必填非负整数
-                var countText = Get(row, ShopSlotRefreshTableContract.ColCount);
-                if (!int.TryParse(countText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var count) || count < 0)
+                // 单次抽取数量：必填非负整数
+                var drawText = Get(row, ShopSlotRefreshTableContract.ColDrawCount);
+                if (!int.TryParse(drawText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var drawCount) || drawCount < 0)
                 {
-                    errors.Add($"{label}：「出现数量」值「{countText}」不是非负整数（必填）。");
+                    errors.Add($"{label}：「单次抽取数量」值「{drawText}」不是非负整数（必填）。");
+                    continue;
+                }
+
+                // 单次刷新上限：必填非负整数
+                var capText = Get(row, ShopSlotRefreshTableContract.ColRefreshCap);
+                if (!int.TryParse(capText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var refreshCap) || refreshCap < 0)
+                {
+                    errors.Add($"{label}：「单次刷新上限」值「{capText}」不是非负整数（必填）。");
                     continue;
                 }
 
@@ -139,7 +152,8 @@ namespace PersonaCards.Data
                     refreshId = refreshId,
                     node = node,
                     productType = productType,
-                    count = count,
+                    drawCount = drawCount,
+                    refreshCap = refreshCap,
                     weight = weight
                 });
             }

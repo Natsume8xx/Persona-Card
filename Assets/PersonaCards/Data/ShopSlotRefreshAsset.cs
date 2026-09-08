@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PersonaCards.Data
 {
     /// <summary>
-    /// 商店商品槽位刷新规则条目（P0-1J）：配表「商店_商品槽位刷新规则」sheet 5 列全量落地。
+    /// 商店商品槽位刷新规则条目（P0-1J）：配表「商店_商品槽位刷新规则」sheet 6 列全量落地。
     /// 顶层纯 C# 类（非 ScriptableObject 嵌套）：Battle 是 noEngineReferences 程序集，资产类型不能跨边界
     /// （P0-1D 教训），P0-7 接线门面接收本条目列表而非资产；资产（ShopSlotRefreshAsset）只在 UI/Data 引擎程序集流转。
     /// </summary>
@@ -20,10 +20,13 @@ namespace PersonaCards.Data
         [Tooltip("商品类型：卡牌/人格牌/服务（旧写法「人格」已归一）。")]
         public string productType;
 
-        [Tooltip("出现数量（非负整数）。")]
-        public int count;
+        [Tooltip("单次抽取数量（非负整数；每次抽签成功上架数）。")]
+        public int drawCount;
 
-        [Tooltip("出现权重（≥1；当前配表 20~45）。")]
+        [Tooltip("单次刷新上限（非负整数；抽签次数 = 上架数量上限）。")]
+        public int refreshCap;
+
+        [Tooltip("出现权重（≥1；每次抽签成功率 = 权重/100）。")]
         public int weight;
     }
 
@@ -39,7 +42,7 @@ namespace PersonaCards.Data
 
         /// <summary>
         /// 单错误模式校验（同 PersonaConfigAsset 惯例）：返回 false 时 error 带原因。
-        /// 规则：条目非空、刷新_ID 非空且唯一、节点非空、商品类型合法、数量非负、权重 ≥1。
+        /// 规则：条目非空、刷新_ID 非空且唯一、节点非空、商品类型合法、抽取数量/刷新上限非负、权重 ≥1。
         /// </summary>
         public bool Validate(out string error)
         {
@@ -79,9 +82,14 @@ namespace PersonaCards.Data
                     error = $"槽位刷新规则 {entry.refreshId} 的商品类型「{entry.productType}」无效，应为 {string.Join("/", ShopProductTableContract.ProductTypes)}。";
                     return false;
                 }
-                if (entry.count < 0)
+                if (entry.drawCount < 0)
                 {
-                    error = $"槽位刷新规则 {entry.refreshId} 的出现数量不能为负数（当前 {entry.count}）。";
+                    error = $"槽位刷新规则 {entry.refreshId} 的单次抽取数量不能为负数（当前 {entry.drawCount}）。";
+                    return false;
+                }
+                if (entry.refreshCap < 0)
+                {
+                    error = $"槽位刷新规则 {entry.refreshId} 的单次刷新上限不能为负数（当前 {entry.refreshCap}）。";
                     return false;
                 }
                 if (entry.weight < 1)

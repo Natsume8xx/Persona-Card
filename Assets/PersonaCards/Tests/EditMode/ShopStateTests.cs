@@ -55,11 +55,12 @@ namespace PersonaCards.Tests.EditMode
 
         private static List<ShopSlotRefreshEntry> FixtureSlotRules(string group)
         {
+            // 权重 100 = 恒满上限：每类型恒 1 槽（卡牌/人格牌/服务各 1，共 3），保证既有购买/顺序断言的确定性
             return new List<ShopSlotRefreshEntry>
             {
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = group, productType = "卡牌", count = 1, weight = 45 },
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_002", node = group, productType = "人格牌", count = 1, weight = 20 },
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_003", node = group, productType = "服务", count = 1, weight = 35 }
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = group, productType = "卡牌", drawCount = 1, refreshCap = 1, weight = 100 },
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_002", node = group, productType = "人格牌", drawCount = 1, refreshCap = 1, weight = 100 },
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_003", node = group, productType = "服务", drawCount = 1, refreshCap = 1, weight = 100 }
             };
         }
 
@@ -181,16 +182,23 @@ namespace PersonaCards.Tests.EditMode
             // 槽位规则只有 AI3 行时，AI1 分组 → 无任何槽位
             var ai3Only = new List<ShopSlotRefreshEntry>
             {
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_007", node = "AI3", productType = "卡牌", count = 1, weight = 30 }
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_007", node = "AI3", productType = "卡牌", drawCount = 1, refreshCap = 1, weight = 100 }
             };
             Assert.That(new ShopState(FixtureProducts(), FixturePoolRules(), ai3Only, 0, 100u).Slots, Has.Count.EqualTo(0));
 
-            // count = 0 的类型不设位
-            var zeroCount = new List<ShopSlotRefreshEntry>
+            // 单次刷新上限 = 0 的类型不设位
+            var zeroCap = new List<ShopSlotRefreshEntry>
             {
-                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", count = 0, weight = 45 }
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", drawCount = 1, refreshCap = 0, weight = 100 }
             };
-            Assert.That(new ShopState(FixtureProducts(), FixturePoolRules(), zeroCount, 0, 100u).Slots, Has.Count.EqualTo(0));
+            Assert.That(new ShopState(FixtureProducts(), FixturePoolRules(), zeroCap, 0, 100u).Slots, Has.Count.EqualTo(0));
+
+            // 单次抽取数量 = 0 的类型不设位
+            var zeroDraw = new List<ShopSlotRefreshEntry>
+            {
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", drawCount = 0, refreshCap = 4, weight = 100 }
+            };
+            Assert.That(new ShopState(FixtureProducts(), FixturePoolRules(), zeroDraw, 0, 100u).Slots, Has.Count.EqualTo(0));
         }
 
         [Test]
@@ -201,6 +209,71 @@ namespace PersonaCards.Tests.EditMode
 
             Assert.That(second.Slots.Select(slot => slot.Product?.productId),
                 Is.EqualTo(first.Slots.Select(slot => slot.Product?.productId)));
+        }
+
+        // —— 按权重随机上架 0~上限（策划已确认：单次抽取数量 + 单次刷新上限 + 出现权重）——
+
+        [Test]
+        public void SlotsCarryProductTypeEvenWhenEmpty()
+        {
+            var state = new ShopState(FixtureProducts(), FixturePoolRules(), FixtureSlotRules("AI1"), 0, 42u);
+
+            Assert.That(state.Slots, Has.Count.EqualTo(3));
+            Assert.That(state.Slots[0].ProductType, Is.EqualTo("卡牌"));
+            Assert.That(state.Slots[1].ProductType, Is.EqualTo("人格牌")); // 无货位也保留类型（UI 按类型切分）
+            Assert.That(state.Slots[1].Product, Is.Null);
+            Assert.That(state.Slots[2].ProductType, Is.EqualTo("服务"));
+        }
+
+        [Test]
+        public void SlotCountIsCappedByRefreshCapAndDrawCount()
+        {
+            // 权重 100：上限 4 次抽签全成功 → 恒 4 槽（任意种子），且全部为卡牌类型
+            var fullRules = new List<ShopSlotRefreshEntry>
+            {
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", drawCount = 1, refreshCap = 4, weight = 100 }
+            };
+            for (uint seed = 1u; seed <= 20u; seed++)
+            {
+                var state = new ShopState(FixtureProducts(), FixturePoolRules(), fullRules, 0, seed);
+                Assert.That(state.Slots, Has.Count.EqualTo(4), $"seed {seed} 权重 100 应恒满上限");
+                Assert.That(state.Slots.All(slot => slot.ProductType == "卡牌"), Is.True);
+            }
+
+            // 抽取数量 2 × 上限 2：全成功原始 4 张，钳制到上限 2 → 恒 2 槽
+            var drawTwoRules = new List<ShopSlotRefreshEntry>
+            {
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", drawCount = 2, refreshCap = 2, weight = 100 }
+            };
+            Assert.That(new ShopState(FixtureProducts(), FixturePoolRules(), drawTwoRules, 0, 1u).Slots, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public void SlotCountIsRandomWithinCapAndHonorsWeight()
+        {
+            // 权重 1：上限 4 次抽签几乎不可能全成功 → 500 个种子中至少一次不满上限，且槽数恒在 0~4 内
+            var rareRules = new List<ShopSlotRefreshEntry>
+            {
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", drawCount = 1, refreshCap = 4, weight = 1 }
+            };
+            var sawUnderCap = false;
+            for (uint seed = 1u; seed <= 500u; seed++)
+            {
+                var count = new ShopState(FixtureProducts(), FixturePoolRules(), rareRules, 0, seed).Slots.Count;
+                Assert.That(count, Is.InRange(0, 4));
+                if (count < 4) sawUnderCap = true;
+            }
+            Assert.That(sawUnderCap, Is.True, "权重 1 时 500 个种子应至少出现一次不满上限");
+
+            // 权重 50：成功次数 ~ B(4, 0.5)，期望 2 → 300 种子总槽数期望 600（σ≈17），落在宽界 400~800 内
+            var midRules = new List<ShopSlotRefreshEntry>
+            {
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_001", node = "AI1", productType = "卡牌", drawCount = 1, refreshCap = 4, weight = 50 }
+            };
+            var total = 0;
+            for (uint seed = 1u; seed <= 300u; seed++)
+                total += new ShopState(FixtureProducts(), FixturePoolRules(), midRules, 0, seed).Slots.Count;
+            Assert.That(total, Is.InRange(400, 800), "权重 50 总槽数应在期望 600 附近");
         }
 
         // —— 购买校验（策划案 10.6：限购/货币足够/不足不生效）——

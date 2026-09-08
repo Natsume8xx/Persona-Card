@@ -171,40 +171,49 @@ MonoBehaviour:
     weight: 1
   - poolId: POOL_PERSONA_001
     productId: SHOP_PER_001
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_002
     productId: SHOP_PER_002
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_003
     productId: SHOP_PER_003
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_004
     productId: SHOP_PER_004
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_005
     productId: SHOP_PER_005
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_006
     productId: SHOP_PER_006
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_007
     productId: SHOP_PER_007
-    weight: 10
+    weight: 1
   - poolId: POOL_PERSONA_008
     productId: SHOP_PER_008
-    weight: 10
+    weight: 1
   - poolId: POOL_SERVICE_001
     productId: SHOP_SERVICE_001
-    weight: 20
+    weight: 1
   - poolId: POOL_SERVICE_002
     productId: SHOP_SERVICE_002
-    weight: 20
+    weight: 1
   - poolId: POOL_SERVICE_003
     productId: SHOP_SERVICE_003
-    weight: 20
+    weight: 1
   - poolId: POOL_SERVICE_004
     productId: SHOP_SERVICE_004
-    weight: 20
+    weight: 1
   - poolId: POOL_SERVICE_005
     productId: SHOP_SERVICE_005
-    weight: 20
+    weight: 1
+  - poolId: SHOP_SERVICE_006
+    productId: SHOP_SERVICE_006
+    weight: 1
+  - poolId: SHOP_SERVICE_007
+    productId: SHOP_SERVICE_007
+    weight: 1
+  - poolId: SHOP_SERVICE_008
+    productId: SHOP_SERVICE_008
+    weight: 1

@@ -48,13 +48,17 @@ namespace PersonaCards.UI
         /// <summary>单个商品位：商品（可为 null = 无货）+ 售罄态（限购 1 = 即买即售罄）。</summary>
         public sealed class ShopSlot
         {
-            public ShopSlot(ShopProductEntry product)
+            public ShopSlot(ShopProductEntry product, string productType)
             {
                 Product = product;
+                ProductType = productType;
             }
 
             /// <summary>位内商品；null 表示该位无货（候选池为空或全被白名单过滤）。</summary>
             public ShopProductEntry Product { get; }
+
+            /// <summary>位类型（卡牌/人格牌/服务）：无货位也保留类型，供 UI 按类型切分商品区与服务区。</summary>
+            public string ProductType { get; }
             public bool SoldOut { get; private set; }
 
             public void MarkSold() => SoldOut = true;
@@ -63,23 +67,26 @@ namespace PersonaCards.UI
         private readonly List<ShopSlot> _slots = new List<ShopSlot>();
 
         /// <summary>
-        /// 生成商品位：按槽位刷新规则（分组 = 已过生成节点数映射，类型序 = 配表商品类型序 卡牌/人格牌/服务）逐个槽位
-        /// 加权抽取商品；每槽位种子 = seed + 槽位序号（槽位间错开）。规则缺失的类型或抽取无候选的槽位 → 无货位。
+        /// 生成商品位：按槽位刷新规则（分组 = 已过生成节点数映射，类型序 = 配表商品类型序 卡牌/人格牌/服务）
+        /// 逐类型抽签决定上架数量（0~单次刷新上限，成功率 = 出现权重/100；同节点同种子可复现），
+        /// 再按槽位加权抽取商品；每槽位种子 = seed + 槽位序号（槽位间错开）。规则缺失的类型或抽取无候选的槽位 → 无货位。
         /// </summary>
         public ShopState(IEnumerable<ShopProductEntry> products, IEnumerable<ShopPoolRefreshEntry> poolRules,
             IEnumerable<ShopSlotRefreshEntry> slotRules, int generationNodeCount, uint seed)
         {
             var group = GroupNameOf(generationNodeCount);
             var slotIndex = 0;
+            var typeIndex = 0;
             foreach (var productType in ShopProductTableContract.ProductTypes)
             {
-                var count = SlotCountOf(slotRules, group, productType);
+                var count = SlotCountOf(slotRules, group, productType, seed, typeIndex);
                 for (var i = 0; i < count; i++)
                 {
                     var slotSeed = unchecked(seed + (uint)slotIndex);
-                    _slots.Add(new ShopSlot(PickProduct(products, poolRules, productType, slotSeed)));
+                    _slots.Add(new ShopSlot(PickProduct(products, poolRules, productType, slotSeed), productType));
                     slotIndex++;
                 }
+                typeIndex++;
             }
         }
 
@@ -163,19 +170,36 @@ namespace PersonaCards.UI
             return weighted[weighted.Count - 1].Key; // 防御：浮点不可达路径
         }
 
-        /// <summary>槽位数量（分组 + 类型匹配的规则行 count；无匹配行 → 0，即该类型不设位）。</summary>
-        private static int SlotCountOf(IEnumerable<ShopSlotRefreshEntry> slotRules, string group, string productType)
+        /// <summary>
+        /// 槽位数量（按权重随机上架 0~上限，策划已确认）：聚合分组 + 类型匹配的规则行（抽取数量/上限/权重求和），
+        /// 进行上限次独立抽签（每次成功率 = 权重/100），上架数 = 成功次数 × 单次抽取数量（钳制到上限）；
+        /// 权重 ≥100 恒满上限；无匹配行或上限为 0 → 0，即该类型不设位。类型序号混入种子，三类随机互不关联。
+        /// </summary>
+        private static int SlotCountOf(IEnumerable<ShopSlotRefreshEntry> slotRules, string group, string productType,
+            uint seed, int typeIndex)
         {
-            var count = 0;
+            var drawCount = 0;
+            var refreshCap = 0;
+            var weight = 0;
             if (slotRules == null) return 0;
             foreach (var rule in slotRules)
             {
                 if (rule == null) continue;
                 if (!string.Equals(rule.node, group, StringComparison.Ordinal)) continue;
                 if (!string.Equals(rule.productType, productType, StringComparison.Ordinal)) continue;
-                count += Math.Max(0, rule.count);
+                drawCount += Math.Max(0, rule.drawCount);
+                refreshCap += Math.Max(0, rule.refreshCap);
+                weight += Math.Max(0, rule.weight);
             }
-            return count;
+            if (refreshCap <= 0 || drawCount <= 0 || weight < 1) return 0;
+
+            var rng = new XorShift32Rng(unchecked(seed + (uint)typeIndex * 977u));
+            var successes = 0;
+            for (var i = 0; i < refreshCap; i++)
+            {
+                if (rng.NextInt(100) < weight) successes++;
+            }
+            return Math.Min(refreshCap, successes * drawCount);
         }
 
         /// <summary>卡商品名解析（临时口径，待策划确认）：「黑桃A」→ 花色 + 点数。商品配置无 id 列，按商品名尾段解析；解析失败返回 false。</summary>

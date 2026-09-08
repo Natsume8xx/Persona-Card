@@ -42,8 +42,7 @@ namespace PersonaCards.UI
 
         private void Awake()
         {
-            _runtimeFont = Font.CreateDynamicFontFromOSFont(
-                new[] { "Microsoft YaHei UI", "Microsoft YaHei", "SimHei", "Arial" }, 24);
+            _runtimeFont = RuntimeFontFactory.GetRuntimeFont(24);
             if (_runtimeFont == null) return;
             foreach (var text in GetComponentsInChildren<Text>(true))
                 text.font = _runtimeFont;

@@ -5,15 +5,13 @@ namespace PersonaCards.UI
 {
     /// <summary>
     /// 商店主界面会话（UI 重排第二批）：纯 C# 无引擎依赖，可单测。
-    /// 双标签：商品页（4 商品位 = 卡牌 2 + 人格牌 2，槽 0~3）+ 服务区块（槽 4+，点击由视图委托 FlowController 打开对应界面）
-    /// 与铸造页（PersonaForgeCatalog 8 人格列表 + 副属性解锁 5 金→8 金顺序解锁，进度「0/2」真实入档）。
+    /// 双标签：商品页（卡牌 + 人格牌槽位，数量随权重随机上架 0~上限，槽位按类型切分）+ 服务区块（服务槽，点击由视图委托
+    /// FlowController 打开对应界面）与铸造页（PersonaForgeCatalog 8 人格列表 + 副属性解锁 5 金→8 金顺序解锁，进度「0/2」真实入档）。
     /// 本会话只做状态投影与选择/解锁动作：商品购买由视图委托 FlowController.PurchaseShopSlot（旧流程复用）；
     /// 副属性解锁 = ForgeUnlockState.TryUnlock（真实扣款）。离开按钮文案（去向后缀）由 FlowController 写入 LeaveLabel。
     /// </summary>
     public sealed class ShopUiSession
     {
-        /// <summary>商品位行数（槽 0~3：卡牌 2 + 人格牌 2；服务槽恒在 4 之后，由 ShopState 构造器按类型序生成）。</summary>
-        public const int ProductRowCount = 4;
 
         private ShopState _shop;
         private JourneyDeckState _deck;
@@ -83,10 +81,10 @@ namespace PersonaCards.UI
         /// <summary>侧边栏统计文案：「金币 3 · 牌库 10 张 · 人格 2/4」。</summary>
         public string SidebarStatsText => $"金币 {Coins} · 牌库 {DeckCount} 张 · 人格 {EquippedPersonaCount}/{PersonaSlotCount}";
 
-        // ---------- 商品页：商品位行（槽 0~3） ----------
+        // ---------- 商品页：商品位行（卡牌 + 人格牌槽，按类型切分） ----------
 
-        /// <summary>商品位行数（= min(4, 槽位数)；防御旧槽位数据不足 4）。</summary>
-        public int ProductRowVisibleCount => Math.Min(ProductRowCount, _shop.Slots.Count);
+        /// <summary>商品位行数 = 非服务槽数（卡牌 + 人格牌；无货位也计入，行文案显示「无货」）。</summary>
+        public int ProductRowVisibleCount => CountSlotsOfType(ShopProductTableContract.ProductTypeService, exclude: true);
 
         /// <summary>商品位行文案：「黑桃A · 2金币」/「黑桃A · 已售罄」/「无货」；越界抛 ArgumentOutOfRangeException。</summary>
         public string ProductRowText(int rowIndex)
@@ -179,9 +177,10 @@ namespace PersonaCards.UI
             }
         }
 
-        // ---------- 商品页：服务区块（槽 4+） ----------
+        // ---------- 商品页：服务区块（服务槽，按类型切分） ----------
 
-        public int ServiceRowCount => Math.Max(0, _shop.Slots.Count - ProductRowCount);
+        /// <summary>服务行数 = 服务槽数（无货位也计入）。</summary>
+        public int ServiceRowCount => CountSlotsOfType(ShopProductTableContract.ProductTypeService, exclude: false);
 
         /// <summary>服务行文案：「筹码强化 · 5金币」/「筹码强化 · 已售罄」/「无货」；越界抛 ArgumentOutOfRangeException。</summary>
         public string ServiceRowText(int rowIndex)
@@ -306,19 +305,53 @@ namespace PersonaCards.UI
 
         private int UnlockedCountOf(string personaId) => _unlocks.UnlockedCountOf(personaId);
 
+        /// <summary>统计某类型（或非该类型，exclude: true）槽位数量（按槽位 ProductType 判断，无货位也计入）。</summary>
+        private int CountSlotsOfType(string productType, bool exclude)
+        {
+            var count = 0;
+            foreach (var slot in _shop.Slots)
+            {
+                if (slot == null) continue;
+                var match = string.Equals(slot.ProductType, productType, StringComparison.Ordinal);
+                if (match != exclude) count++;
+            }
+            return count;
+        }
+
+        /// <summary>槽位绝对下标（按行序取第 rowIndex 个匹配槽）：供 FlowController 购买/开界面用（行序 ≠ 绝对下标）。</summary>
+        private int SlotIndexOf(string productType, bool exclude, int rowIndex)
+        {
+            if (rowIndex < 0) throw new ArgumentOutOfRangeException(nameof(rowIndex));
+            var seen = 0;
+            for (var index = 0; index < _shop.Slots.Count; index++)
+            {
+                var slot = _shop.Slots[index];
+                if (slot == null) continue;
+                var match = string.Equals(slot.ProductType, productType, StringComparison.Ordinal);
+                if (match == exclude) continue;
+                if (seen == rowIndex) return index;
+                seen++;
+            }
+            throw new ArgumentOutOfRangeException(nameof(rowIndex));
+        }
+
+        /// <summary>第 rowIndex 个商品位（卡牌 + 人格牌）的绝对槽下标；越界抛 ArgumentOutOfRangeException。</summary>
+        public int ProductSlotIndexOf(int rowIndex) =>
+            SlotIndexOf(ShopProductTableContract.ProductTypeService, exclude: true, rowIndex);
+
+        /// <summary>第 rowIndex 个服务位的绝对槽下标；越界抛 ArgumentOutOfRangeException。</summary>
+        public int ServiceSlotIndexOf(int rowIndex) =>
+            SlotIndexOf(ShopProductTableContract.ProductTypeService, exclude: false, rowIndex);
+
         private ShopState.ShopSlot ProductSlotAt(int rowIndex)
         {
-            // 商品位访问器只认槽 0~3（服务槽 4+ 走 ServiceSlotAt）；槽位数不足时同样越界
-            if (rowIndex < 0 || rowIndex >= ProductRowCount || rowIndex >= _shop.Slots.Count)
-                throw new ArgumentOutOfRangeException(nameof(rowIndex));
-            return _shop.Slots[rowIndex];
+            // 商品位 = 非服务槽（卡牌 + 人格牌），行序由槽位顺序保证与生成顺序一致；越界由 SlotIndexOf 抛出
+            return _shop.Slots[ProductSlotIndexOf(rowIndex)];
         }
 
         private ShopState.ShopSlot ServiceSlotAt(int rowIndex)
         {
-            if (rowIndex < 0 || rowIndex >= ServiceRowCount)
-                throw new ArgumentOutOfRangeException(nameof(rowIndex));
-            return _shop.Slots[ProductRowCount + rowIndex];
+            return _shop.Slots[ServiceSlotIndexOf(rowIndex)];
         }
 
         private bool IsSubAttrSlotValid(int forgeIndex, int slotIndex)

@@ -74,31 +74,31 @@ namespace PersonaCards.UI.Editor
             var productsTabLabel = productsTab.transform.Find("Label").GetComponent<Text>();
             var forgeTabLabel = forgeTab.transform.Find("Label").GetComponent<Text>();
 
-            // 商品区块：4 商品行 + 服务区块 3 行
+            // 商品区块：5 商品行（卡牌 0~4 + 人格 0~1 随机上架，上限 5）+ 服务区块 4 行（随机上架 0~4）
             var productsArea = CreatePanel(middle.transform, "Products Area",
                 new Vector2(0.02f, 0.04f), new Vector2(0.98f, 0.885f), new Color(0f, 0f, 0f, 0f));
             productsArea.GetComponent<Image>().raycastTarget = false;
             CreateText(productsArea.transform, "Products Header", "商品", 19, TextAnchor.MiddleLeft,
                 new Vector2(0f, 0.925f), new Vector2(0.25f, 0.985f), PaleGold, font, FontStyle.Bold);
-            var productRows = new Button[4];
-            var productRowLabels = new Text[4];
-            for (var index = 0; index < 4; index++)
+            var productRows = new Button[5];
+            var productRowLabels = new Text[5];
+            for (var index = 0; index < 5; index++)
             {
-                var y = 0.79f - index * 0.135f;
+                var y = 0.775f - index * 0.115f;
                 var row = CreateButton(productsArea.transform, "Product Row " + index, "--", 17,
-                    new Vector2(0f, y), new Vector2(1f, y + 0.115f), DetailGold, font);
+                    new Vector2(0f, y), new Vector2(1f, y + 0.10f), DetailGold, font);
                 productRows[index] = row;
                 productRowLabels[index] = row.transform.Find("Label").GetComponent<Text>();
             }
             CreateText(productsArea.transform, "Services Header", "服务", 16, TextAnchor.MiddleLeft,
-                new Vector2(0f, 0.30f), new Vector2(0.25f, 0.375f), SubtleGold, font, FontStyle.Normal);
-            var serviceRows = new Button[3];
-            var serviceRowLabels = new Text[3];
-            for (var index = 0; index < 3; index++)
+                new Vector2(0f, 0.26f), new Vector2(0.25f, 0.305f), SubtleGold, font, FontStyle.Normal);
+            var serviceRows = new Button[4];
+            var serviceRowLabels = new Text[4];
+            for (var index = 0; index < 4; index++)
             {
-                var y = 0.205f - index * 0.095f;
-                var row = CreateButton(productsArea.transform, "Service Row " + index, "--", 17,
-                    new Vector2(0f, y), new Vector2(1f, y + 0.085f), DetailGold, font);
+                var y = 0.225f - index * 0.06f;
+                var row = CreateButton(productsArea.transform, "Service Row " + index, "--", 15,
+                    new Vector2(0f, y), new Vector2(1f, y + 0.05f), DetailGold, font);
                 serviceRows[index] = row;
                 serviceRowLabels[index] = row.transform.Find("Label").GetComponent<Text>();
             }
