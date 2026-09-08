@@ -114,6 +114,27 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(ShopState.TryParseCardName("黑桃", out _, out _), Is.False);
         }
 
+        [Test]
+        public void TryParseCardNameAcceptsFangKuaiSpelling()
+        {
+            // 现行配表花色原文「方块」（早期「方片」）——13 张方片全部可解析
+            Assert.That(ShopState.TryParseCardName("方块A", out var suit, out var rank), Is.True);
+            Assert.That(suit, Is.EqualTo(Suit.Diamonds));
+            Assert.That(rank, Is.EqualTo(Rank.Ace));
+            for (var value = 2; value <= 10; value++)
+            {
+                Assert.That(ShopState.TryParseCardName($"方块{value}", out suit, out rank), Is.True);
+                Assert.That(suit, Is.EqualTo(Suit.Diamonds));
+                Assert.That(rank, Is.EqualTo((Rank)value));
+            }
+            Assert.That(ShopState.TryParseCardName("方块J", out suit, out rank), Is.True);
+            Assert.That(rank, Is.EqualTo(Rank.Jack));
+            Assert.That(ShopState.TryParseCardName("方块Q", out suit, out rank), Is.True);
+            Assert.That(rank, Is.EqualTo(Rank.Queen));
+            Assert.That(ShopState.TryParseCardName("方块K", out suit, out rank), Is.True);
+            Assert.That(rank, Is.EqualTo(Rank.King));
+        }
+
         // —— 加权抽取 ——
 
         [Test]

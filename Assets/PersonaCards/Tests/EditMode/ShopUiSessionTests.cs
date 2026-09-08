@@ -52,6 +52,21 @@ namespace PersonaCards.Tests.EditMode
             };
         }
 
+        private static ShopProductEntry PersonaProduct(string id, string name, string effectType)
+        {
+            return new ShopProductEntry
+            {
+                productId = id,
+                productName = name,
+                productType = ShopProductTableContract.ProductTypePersona,
+                price = 8,
+                purchaseLimit = 1,
+                effectType = effectType,
+                effectParam1 = "",
+                effectParam2 = ""
+            };
+        }
+
         private static ShopProductEntry ServiceProduct(string id, string name, string effectType, string param1)
         {
             return new ShopProductEntry
@@ -218,6 +233,62 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(_session.HasProduct(2), Is.False);
         }
 
+        // ---------- 商品页：图片键（商店右侧详情图片展示） ----------
+
+        [Test]
+        public void TryGetSelectedCardFace_卡牌商品_返回花色点数()
+        {
+            // 默认夹具行 0 = 红桃5（增加卡牌）
+            Assert.That(_session.TryGetSelectedCardFace(out var suit, out var rank), Is.True);
+            Assert.That(suit, Is.EqualTo(Suit.Hearts));
+            Assert.That(rank, Is.EqualTo(Rank.Five));
+
+            // 方块写法（现行配表原文）经修复后同样可解析
+            var shop = BuildShop(CardProduct("SHOP_CARD_010", "方块9", ShopState.EffectAddCard, 2));
+            _session.Configure(shop, _deck, BuildLoadout(), new ForgeUnlockState(), 0);
+            Assert.That(_session.TryGetSelectedCardFace(out suit, out rank), Is.True);
+            Assert.That(suit, Is.EqualTo(Suit.Diamonds));
+            Assert.That(rank, Is.EqualTo(Rank.Nine));
+        }
+
+        [Test]
+        public void TryGetSelectedCardFace_非卡牌商品或牌名不可解析_返回假()
+        {
+            // 非「增加卡牌」效果（移除卡牌商品）：不输出卡面
+            var shop = BuildShop(CardProduct("SHOP_CARD_011", "梅花3", ShopState.EffectRemoveCard, 3));
+            _session.Configure(shop, _deck, BuildLoadout(), new ForgeUnlockState(), 0);
+            Assert.That(_session.TryGetSelectedCardFace(out _, out _), Is.False);
+
+            // 牌名不可解析（无此花色）
+            var bad = BuildShop(CardProduct("SHOP_CARD_012", "鬼牌", ShopState.EffectAddCard, 2));
+            _session.Configure(bad, _deck, BuildLoadout(), new ForgeUnlockState(), 0);
+            Assert.That(_session.TryGetSelectedCardFace(out _, out _), Is.False);
+        }
+
+        [Test]
+        public void ResolveProductPortraitKey_人格商品_反查目录_其他回落空()
+        {
+            // 「增加人格牌」商品按商品名反查人格牌_ID（立绘键）
+            var persona = PersonaProduct("SHOP_PERSONA_001", "人格牌01", ShopState.EffectAddPersona);
+            Assert.That(ShopUiSession.ResolveProductPortraitKey(persona), Is.EqualTo("PER_001"));
+            Assert.That(ShopUiSession.ResolveProductPortraitKey(
+                PersonaProduct("SHOP_PERSONA_002", "人格牌02", ShopState.EffectAddPersona)), Is.EqualTo("PER_002"));
+
+            // 未命中 / 非人格效果 / 空商品 → null（视图回落无图布局）
+            Assert.That(ShopUiSession.ResolveProductPortraitKey(
+                PersonaProduct("SHOP_PERSONA_003", "人格牌03", ShopState.EffectAddPersona)), Is.Null);
+            Assert.That(ShopUiSession.ResolveProductPortraitKey(
+                PersonaProduct("SHOP_PERSONA_004", "人格牌01", ShopState.EffectRemoveCard)), Is.Null);
+            Assert.That(ShopUiSession.ResolveProductPortraitKey(null), Is.Null);
+        }
+
+        [Test]
+        public void SelectedProductPortraitKey_非人格商品_为空()
+        {
+            // 默认选中卡牌商品 → 无人格立绘键
+            Assert.That(_session.SelectedProductPortraitKey, Is.Null);
+        }
+
         [Test]
         public void 商品详情_增加卡牌_卡牌名与花色符号()
         {
@@ -311,6 +382,61 @@ namespace PersonaCards.Tests.EditMode
             Assert.That(_session.ForgeMainAttrText(0), Is.EqualTo("基础筹码 +15"));
             Assert.That(_session.ForgeMainAttrType(0), Is.EqualTo("基础筹码"));
             Assert.That(_session.ForgeMainAttrText(1), Is.EqualTo("基础倍率 +1"));
+        }
+
+        [Test]
+        public void 铸造详情_选中人格立绘键()
+        {
+            _session.ShowForge();
+            Assert.That(_session.SelectedForgePortraitKey, Is.EqualTo("PER_001"));
+            _session.SelectForge(1);
+            Assert.That(_session.SelectedForgePortraitKey, Is.EqualTo("PER_002"));
+        }
+
+        [Test]
+        public void 铸造详情_目录未配置_立绘键为空()
+        {
+            PersonaForgeCatalog.Configure(null, null, null, null, null);
+            Assert.That(_session.SelectedForgePortraitKey, Is.Null);
+        }
+
+        // ---------- 全服务槽组合（权重全 1 后随机可抽到，曾因商品位 0 越界崩溃） ----------
+
+        /// <summary>全服务槽商店（无商品位）：服务槽 2、商品位 0。</summary>
+        private static ShopState BuildServiceOnlyShop()
+        {
+            var products = new List<ShopProductEntry>
+            {
+                ServiceProduct("SHOP_SERVICE_001", "筹码强化", ShopState.EffectEnhanceCard, "基础筹码"),
+                ServiceProduct("SHOP_SERVICE_002", "移除卡牌", ShopState.EffectRemoveCard, "")
+            };
+            var pool = new List<ShopPoolRefreshEntry>();
+            foreach (var product in products)
+                pool.Add(new ShopPoolRefreshEntry { poolId = $"POOL_{product.productId}", productId = product.productId, weight = 1 });
+            var slots = new List<ShopSlotRefreshEntry>
+            {
+                new ShopSlotRefreshEntry { refreshId = "REFRESH_SVC_1", node = ShopState.NodeAi1, productType = ShopProductTableContract.ProductTypeService, drawCount = 1, refreshCap = 2, weight = 100 }
+            };
+            return new ShopState(products, pool, slots, 0, 54321u);
+        }
+
+        [Test]
+        public void 全服务槽_无商品位_详情回落无货位()
+        {
+            _session.Configure(BuildServiceOnlyShop(), _deck, BuildLoadout(), new ForgeUnlockState(), 0);
+            Assert.That(_session.ProductRowVisibleCount, Is.EqualTo(0));
+            Assert.That(_session.ServiceRowCount, Is.EqualTo(2));
+            Assert.That(_session.HasSelectedProduct, Is.False);
+            Assert.That(_session.ProductNameText, Is.EqualTo("无货位"));
+            Assert.That(_session.ProductTypeText, Is.EqualTo("类型·--"));
+            Assert.That(_session.ProductDetailText, Is.EqualTo("该商品位无货。"));
+            Assert.That(_session.ProductPriceText, Is.EqualTo("无货"));
+            Assert.That(_session.BuyButtonText, Is.EqualTo("无货"));
+            Assert.That(_session.CanBuySelected, Is.False);
+            Suit suit;
+            Rank rank;
+            Assert.That(_session.TryGetSelectedCardFace(out suit, out rank), Is.False);
+            Assert.That(_session.SelectedProductPortraitKey, Is.Null);
         }
 
         [Test]

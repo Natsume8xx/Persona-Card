@@ -48,6 +48,19 @@ namespace PersonaCards.UI
             return _cards[index];
         }
 
+        /// <summary>按人格名反查人格牌_ID（如「人格牌01」→ PER_001，供商店立绘键 PersonaArtCatalog.PortraitFor 使用）；
+        /// 空名/未命中返回 null（调用方回退无图布局）。目录未 Configure 时 _cards 为空同样返回 null。</summary>
+        public static string PersonaIdByName(string personaName)
+        {
+            if (string.IsNullOrEmpty(personaName)) return null;
+            foreach (var card in _cards)
+            {
+                if (card != null && string.Equals(card.personaName, personaName, StringComparison.Ordinal))
+                    return card.personaId;
+            }
+            return null;
+        }
+
         /// <summary>词条触发条件描述（ENTRY_xxx →「连续两次使用相同牌型」）；未收录/描述为空返回空串。</summary>
         public static string EntryDescriptionOf(string entryId)
         {

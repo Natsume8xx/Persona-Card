@@ -106,6 +106,9 @@ namespace PersonaCards.UI
 
         public string LevelText(int index) => $"Lv.{_entries[index].Level}";
 
+        /// <summary>候选立绘键 = 人格牌模板 ID（PersonaArtCatalog.PortraitFor 键）；越界抛 ArgumentOutOfRangeException（同 NameText）。</summary>
+        public string PortraitKeyOf(int index) => _entries[index].TemplateId;
+
         public string PriceText(int index)
         {
             return index < 0 ? "本次价格：-- 金币" : $"本次价格：{_entries[index].Price} 金币";

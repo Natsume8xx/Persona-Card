@@ -94,6 +94,9 @@ namespace PersonaCards.UI
 
         public string LevelText(int index) => $"Lv.{_entries[index].Level}";
 
+        /// <summary>牌型无立绘：恒空串（视图回落纯文本行）。</summary>
+        public string PortraitKeyOf(int index) => "";
+
         public string PriceText(int index)
         {
             return index < 0 ? "本次价格：-- 金币" : $"本次价格：{_entries[index].Price} 金币";

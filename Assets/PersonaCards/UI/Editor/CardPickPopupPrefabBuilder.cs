@@ -64,17 +64,36 @@ namespace PersonaCards.UI.Editor
             var sortSuit = CreateButton(panel.transform, "Sort By Suit", "花色", 18,
                 new Vector2(0.81f, 0.868f), new Vector2(0.88f, 0.922f), new Color32(213, 205, 185, 255), font);
 
-            // 卡牌网格 10×6（cell 62×62；格由视图运行时创建，此处只留 GridLayoutGroup 容器）
-            var grid = new GameObject("Card Grid", typeof(RectTransform), typeof(GridLayoutGroup));
+            // 卡牌网格 10×6 ScrollRect（cell 88×132 大卡面；6 行 842px 内容 > 视口 432px 必滚动；格由视图运行时创建）
+            var grid = new GameObject("Card Grid", typeof(RectTransform), typeof(ScrollRect));
             grid.transform.SetParent(panel.transform, false);
             Stretch(grid.GetComponent<RectTransform>(), new Vector2(0.04f, 0.30f), new Vector2(0.96f, 0.80f));
-            var layout = grid.GetComponent<GridLayoutGroup>();
-            layout.cellSize = new Vector2(62f, 62f);
-            layout.spacing = new Vector2(5f, 5f);
+            var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D));
+            viewport.transform.SetParent(grid.transform, false);
+            Stretch(viewport.GetComponent<RectTransform>(), Vector2.zero, Vector2.one);
+            var content = new GameObject("Content", typeof(RectTransform), typeof(GridLayoutGroup), typeof(ContentSizeFitter));
+            content.transform.SetParent(viewport.transform, false);
+            var contentRect = content.GetComponent<RectTransform>();
+            contentRect.anchorMin = new Vector2(0f, 1f);
+            contentRect.anchorMax = new Vector2(1f, 1f);
+            contentRect.pivot = new Vector2(0.5f, 1f);
+            contentRect.offsetMin = Vector2.zero;
+            contentRect.offsetMax = Vector2.zero;
+            var layout = content.GetComponent<GridLayoutGroup>();
+            layout.cellSize = new Vector2(88f, 132f);
+            layout.spacing = new Vector2(8f, 6f);
             layout.padding = new RectOffset(10, 10, 10, 10);
             layout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             layout.constraintCount = 10;
-            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childAlignment = TextAnchor.UpperCenter;
+            var fitter = content.GetComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var scrollRect = grid.GetComponent<ScrollRect>();
+            scrollRect.viewport = viewport.GetComponent<RectTransform>();
+            scrollRect.content = contentRect;
+            scrollRect.horizontal = false;
+            scrollRect.movementType = ScrollRect.MovementType.Clamped;
+            scrollRect.scrollSensitivity = 30f;
 
             // 底部商品信息栏（标题/描述随选中动态刷新）
             var info = CreatePanel(panel.transform, "Product Info",
@@ -93,7 +112,7 @@ namespace PersonaCards.UI.Editor
                 new Vector2(0.72f, 0.05f), new Vector2(0.94f, 0.14f), Gold, font);
 
             root.GetComponent<CardPickPopupView>().ConfigurePrefab(title, close, stats, hint, sortRank, sortSuit,
-                grid.GetComponent<RectTransform>(), thumb.GetComponent<Image>(), serviceName, serviceDetail,
+                contentRect, thumb.GetComponent<Image>(), serviceName, serviceDetail,
                 cancel, confirm);
 
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);

@@ -148,12 +148,40 @@ namespace PersonaCards.UI
                 outline.effectColor = EntryOutlineColor;
             }
 
-            CreateEntryText(entry.transform, "Name", _session.NameText(index), 22, TextAnchor.MiddleLeft,
-                new Vector2(0.03f, 0.52f), new Vector2(0.97f, 0.97f), NameColor, FontStyle.Bold);
-            CreateEntryText(entry.transform, "Detail", _session.DetailText(index), 15, TextAnchor.MiddleLeft,
-                new Vector2(0.03f, 0.10f), new Vector2(0.72f, 0.50f), DetailColor, FontStyle.Normal);
-            CreateEntryText(entry.transform, "Level", _session.LevelText(index), 16, TextAnchor.MiddleRight,
-                new Vector2(0.72f, 0.10f), new Vector2(0.97f, 0.50f), LevelColor, FontStyle.Bold);
+            // 有立绘（人格主词条行）→ 左侧立绘缩略图 + 文本右移；无立绘（牌型行）→ 纯文本行（现锚点）
+            var portraitKey = _session.PortraitKeyOf(index);
+            Sprite portraitSprite = null;
+            if (!string.IsNullOrEmpty(portraitKey)) portraitSprite = PersonaArtCatalog.PortraitFor(portraitKey);
+            if (portraitSprite != null)
+            {
+                var portrait = new GameObject("Portrait", typeof(RectTransform), typeof(Image));
+                portrait.transform.SetParent(entry.transform, false);
+                var portraitRect = portrait.GetComponent<RectTransform>();
+                portraitRect.anchorMin = new Vector2(0.02f, 0.02f);
+                portraitRect.anchorMax = new Vector2(0.20f, 0.98f);
+                portraitRect.offsetMin = Vector2.zero;
+                portraitRect.offsetMax = Vector2.zero;
+                var portraitImage = portrait.GetComponent<Image>();
+                portraitImage.sprite = portraitSprite;
+                portraitImage.color = Color.white;
+                portraitImage.preserveAspect = true;
+                portraitImage.raycastTarget = false;
+                CreateEntryText(entry.transform, "Name", _session.NameText(index), 22, TextAnchor.MiddleLeft,
+                    new Vector2(0.24f, 0.52f), new Vector2(0.97f, 0.97f), NameColor, FontStyle.Bold);
+                CreateEntryText(entry.transform, "Detail", _session.DetailText(index), 15, TextAnchor.MiddleLeft,
+                    new Vector2(0.24f, 0.10f), new Vector2(0.72f, 0.50f), DetailColor, FontStyle.Normal);
+                CreateEntryText(entry.transform, "Level", _session.LevelText(index), 16, TextAnchor.MiddleRight,
+                    new Vector2(0.72f, 0.10f), new Vector2(0.97f, 0.50f), LevelColor, FontStyle.Bold);
+            }
+            else
+            {
+                CreateEntryText(entry.transform, "Name", _session.NameText(index), 22, TextAnchor.MiddleLeft,
+                    new Vector2(0.03f, 0.52f), new Vector2(0.97f, 0.97f), NameColor, FontStyle.Bold);
+                CreateEntryText(entry.transform, "Detail", _session.DetailText(index), 15, TextAnchor.MiddleLeft,
+                    new Vector2(0.03f, 0.10f), new Vector2(0.72f, 0.50f), DetailColor, FontStyle.Normal);
+                CreateEntryText(entry.transform, "Level", _session.LevelText(index), 16, TextAnchor.MiddleRight,
+                    new Vector2(0.72f, 0.10f), new Vector2(0.97f, 0.50f), LevelColor, FontStyle.Bold);
+            }
         }
 
         private Text CreateEntryText(Transform parent, string name, string value, int size, TextAnchor alignment,

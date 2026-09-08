@@ -29,6 +29,8 @@ namespace PersonaCards.UI
         [SerializeField] private Button[] serviceRowButtons;
         [SerializeField] private Text[] serviceRowLabels;
         [SerializeField] private RectTransform productDetailRoot;
+        [SerializeField] private Image productArtwork;
+        [SerializeField] private Image productDivider;
         [SerializeField] private Text productNameText;
         [SerializeField] private Text productTypeText;
         [SerializeField] private Text productDetailText;
@@ -41,6 +43,8 @@ namespace PersonaCards.UI
         [SerializeField] private Text forgeMainTypeText;
         [SerializeField] private Text forgeMainAttrText;
         [SerializeField] private RectTransform subAttrRoot;
+        [SerializeField] private Image forgeArtwork;
+        [SerializeField] private Image forgeDivider;
         [SerializeField] private Button leaveButton;
         [SerializeField] private Text leaveButtonLabel;
 
@@ -79,9 +83,11 @@ namespace PersonaCards.UI
             RectTransform productsArea, RectTransform forgeArea,
             Button[] productRows, Text[] productRowLabels,
             Button[] serviceRows, Text[] serviceRowLabels,
-            RectTransform productDetailRoot, Text productName, Text productType, Text productDetail, Text productPrice,
+            RectTransform productDetailRoot, Image productArtwork, Image productDivider,
+            Text productName, Text productType, Text productDetail, Text productPrice,
             Button buy, Text buyLabel,
-            RectTransform forgeDetailRoot, Text forgeName, Text forgeEntry, Text forgeMainType, Text forgeMainAttr,
+            RectTransform forgeDetailRoot, Image forgeArtwork, Image forgeDivider,
+            Text forgeName, Text forgeEntry, Text forgeMainType, Text forgeMainAttr,
             RectTransform subAttrRoot,
             Button leave, Text leaveLabel)
         {
@@ -98,6 +104,8 @@ namespace PersonaCards.UI
             serviceRowButtons = serviceRows;
             this.serviceRowLabels = serviceRowLabels;
             this.productDetailRoot = productDetailRoot;
+            this.productArtwork = productArtwork;
+            this.productDivider = productDivider;
             productNameText = productName;
             productTypeText = productType;
             productDetailText = productDetail;
@@ -105,6 +113,8 @@ namespace PersonaCards.UI
             buyButton = buy;
             buyButtonLabel = buyLabel;
             this.forgeDetailRoot = forgeDetailRoot;
+            this.forgeArtwork = forgeArtwork;
+            this.forgeDivider = forgeDivider;
             forgeNameText = forgeName;
             forgeEntryText = forgeEntry;
             forgeMainTypeText = forgeMainType;
@@ -231,6 +241,52 @@ namespace PersonaCards.UI
             productPriceText.text = _session.ProductPriceText;
             buyButtonLabel.text = _session.BuyButtonText;
             buyButton.interactable = _session.CanBuySelected;
+
+            // 商品图片：扑克牌商品 → 卡面；「增加人格牌」商品 → 立绘（B7 前不上架，代码就绪）；无图 → 隐藏 + 无图布局
+            Sprite artwork = null;
+            if (_session.TryGetSelectedCardFace(out var suit, out var rank))
+                artwork = CardFaceCatalog.SpriteFor(suit, rank);
+            if (artwork == null)
+            {
+                var portraitKey = _session.SelectedProductPortraitKey;
+                if (!string.IsNullOrEmpty(portraitKey)) artwork = PersonaArtCatalog.PortraitFor(portraitKey);
+            }
+            productArtwork.sprite = artwork;
+            productArtwork.gameObject.SetActive(artwork != null);
+            ApplyProductDetailLayout(artwork != null);
+        }
+
+        /// <summary>右列商品详情两套锚点布局（幂等重施加）：有图 → 图片区占上段、其余下压；无图 → 现值（Header/Leave 不动）。</summary>
+        private void ApplyProductDetailLayout(bool hasImage)
+        {
+            productArtwork.gameObject.SetActive(hasImage);
+            if (hasImage)
+            {
+                SetAnchors(productNameText.rectTransform, new Vector2(0.05f, 0.53f), new Vector2(0.95f, 0.60f));
+                SetAnchors(productTypeText.rectTransform, new Vector2(0.05f, 0.465f), new Vector2(0.95f, 0.525f));
+                SetAnchors(productDivider.rectTransform, new Vector2(0.05f, 0.445f), new Vector2(0.95f, 0.45f));
+                SetAnchors(productDetailText.rectTransform, new Vector2(0.05f, 0.315f), new Vector2(0.95f, 0.435f));
+                SetAnchors(productPriceText.rectTransform, new Vector2(0.05f, 0.22f), new Vector2(0.95f, 0.30f));
+                SetAnchors(buyButton.transform, new Vector2(0.05f, 0.135f), new Vector2(0.95f, 0.205f));
+            }
+            else
+            {
+                SetAnchors(productNameText.rectTransform, new Vector2(0.05f, 0.82f), new Vector2(0.95f, 0.895f));
+                SetAnchors(productTypeText.rectTransform, new Vector2(0.05f, 0.755f), new Vector2(0.95f, 0.815f));
+                SetAnchors(productDivider.rectTransform, new Vector2(0.05f, 0.73f), new Vector2(0.95f, 0.735f));
+                SetAnchors(productDetailText.rectTransform, new Vector2(0.05f, 0.56f), new Vector2(0.95f, 0.72f));
+                SetAnchors(productPriceText.rectTransform, new Vector2(0.05f, 0.47f), new Vector2(0.95f, 0.55f));
+                SetAnchors(buyButton.transform, new Vector2(0.05f, 0.36f), new Vector2(0.95f, 0.45f));
+            }
+        }
+
+        private static void SetAnchors(Transform target, Vector2 min, Vector2 max)
+        {
+            var rect = (RectTransform)target;
+            rect.anchorMin = min;
+            rect.anchorMax = max;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
         }
 
         // ---------- 铸造页 ----------
@@ -248,6 +304,37 @@ namespace PersonaCards.UI
             forgeEntryText.text = _session.ForgeEntryText(_session.SelectedForgeIndex);
             forgeMainTypeText.text = $"主属性 · {_session.ForgeMainAttrType(_session.SelectedForgeIndex)}";
             forgeMainAttrText.text = _session.ForgeMainAttrText(_session.SelectedForgeIndex);
+
+            // 铸造详情立绘：选中人格 → PersonaArtCatalog 立绘；无图（缺资源/目录空）→ 隐藏 + 无图布局（Header/Leave 不动）
+            Sprite forgeSprite = null;
+            var forgePortraitKey = _session.SelectedForgePortraitKey;
+            if (!string.IsNullOrEmpty(forgePortraitKey)) forgeSprite = PersonaArtCatalog.PortraitFor(forgePortraitKey);
+            forgeArtwork.sprite = forgeSprite;
+            ApplyForgeDetailLayout(forgeSprite != null);
+        }
+
+        /// <summary>右列铸造详情两套锚点布局（幂等重施加）：有图 → 立绘区占上段、其余下压（副属性区高度不变）；无图 → 现值（Header/Leave 不动）。</summary>
+        private void ApplyForgeDetailLayout(bool hasImage)
+        {
+            forgeArtwork.gameObject.SetActive(hasImage);
+            if (hasImage)
+            {
+                SetAnchors(forgeNameText.rectTransform, new Vector2(0.05f, 0.53f), new Vector2(0.95f, 0.60f));
+                SetAnchors(forgeEntryText.rectTransform, new Vector2(0.05f, 0.455f), new Vector2(0.95f, 0.525f));
+                SetAnchors(forgeMainTypeText.rectTransform, new Vector2(0.05f, 0.39f), new Vector2(0.95f, 0.45f));
+                SetAnchors(forgeMainAttrText.rectTransform, new Vector2(0.05f, 0.315f), new Vector2(0.95f, 0.385f));
+                SetAnchors(forgeDivider.rectTransform, new Vector2(0.05f, 0.295f), new Vector2(0.95f, 0.30f));
+                SetAnchors(subAttrRoot, new Vector2(0.05f, 0.03f), new Vector2(0.95f, 0.285f));
+            }
+            else
+            {
+                SetAnchors(forgeNameText.rectTransform, new Vector2(0.05f, 0.815f), new Vector2(0.95f, 0.895f));
+                SetAnchors(forgeEntryText.rectTransform, new Vector2(0.05f, 0.735f), new Vector2(0.95f, 0.805f));
+                SetAnchors(forgeMainTypeText.rectTransform, new Vector2(0.05f, 0.665f), new Vector2(0.95f, 0.725f));
+                SetAnchors(forgeMainAttrText.rectTransform, new Vector2(0.05f, 0.585f), new Vector2(0.95f, 0.655f));
+                SetAnchors(forgeDivider.rectTransform, new Vector2(0.05f, 0.565f), new Vector2(0.95f, 0.57f));
+                SetAnchors(subAttrRoot, new Vector2(0.05f, 0.30f), new Vector2(0.95f, 0.555f));
+            }
         }
 
         /// <summary>铸造页重建签名：选中序号 + 各副属性槽（已解锁/可解锁）态；解锁后签名变化触发行重建。</summary>

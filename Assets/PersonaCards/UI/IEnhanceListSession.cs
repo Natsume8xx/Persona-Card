@@ -34,6 +34,10 @@ namespace PersonaCards.UI
         /// <summary>右侧等级文案（如「Lv.0」）。</summary>
         string LevelText(int index);
 
+        /// <summary>候选立绘键（PersonaArtCatalog.PortraitFor 用）；无立绘返回空串/ null（视图回落纯文本行）。
+        /// 人格主词条强化返回人格牌模板 ID；牌型强化恒空串。</summary>
+        string PortraitKeyOf(int index);
+
         /// <summary>左下价格文案（如「本次价格：8 金币」）；未选中（index &lt; 0）给占位。</summary>
         string PriceText(int index);
 

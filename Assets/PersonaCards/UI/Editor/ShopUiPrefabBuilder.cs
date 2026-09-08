@@ -118,11 +118,21 @@ namespace PersonaCards.UI.Editor
             productDetailRoot.GetComponent<Image>().raycastTarget = false;
             CreateText(productDetailRoot.transform, "Header", "商品详情", 15, TextAnchor.MiddleLeft,
                 new Vector2(0.05f, 0.90f), new Vector2(0.40f, 0.94f), SubtleGold, font, FontStyle.Normal);
+            // 商品图片区（扑克牌卡面 / 人格立绘）：有图时显示并下压其余详情（视图两套锚点切换）；默认隐藏
+            var productArtwork = new GameObject("Product Artwork", typeof(RectTransform), typeof(Image));
+            productArtwork.transform.SetParent(productDetailRoot.transform, false);
+            Stretch(productArtwork.GetComponent<RectTransform>(), new Vector2(0.05f, 0.615f), new Vector2(0.95f, 0.885f));
+            var artworkImage = productArtwork.GetComponent<Image>();
+            artworkImage.color = Color.white;
+            artworkImage.preserveAspect = true;
+            artworkImage.raycastTarget = false;
+            productArtwork.SetActive(false);
             var productName = CreateText(productDetailRoot.transform, "Name", "--", 26, TextAnchor.MiddleLeft,
                 new Vector2(0.05f, 0.82f), new Vector2(0.95f, 0.895f), PaleGold, font, FontStyle.Bold);
             var productType = CreateText(productDetailRoot.transform, "Type", "类型·--", 16, TextAnchor.MiddleLeft,
                 new Vector2(0.05f, 0.755f), new Vector2(0.95f, 0.815f), DetailGold, font, FontStyle.Normal);
-            CreateLine(productDetailRoot.transform, "Divider", new Vector2(0.05f, 0.73f), new Vector2(0.95f, 0.735f));
+            var productDivider = CreateLine(productDetailRoot.transform, "Divider",
+                new Vector2(0.05f, 0.73f), new Vector2(0.95f, 0.735f));
             var productDetail = CreateText(productDetailRoot.transform, "Effect", "该商品位无货。", 17,
                 TextAnchor.MiddleLeft, new Vector2(0.05f, 0.56f), new Vector2(0.95f, 0.72f), PaleGold, font,
                 FontStyle.Normal);
@@ -138,6 +148,15 @@ namespace PersonaCards.UI.Editor
             forgeDetailRoot.GetComponent<Image>().raycastTarget = false;
             CreateText(forgeDetailRoot.transform, "Header", "铸造详情", 15, TextAnchor.MiddleLeft,
                 new Vector2(0.05f, 0.90f), new Vector2(0.40f, 0.94f), SubtleGold, font, FontStyle.Normal);
+            // 铸造详情立绘区（选中人格立绘）：有图时显示并下压其余详情（视图两套锚点切换）；默认隐藏
+            var forgeArtwork = new GameObject("Forge Artwork", typeof(RectTransform), typeof(Image));
+            forgeArtwork.transform.SetParent(forgeDetailRoot.transform, false);
+            Stretch(forgeArtwork.GetComponent<RectTransform>(), new Vector2(0.05f, 0.615f), new Vector2(0.95f, 0.885f));
+            var forgeArtworkImage = forgeArtwork.GetComponent<Image>();
+            forgeArtworkImage.color = Color.white;
+            forgeArtworkImage.preserveAspect = true;
+            forgeArtworkImage.raycastTarget = false;
+            forgeArtwork.SetActive(false);
             var forgeName = CreateText(forgeDetailRoot.transform, "Name", "--", 26, TextAnchor.MiddleLeft,
                 new Vector2(0.05f, 0.815f), new Vector2(0.95f, 0.895f), PaleGold, font, FontStyle.Bold);
             var forgeEntry = CreateText(forgeDetailRoot.transform, "Entry", "--", 17, TextAnchor.MiddleLeft,
@@ -148,7 +167,7 @@ namespace PersonaCards.UI.Editor
                 FontStyle.Normal);
             var forgeMainAttr = CreateText(forgeDetailRoot.transform, "Main Attr", "--", 21, TextAnchor.MiddleLeft,
                 new Vector2(0.05f, 0.585f), new Vector2(0.95f, 0.655f), Gold, font, FontStyle.Bold);
-            CreateLine(forgeDetailRoot.transform, "Divider", new Vector2(0.05f, 0.565f), new Vector2(0.95f, 0.57f));
+            var forgeDivider = CreateLine(forgeDetailRoot.transform, "Divider", new Vector2(0.05f, 0.565f), new Vector2(0.95f, 0.57f));
             var subAttrRoot = CreatePanel(forgeDetailRoot.transform, "Sub Attr Root",
                 new Vector2(0.05f, 0.30f), new Vector2(0.95f, 0.555f), new Color(0f, 0f, 0f, 0f));
             subAttrRoot.GetComponent<Image>().raycastTarget = false;
@@ -162,9 +181,11 @@ namespace PersonaCards.UI.Editor
                 productsArea.GetComponent<RectTransform>(), forgeArea,
                 productRows, productRowLabels,
                 serviceRows, serviceRowLabels,
-                productDetailRoot.GetComponent<RectTransform>(), productName, productType, productDetail, productPrice,
+                productDetailRoot.GetComponent<RectTransform>(), productArtwork.GetComponent<Image>(), productDivider,
+                productName, productType, productDetail, productPrice,
                 buy, buyLabel,
-                forgeDetailRoot.GetComponent<RectTransform>(), forgeName, forgeEntry, forgeMainType, forgeMainAttr,
+                forgeDetailRoot.GetComponent<RectTransform>(), forgeArtwork.GetComponent<Image>(), forgeDivider,
+                forgeName, forgeEntry, forgeMainType, forgeMainAttr,
                 subAttrRoot.GetComponent<RectTransform>(),
                 leave, leaveLabel);
 
@@ -326,7 +347,7 @@ namespace PersonaCards.UI.Editor
             };
         }
 
-        private static void CreateLine(Transform parent, string name, Vector2 min, Vector2 max)
+        private static Image CreateLine(Transform parent, string name, Vector2 min, Vector2 max)
         {
             var line = new GameObject(name, typeof(RectTransform), typeof(Image));
             line.transform.SetParent(parent, false);
@@ -334,6 +355,7 @@ namespace PersonaCards.UI.Editor
             var image = line.GetComponent<Image>();
             image.color = new Color(Gold.r, Gold.g, Gold.b, 0.42f);
             image.raycastTarget = false;
+            return image;
         }
 
         private static void AddOutline(GameObject target, Color color, Vector2 distance)

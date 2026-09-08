@@ -29,11 +29,12 @@ namespace PersonaCards.UI.Editor
         [MenuItem("Persona Cards/Rebuild Enhance List Panel Prefabs")]
         public static void Build()
         {
-            BuildOne("HandEnhancePanel", "Hand Enhance Card", HandPrefabPath);
-            BuildOne("PersonaMainAttrPanel", "Persona Main Attr Card", PersonaPrefabPath);
+            // 牌型行 88 高纯文本；主词条行 160 高（左侧立绘缩略图 + 文本右移）
+            BuildOne("HandEnhancePanel", "Hand Enhance Card", HandPrefabPath, new Vector2(540f, 88f));
+            BuildOne("PersonaMainAttrPanel", "Persona Main Attr Card", PersonaPrefabPath, new Vector2(540f, 160f));
         }
 
-        private static void BuildOne(string rootName, string panelName, string prefabPath)
+        private static void BuildOne(string rootName, string panelName, string prefabPath, Vector2 cellSize)
         {
             var font = Font.CreateDynamicFontFromOSFont(
                 new[] { "Microsoft YaHei UI", "Microsoft YaHei", "SimHei", "Arial" }, 22);
@@ -57,7 +58,7 @@ namespace PersonaCards.UI.Editor
                 new Vector2(0.03f, 0.830f), new Vector2(0.97f, 0.880f), DetailGold, font, FontStyle.Normal);
             CreateLine(panel.transform, "Divider", new Vector2(0.03f, 0.818f), new Vector2(0.97f, 0.822f));
 
-            // 候选列表：ScrollRect + GridLayoutGroup 2 列（cell 540×88；行由视图运行时创建）
+            // 候选列表：ScrollRect + GridLayoutGroup 2 列（cell 尺寸按界面传入；行由视图运行时创建）
             var scroll = new GameObject("Entry Scroll", typeof(RectTransform), typeof(ScrollRect));
             scroll.transform.SetParent(panel.transform, false);
             Stretch(scroll.GetComponent<RectTransform>(), new Vector2(0.03f, 0.10f), new Vector2(0.97f, 0.80f));
@@ -73,7 +74,7 @@ namespace PersonaCards.UI.Editor
             contentRect.offsetMin = Vector2.zero;
             contentRect.offsetMax = Vector2.zero;
             var grid = content.GetComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(540f, 88f);
+            grid.cellSize = cellSize;
             grid.spacing = new Vector2(10f, 6f);
             grid.padding = new RectOffset(8, 8, 8, 8);
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;

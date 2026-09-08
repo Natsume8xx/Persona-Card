@@ -9,7 +9,8 @@ namespace PersonaCards.UI
     /// 选牌弹窗视图（UI 重排第二批 · 选牌弹窗）：6 种单卡类服务共用（筹码/金币/倍率/独立乘区/花色/移除）。
     /// prefab 由一次性编辑器脚本构建（本类不参与场景，仅被 Resources/Prefabs/CardPickPopup 挂载）。
     /// Awake 里给全部子节点赋系统中文字体（PersonaEquipPopupView 惯例，美术替换字体时只换资源）。
-    /// 卡牌格运行时按会话 Cards 列表全量重建（销毁旧格），不复用 BattleCardView（其尺寸写死 112×168，弹窗格 62×62）。
+    /// 卡牌格运行时按会话 Cards 列表全量重建（销毁旧格），不复用 BattleCardView（其尺寸写死 112×168，弹窗格 88×132 大卡面）。
+    /// 有卡面资源 → Image 显示整卡牌面（preserveAspect 2:3 恰好填满格）；缺图 → 羊皮纸底 + 文本点数花色（回退不崩溃）。
     /// Configure(session, onCancel, onConfirm) 写静态文案 + 绑定交互；RefreshFromSession() 重建卡格 + 刷统计/排序钮/信息栏/确认钮。
     /// </summary>
     public sealed class CardPickPopupView : MonoBehaviour
@@ -161,10 +162,21 @@ namespace PersonaCards.UI
                 RefreshFromSession();
             });
 
-            CreateCellText(cell.transform, "Rank", RankLabel(card.Rank), 16, TextAnchor.UpperLeft,
-                new Vector2(0.06f, 0.62f), new Vector2(0.52f, 0.94f), FontStyle.Bold);
-            CreateCellText(cell.transform, "Suit", SuitLabel(card.Suit), 24, TextAnchor.MiddleCenter,
-                new Vector2(0.16f, 0.10f), new Vector2(0.84f, 0.60f), FontStyle.Bold);
+            var rankText = CreateCellText(cell.transform, "Rank", RankLabel(card.Rank), 20, TextAnchor.UpperLeft,
+                new Vector2(0.08f, 0.70f), new Vector2(0.55f, 0.96f), FontStyle.Bold);
+            var suitText = CreateCellText(cell.transform, "Suit", SuitLabel(card.Suit), 30, TextAnchor.MiddleCenter,
+                new Vector2(0.20f, 0.20f), new Vector2(0.80f, 0.64f), FontStyle.Bold);
+
+            // 有卡面 → 整卡牌面展示 + 隐藏文本；缺图 → 羊皮纸底 + 文本（现回退路径）
+            var face = CardFaceCatalog.SpriteFor(card.Suit, card.Rank);
+            if (face != null)
+            {
+                image.sprite = face;
+                image.color = Color.white;
+                image.preserveAspect = true;
+                rankText.gameObject.SetActive(false);
+                suitText.gameObject.SetActive(false);
+            }
 
             if (string.Equals(card.Id, _session.SelectedCardId, StringComparison.Ordinal))
             {

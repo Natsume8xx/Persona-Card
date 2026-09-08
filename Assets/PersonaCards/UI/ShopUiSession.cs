@@ -1,4 +1,5 @@
 using System;
+using PersonaCards.Cards;
 using PersonaCards.Data;
 
 namespace PersonaCards.UI
@@ -112,21 +113,21 @@ namespace PersonaCards.UI
 
         // ---------- 商品页：右列商品详情 ----------
 
-        public bool HasSelectedProduct => ProductSlotAt(_selectedProductIndex).Product != null;
+        public bool HasSelectedProduct => SelectedProductSlot()?.Product != null;
 
         public string ProductNameText =>
-            HasSelectedProduct ? ProductSlotAt(_selectedProductIndex).Product.productName : "无货位";
+            HasSelectedProduct ? SelectedProductSlot().Product.productName : "无货位";
 
         /// <summary>类型标签：「类型·卡牌」/「类型·人格牌」/「类型·服务」（无货位 →「类型·--」）。</summary>
         public string ProductTypeText =>
-            HasSelectedProduct ? $"类型·{ProductSlotAt(_selectedProductIndex).Product.productType}" : "类型·--";
+            HasSelectedProduct ? $"类型·{SelectedProductSlot().Product.productType}" : "类型·--";
 
         /// <summary>效果描述：增加卡牌 → 卡牌名解析 + 花色符号；移除卡牌 → 固定文案；其余 → 效果类型原文（参数1 非空追加）。</summary>
         public string ProductDetailText
         {
             get
             {
-                var product = ProductSlotAt(_selectedProductIndex).Product;
+                var product = SelectedProductSlot()?.Product;
                 if (product == null) return "该商品位无货。";
                 switch (product.effectType)
                 {
@@ -149,7 +150,7 @@ namespace PersonaCards.UI
         {
             get
             {
-                var product = ProductSlotAt(_selectedProductIndex).Product;
+                var product = SelectedProductSlot()?.Product;
                 if (product == null) return "无货";
                 return IsProductSoldOut(_selectedProductIndex) ? "已售罄" : $"{product.price}金币";
             }
@@ -160,7 +161,7 @@ namespace PersonaCards.UI
         {
             get
             {
-                var product = ProductSlotAt(_selectedProductIndex).Product;
+                var product = SelectedProductSlot()?.Product;
                 return product != null && !IsProductSoldOut(_selectedProductIndex) && Coins >= product.price;
             }
         }
@@ -170,12 +171,40 @@ namespace PersonaCards.UI
         {
             get
             {
-                var product = ProductSlotAt(_selectedProductIndex).Product;
+                var product = SelectedProductSlot()?.Product;
                 if (product == null) return "无货";
                 if (IsProductSoldOut(_selectedProductIndex)) return "已售罄";
                 return Coins < product.price ? "金币不足" : $"购买商品（{product.price}金币）";
             }
         }
+
+        // ---------- 商品页：右列商品图片键（展示侧，纯取键不加载资源） ----------
+
+        /// <summary>选中商品是否为可解析的扑克牌商品（增加卡牌 + 牌名可解析）→ 输出花色点数；
+        /// 未选中/无货/非卡牌商品/牌名不可解析 → false（suit/rank 留默认值）。</summary>
+        public bool TryGetSelectedCardFace(out Suit suit, out Rank rank)
+        {
+            suit = Suit.Clubs;
+            rank = Rank.Two;
+            if (!HasSelectedProduct) return false;
+            var product = SelectedProductSlot()?.Product;
+            if (product == null) return false;
+            if (!string.Equals(product.effectType, ShopState.EffectAddCard, StringComparison.Ordinal)) return false;
+            return ShopState.TryParseCardName(product.productName, out suit, out rank);
+        }
+
+        /// <summary>商品 → 人格立绘键（PersonaArtCatalog.PortraitFor 用）：「增加人格牌」商品按商品名反查人格牌_ID；
+        /// 其他效果类型/空商品 → null（调用方回退无图布局）。B7 前该类型商品不上架，纯展示侧就绪。</summary>
+        public static string ResolveProductPortraitKey(ShopProductEntry product)
+        {
+            if (product == null) return null;
+            if (!string.Equals(product.effectType, ShopState.EffectAddPersona, StringComparison.Ordinal)) return null;
+            return PersonaForgeCatalog.PersonaIdByName(product.productName);
+        }
+
+        /// <summary>当前选中商品的人格立绘键；未选中/非人格商品 → null。</summary>
+        public string SelectedProductPortraitKey =>
+            HasSelectedProduct ? ResolveProductPortraitKey(SelectedProductSlot().Product) : null;
 
         // ---------- 商品页：服务区块（服务槽，按类型切分） ----------
 
@@ -212,6 +241,9 @@ namespace PersonaCards.UI
         }
 
         public PersonaCardEntry ForgeCardAt(int index) => PersonaForgeCatalog.CardAt(index);
+
+        /// <summary>选中人格的立绘键（= personaId，PersonaArtCatalog.PortraitFor 用）；目录为空 → null（视图回退无图布局）。</summary>
+        public string SelectedForgePortraitKey => ForgeCount > 0 ? ForgeCardAt(_selectedForgeIndex).personaId : null;
 
         public string ForgeRowName(int index) => ForgeCardAt(index).personaName;
 
@@ -318,10 +350,18 @@ namespace PersonaCards.UI
             return count;
         }
 
-        /// <summary>槽位绝对下标（按行序取第 rowIndex 个匹配槽）：供 FlowController 购买/开界面用（行序 ≠ 绝对下标）。</summary>
+        /// <summary>槽位绝对下标（按行序取第 rowIndex 个匹配槽）：供 FlowController 购买/开界面用（行序 ≠ 绝对下标）。越界抛 ArgumentOutOfRangeException。</summary>
         private int SlotIndexOf(string productType, bool exclude, int rowIndex)
         {
-            if (rowIndex < 0) throw new ArgumentOutOfRangeException(nameof(rowIndex));
+            var index = TrySlotIndexOf(productType, exclude, rowIndex);
+            if (index < 0) throw new ArgumentOutOfRangeException(nameof(rowIndex));
+            return index;
+        }
+
+        /// <summary>SlotIndexOf 的落空版：找不到返回 -1（商品位 0 的全服务槽组合等边界，读取点按无货位回落）。</summary>
+        private int TrySlotIndexOf(string productType, bool exclude, int rowIndex)
+        {
+            if (rowIndex < 0) return -1;
             var seen = 0;
             for (var index = 0; index < _shop.Slots.Count; index++)
             {
@@ -332,7 +372,7 @@ namespace PersonaCards.UI
                 if (seen == rowIndex) return index;
                 seen++;
             }
-            throw new ArgumentOutOfRangeException(nameof(rowIndex));
+            return -1;
         }
 
         /// <summary>第 rowIndex 个商品位（卡牌 + 人格牌）的绝对槽下标；越界抛 ArgumentOutOfRangeException。</summary>
@@ -347,6 +387,13 @@ namespace PersonaCards.UI
         {
             // 商品位 = 非服务槽（卡牌 + 人格牌），行序由槽位顺序保证与生成顺序一致；越界由 SlotIndexOf 抛出
             return _shop.Slots[ProductSlotIndexOf(rowIndex)];
+        }
+
+        /// <summary>选中商品位：商品位 0（全服务槽等随机组合）→ null，选中详情读取点按「无货位」回落；行 API 仍用 ProductSlotAt 保持越界抛。</summary>
+        private ShopState.ShopSlot SelectedProductSlot()
+        {
+            var index = TrySlotIndexOf(ShopProductTableContract.ProductTypeService, exclude: true, _selectedProductIndex);
+            return index < 0 ? null : _shop.Slots[index];
         }
 
         private ShopState.ShopSlot ServiceSlotAt(int rowIndex)

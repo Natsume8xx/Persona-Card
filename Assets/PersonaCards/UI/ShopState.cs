@@ -26,6 +26,9 @@ namespace PersonaCards.UI
         /// <summary>单卡强化服务效果类型（配表原文：强化卡牌，SHOP_SERVICE_001~004；UI 重排第二批接线选牌弹窗）。</summary>
         public const string EffectEnhanceCard = "强化卡牌";
 
+        /// <summary>增加人格牌效果类型（配表原文「增加人格牌」）：展示侧识别用（右侧详情立绘），不在白名单内——待 B7 模板→运行时定义转换后放开上架。</summary>
+        public const string EffectAddPersona = "增加人格牌";
+
         /// <summary>本轮已实现接线效果的白名单：增加卡牌 / 移除卡牌 / 单卡强化 / 三线强化。未实装效果不进商品位（策划案商品池按效果过滤）。
         /// 增加人格牌待「模板→运行时定义」转换（B7 行为→词条映射）落地后放开；强化类服务经 P0-11 三线强化接线。
         /// 强化服务商品（SHOP_SERVICE_006~008）能否上架还取决于强化配表注入（ShopCatalog 合成池规则时过滤）。</summary>
@@ -202,7 +205,8 @@ namespace PersonaCards.UI
             return Math.Min(refreshCap, successes * drawCount);
         }
 
-        /// <summary>卡商品名解析（临时口径，待策划确认）：「黑桃A」→ 花色 + 点数。商品配置无 id 列，按商品名尾段解析；解析失败返回 false。</summary>
+        /// <summary>卡商品名解析（临时口径，待策划确认）：「黑桃A」→ 花色 + 点数。商品配置无 id 列，按商品名尾段解析；解析失败返回 false。
+        /// 配表花色原文兼容两种写法：「方片」（早期）与「方块」（现行配表）。</summary>
         public static bool TryParseCardName(string productName, out Suit suit, out Rank rank)
         {
             suit = Suit.Clubs;
@@ -215,7 +219,8 @@ namespace PersonaCards.UI
                 case "黑桃": suit = Suit.Spades; break;
                 case "红桃": suit = Suit.Hearts; break;
                 case "梅花": suit = Suit.Clubs; break;
-                case "方片": suit = Suit.Diamonds; break;
+                case "方片":
+                case "方块": suit = Suit.Diamonds; break;
                 default: return false;
             }
             switch (rankText)
