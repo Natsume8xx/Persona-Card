@@ -199,7 +199,57 @@ namespace PersonaCards.UI
                 deckViewerCloseButton, handReferenceCloseButton, deckViewerPreviousButton, deckViewerNextButton,
                 handSortButton, newBattleButton);
             MusicManager.AttachClickSound(deckViewerZoneButtons);
+
+#if UNITY_WEBGL
+            StartWebGlFontDiagnostic();
+#endif
         }
+
+#if UNITY_WEBGL
+        /// <summary>
+        /// WebGL 字体自检（临时诊断）：屏幕左上角紫色英文显示字体子系统状态（内置字体渲染，
+        /// 不依赖被测字体），用于定位 WebGL 中文字体缺失环节。桌面版零影响（条件编译）。
+        /// </summary>
+        private void StartWebGlFontDiagnostic()
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas == null) return;
+            var go = new GameObject("WebGlFontDiag", typeof(RectTransform), typeof(Text));
+            go.transform.SetParent(canvas.transform, false);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = new Vector2(0f, 1f);
+            rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 1f);
+            rt.anchoredPosition = new Vector2(8f, -8f);
+            rt.sizeDelta = new Vector2(420f, 130f);
+            var diag = go.GetComponent<Text>();
+            diag.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            diag.fontSize = 14;
+            diag.color = Color.magenta;
+            diag.horizontalOverflow = HorizontalWrapMode.Overflow;
+            diag.verticalOverflow = VerticalWrapMode.Overflow;
+            diag.raycastTarget = false;
+            StartCoroutine(RefreshWebGlFontDiagnostic(diag));
+        }
+
+        private IEnumerator RefreshWebGlFontDiagnostic(Text diag)
+        {
+            for (var i = 1; i <= 5; i++)
+            {
+                yield return new WaitForSeconds(1f);
+                var bundled = Resources.Load<Font>(RuntimeFontFactory.BundledFontPath);
+                var rtFont = RuntimeFontFactory.GetRuntimeFont(28);
+                var tex = rtFont != null && rtFont.material != null ? rtFont.material.mainTexture : null;
+                diag.text =
+                    "FontDiag " + i + "/5"
+                    + "\nbundled=" + (bundled != null ? bundled.name : "NULL")
+                    + "\nhasRen=" + (rtFont != null && rtFont.HasCharacter('人'))
+                    + " hasPai=" + (rtFont != null && rtFont.HasCharacter('牌'))
+                    + "\natlas=" + (tex != null ? tex.width + "x" + tex.height : "NONE")
+                    + "\ncharInfo=" + (rtFont != null ? rtFont.characterInfo.Length : -1);
+            }
+        }
+#endif
 
         public void BeginBattle()
         {
