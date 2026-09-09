@@ -1,0 +1,234 @@
+{
+  "source": "E:\\GameDemo\\MVP",
+  "exportedAt": "2026-09-09T12:42:59.472Z",
+  "files": [
+    {
+      "file": "balance/core-rules.js",
+      "sha256": "12ca1c87be6dfbe22d221d933038f319d3971edae7aba8c24f8749aa7e2785b1"
+    },
+    {
+      "file": "balance/feature-flags.js",
+      "sha256": "4341ba6f84ba1572dabe230725dbfd322bbf3c4f0db5f8cf0eb5be72eebdfb12"
+    },
+    {
+      "file": "balance/poker-hands.js",
+      "sha256": "bea1cde47635a2aae608ad1a1c4c688e10d2a581725aaba5b4fe82a2af49180b"
+    },
+    {
+      "file": "balance/target/economy-config.js",
+      "sha256": "eb1db7ed582f5333bae7b1c4e67cc6ae1d0147a2886a8988d5e2b39d2f4bcdbb"
+    },
+    {
+      "file": "balance/base-personas.js",
+      "sha256": "80d4c27b55607df3780402cbf43ae9fcbd4c8c245d46e033b1d18a1f396c3919"
+    },
+    {
+      "file": "balance/persona-templates.js",
+      "sha256": "96b1d3b9c1f220401da941a1a63a6d8af7b5c8b2ed74c6ff2d8e51294492de11"
+    },
+    {
+      "file": "balance/target/scoring-profile.js",
+      "sha256": "61c8cd4653c1d6162d988b85b5e42a9fb0d45a6045e67df71848e8bf891d8d8d"
+    },
+    {
+      "file": "balance/target/prototype-personas.js",
+      "sha256": "482b090954b3719ea4da87d11bb18d8fb8472532fe2c055e3f6e46e7bf172385"
+    },
+    {
+      "file": "balance/target/growth-profiles.js",
+      "sha256": "334da19b11251cde7f2a061571017116def8b7b1ccdf2c4170057bede97c28f9"
+    },
+    {
+      "file": "balance/target/shop-config.js",
+      "sha256": "64b1e25f4a1e3b780c8295849c3a2a5c0d2013dec397a16dfca859c4d31b82a6"
+    },
+    {
+      "file": "balance/target/stage-nodes.js",
+      "sha256": "a81d507919a782625e7fdf1d1f80acd96d899d5a3283b180d002962b72f35d84"
+    },
+    {
+      "file": "balance/target/stage-limit-rules.js",
+      "sha256": "243fd036371074e604f4547762fb38fec60038c4616ec27c0f43dca0fed7dfa2"
+    },
+    {
+      "file": "balance/target/boss-rule-config.js",
+      "sha256": "aee54fa22ab3ff6702fce240a67910b455c36e051f59a95a19ec5081a715165c"
+    },
+    {
+      "file": "balance/target/ai-persona-sub-affixes-v1.js",
+      "sha256": "6b8d964ea7b4f7818e1880dfbbec809a350b3fdf3120bf4904039e7595d5eba3"
+    },
+    {
+      "file": "balance/target/ai-persona-whitelist-v1.js",
+      "sha256": "08dc9b4ebe036ae53b15f4fcd93fa948f2f66e134d8d22e68d651f85aef8d47e"
+    },
+    {
+      "file": "balance/target/run-template.js",
+      "sha256": "eb57d8fc2b249f1c451d85f584e70a1f643f699ff1ff9408d2d0460c466df6c2"
+    },
+    {
+      "file": "balance/boss-profiles.js",
+      "sha256": "adc3415d798a205df5057812c29594a05efcaaa7b5db6d8a03a2cd6e9e0d6f6a"
+    },
+    {
+      "file": "balance/interventions.js",
+      "sha256": "f28137b268242f5de85bde6e046bb92d642b73fa9b7cc8f49f220f6206374c80"
+    },
+    {
+      "file": "balance/encounters.js",
+      "sha256": "c8fc9a030f9c1eb6db3b35c24349ec716a0f8cd25d9be8d9db0bc05ec171d416"
+    },
+    {
+      "file": "balance/stage-nodes.js",
+      "sha256": "7d067d98504da11f20d8f1efe36dea0ba2d308de81a10b96fb571aef884660ec"
+    },
+    {
+      "file": "balance/run-templates.js",
+      "sha256": "377bf2f5470bfe7021421aba1da5689773539aed095d2578e20208ee03ab8ad9"
+    },
+    {
+      "file": "balance/validators/ai-persona-whitelist-validator.js",
+      "sha256": "38b2f9d13785b7d5e0a60b19e36fa7edaf39cc5f0f41f85155a93bf9b979c405"
+    },
+    {
+      "file": "balance/schema-validation.js",
+      "sha256": "633bd35e4611a7a8e25abbcffc8b6f0d37a21439a876e59bb587c7e0f000d096"
+    },
+    {
+      "file": "balance/manifest.js",
+      "sha256": "1e4e73541ad916acbbecf9e1a178b2c67b568fdeb6c4b862cdcd4a4bb58c55dd"
+    },
+    {
+      "file": "balance-v2.1.js",
+      "sha256": "2ef66a809b5d5d741a39ebcd0f93a2851fff55bb85fd6186e8f321506ba176e3"
+    },
+    {
+      "file": "card-art-manifest.js",
+      "sha256": "e2c06295a487b01cbf406cc3caf0ce9dbd71706bf306dfe9fdd22afaf288dd99"
+    },
+    {
+      "file": "persona/persona-instance.js",
+      "sha256": "c8477f3167f072e22aae75a187c74d17a1c28d65508a9247d21ec291fd6c38d0"
+    },
+    {
+      "file": "persona/persona-condition-evaluator.js",
+      "sha256": "5e33c06bed38cce87ee877007d197e1c011bfd5ccf2f2f6b9ba5029a3f132ac4"
+    },
+    {
+      "file": "persona/persona-effect-executor.js",
+      "sha256": "95da44c694c361781042be11983f8ab1acd1614be4561f537824150233f22779"
+    },
+    {
+      "file": "persona/legacy-persona-adapter.js",
+      "sha256": "3a74fe18d9b3859c6d1299018fe4362f3ab83fe83a71a90a1de2d277986ebdf9"
+    },
+    {
+      "file": "persona/persona-feedback.js",
+      "sha256": "9c6a20e1a3fa97b6a59edf6c63853f214d8e769a4f74b2682316781700352065"
+    },
+    {
+      "file": "persona/persona-runtime.js",
+      "sha256": "fd8e0ceeb36e7cfdc59900271e6a2dca93f4155b1b442b286dca1fe799c3ec05"
+    },
+    {
+      "file": "poker-engine.js",
+      "sha256": "1527578c815ca9cb4c4c6cded677de2d6493322c3a39c47c676f0fe94940dd60"
+    },
+    {
+      "file": "stage-limit-runtime.js",
+      "sha256": "352328a6e5969967769e0eec2bb968c4f748091f1a1a489cd9501e628f22e607"
+    },
+    {
+      "file": "shop/shop-runtime.js",
+      "sha256": "836bbbe9260a300bf0484690353249f25a2255ffb87c3bce82a841e70a8c0372"
+    },
+    {
+      "file": "deck-sort-runtime.js",
+      "sha256": "dbdfd6b7f113bc26a64108bb8c59caa08b32644050fa5bd00acdec48784190f8"
+    },
+    {
+      "file": "run-controller.js",
+      "sha256": "51285a4f029a10bc5c5851c31075cfc6530d82d09f6c0c7780f2970b9c58710d"
+    },
+    {
+      "file": "game/ui-formatters.js",
+      "sha256": "db04224db669ef5305a92332772f22821ac81fbba5d830f2e5f571d56d721e80"
+    },
+    {
+      "file": "game/persona-presentation.js",
+      "sha256": "fcc6207d32a52438202bcf14ce8992008d90d54b84b61b441624db9a4cfc5a5a"
+    },
+    {
+      "file": "game/build-inspection.js",
+      "sha256": "e0ed5c64f426ee94c817c8326db7de2b03ff93a419782fe04a9ef5e9bef5a88b"
+    },
+    {
+      "file": "game/card-presentation.js",
+      "sha256": "0883eee7df1e351323677243d3d43ce7b157010147fb0022fef06c05c7e10167"
+    },
+    {
+      "file": "game/behavior-analytics.js",
+      "sha256": "be7ba6cfcfb6d71e5d579d50a3df49116d93f0593e945463960d82d59ccd56b2"
+    },
+    {
+      "file": "persona/ai/behavior-snapshot.js",
+      "sha256": "23357accc769d992645c7efb2b0b570e67073b148447bb2589f6a8aa02dedc2a"
+    },
+    {
+      "file": "persona/ai/value-budget.js",
+      "sha256": "f9c240971fc108dda61dc9dc4ce7c0b07c02b9149240a88f9f5a9120ce9c8f32"
+    },
+    {
+      "file": "persona/ai/candidate-validator.js",
+      "sha256": "fc8a904431ef907530fb6b52b4a692d7330b05eb0b0bd9d8eff164874d2109c9"
+    },
+    {
+      "file": "persona/ai/candidate-builder.js",
+      "sha256": "da1f658abfef4ee1d7a17cf0fbad4965e8360d5c15373820f05a8c1065883eec"
+    },
+    {
+      "file": "persona/ai/similarity.js",
+      "sha256": "89b52d8143cfec0b20a78a775ee310661a2370d8e657133708a9f99177c1fc5b"
+    },
+    {
+      "file": "persona/ai/template-factory.js",
+      "sha256": "e686936506a6cfa4fdb3f927c76c320a46b11261d88ae9fa11a2e7a3fb4fff04"
+    },
+    {
+      "file": "persona/ai/generator.js",
+      "sha256": "b939e8267cf0187f6131fc716911db7b5c839dbf35b930362a90c8a518cfd5de"
+    },
+    {
+      "file": "persona/ai/generation-service.js",
+      "sha256": "7370bb46274b4bf487489f1a9863962ed4a626632396a8ecc868bf62a01732e2"
+    },
+    {
+      "file": "battle/score-runtime.js",
+      "sha256": "7049c2ed0247f5d6b076b7373dc96ac59d7d35c6b85e9651f4477ec22de5727d"
+    },
+    {
+      "file": "game/ai-persona-api-config.js",
+      "sha256": "38cb444f3c3badd49ced48cffd401cf70031281ac52e0bb4bded4cceeed62b7b"
+    },
+    {
+      "file": "game/ai-persona-selection-client.js",
+      "sha256": "95837f8a114b2c24a34a14ad45afff37848f070218852468032e68dbc3ec27b0"
+    },
+    {
+      "file": "persona/persona-collection.js",
+      "sha256": "4c5b39e8433c70a637ad5bb3391f6a40486c81db18be4a4f8a0da3b269d47f39"
+    },
+    {
+      "file": "game.js",
+      "sha256": "ed78bfc534a5449e102ceed8e0379bf50c09af44fe26793139202619ea52facf"
+    },
+    {
+      "file": "save-system.js",
+      "sha256": "df0e34e80901d8ea1aec7f5b5d456d6d83225c7038bedcd62d7212882493f08a"
+    },
+    {
+      "file": "tutorial.js",
+      "sha256": "3c9ae7c38169262bfb32df2fe74c0c2ccffd1baeb37465c0a32d0401c122735b"
+    }
+  ]
+}

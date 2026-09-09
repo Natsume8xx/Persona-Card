@@ -1,0 +1,2 @@
+{"name":"PersonaCards.WebAligned.Editor","references":["PersonaCards.WebAligned","Unity.Newtonsoft.Json","Unity.ugui"],"includePlatforms":["Editor"]}
+

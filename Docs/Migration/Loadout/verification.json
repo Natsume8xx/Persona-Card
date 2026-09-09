@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-09-09T10:23:00.3022928+08:00",
+  "scope": "Web-authoritative loadout drag equip, slot swap/removal, readiness, portraits, drag feedback and scroll preservation",
+  "tests": 253,
+  "passed": 253,
+  "failed": 0,
+  "sourceModules": 57,
+  "sourceAuthority": "E:/GameDemo/MVP",
+  "windowsBuild": "passed",
+  "buttonRaycastAndClickChecks": "passed",
+  "loadoutPointerChecks": "passed: actual UGUI raycast and begin/drag/drop handlers for slot swap, library equip, Escape cancel, empty slot disabled state, dimmed button, scrolling retained and unchanged storage",
+  "nativeVisualJourney": "passed with test victory fixtures after first actual play",
+  "runtimeExceptions": 0,
+  "resolutions": [
+    "1600x900",
+    "1280x720"
+  ],
+  "editablePageTemplates": 23,
+  "scene": "Assets/Scenes/PersonaWebAligned.unity",
+  "manualFullPlaythrough": "not performed",
+  "visualParityPercentage": "not measured",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF",
+  "webReference": "Current game.js placePendingPersona / removePendingPersona / confirmStartPersonaLoadout"
+}

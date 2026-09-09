@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-09-09T14:14:05.7820955+08:00",
+  "scope": "Complete settlement bonus display, adaptive reward rows and source gap/score text",
+  "tests": 263,
+  "passed": 263,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "rewardChecks": "passed: zero bonus hidden, card/persona bonuses displayed, visible row sum equals battle total, rendering preserves rule state",
+  "runtimeButtonCheck": "passed: five-row rewards at 1280x720 and continue to next stage",
+  "nativeVisualJourney": "passed with test victory fixtures after first actual play",
+  "runtimeExceptions": 0,
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "visualParityPercentage": "not measured",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

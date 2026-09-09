@@ -64,3 +64,14 @@ Thumbs.db
 # *.aab
 # *.ipa
 # *.app
+
+# Local migration backups, captures, logs and replay state stay on this machine.
+# Keep human-readable handoff documents, compact receipts, latest tests and licenses.
+/Docs/Migration/**
+!/Docs/Migration/*/
+!/Docs/Migration/*.md
+!/Docs/Migration/final-verification.json
+!/Docs/Migration/*/verification.json
+!/Docs/Migration/ShopGrowthPolish/tests.xml
+!/Docs/Migration/Licenses/**
+/ProfilerCaptures/

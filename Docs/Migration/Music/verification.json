@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-09T13:26:39.4275052+08:00",
+  "scope": "Result stinger channel fallback and deduplication; music crossfade and ducking",
+  "tests": 261,
+  "passed": 261,
+  "failed": 0,
+  "sourceModules": 57,
+  "sourceAuthority": "E:/GameDemo/MVP",
+  "windowsBuild": "passed",
+  "audioChecks": "passed: web victory/failure event once, settings combinations, runtime fallback play count, duplicate suppression and mute",
+  "buttonRaycastAndClickChecks": "passed",
+  "nativeVisualJourney": "passed with test victory fixtures after first actual play",
+  "runtimeExceptions": 0,
+  "manualListening": "not performed",
+  "musicCrossfadeListening": "not performed",
+  "manualFullPlaythrough": "not performed",
+  "fullAudioMotionParity": "incomplete",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

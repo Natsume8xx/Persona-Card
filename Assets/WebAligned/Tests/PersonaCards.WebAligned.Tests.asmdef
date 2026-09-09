@@ -1,0 +1,1 @@
+{"name":"PersonaCards.WebAligned.Tests","references":["PersonaCards.WebAligned","Unity.ugui"],"includePlatforms":["Editor"],"overrideReferences":true,"precompiledReferences":["Newtonsoft.Json.dll","nunit.framework.dll"],"autoReferenced":false,"optionalUnityReferences":["TestAssemblies"]}

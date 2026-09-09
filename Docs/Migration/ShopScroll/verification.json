@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-09-09T15:23:53.5022640+08:00",
+  "scope": "Shop and forge scroll position retention",
+  "tests": 263,
+  "passed": 263,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "shopScrollChecks": "Passed at N04/N08/N12/N16: same-persona refresh and goods/forge tab return preserve scroll position; storage unchanged",
+  "nativeVisualJourney": "passed; fixture victories after first actual play",
+  "buttonRaycastAndClickChecks": "passed",
+  "runtimeExceptions": 0,
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "pageReusePerformanceOptimization": "not implemented",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

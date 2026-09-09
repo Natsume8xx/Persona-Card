@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-09T12:36:49.2978813+08:00",
+  "scope": "Web-emitted operation sound events: buy, forge, select, button and loadout removal",
+  "tests": 255,
+  "passed": 255,
+  "failed": 0,
+  "sourceModules": 57,
+  "sourceAuthority": "E:/GameDemo/MVP",
+  "windowsBuild": "passed",
+  "audioQueueChecks": "passed: consume once, pure snapshots, accepted purchase emits buy, rejected purchase does not, recordings load",
+  "buttonRaycastAndClickChecks": "passed",
+  "nativeVisualJourney": "passed with test victory fixtures after first actual play",
+  "runtimeExceptions": 0,
+  "manualListening": "not performed",
+  "manualFullPlaythrough": "not performed",
+  "visualParityPercentage": "not measured",
+  "fullAudioMotionParity": "incomplete",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

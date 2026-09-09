@@ -1,0 +1,4267 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6799469227813682
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2419150992389264899}
+  - component: {fileID: 7384938515038179381}
+  - component: {fileID: 8736119286250367582}
+  - component: {fileID: 8541500740373038455}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2419150992389264899
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6799469227813682}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6224374493251687007}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &7384938515038179381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6799469227813682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[3]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &8736119286250367582
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6799469227813682}
+  m_CullTransparentMesh: 1
+--- !u!114 &8541500740373038455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6799469227813682}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &147561017154748477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6711472859142893512}
+  - component: {fileID: 5468307485098950726}
+  - component: {fileID: 3532964796178327620}
+  - component: {fileID: 5853574243678491731}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6711472859142893512
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147561017154748477}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1340, y: 850}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &5468307485098950726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147561017154748477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1340, y: 850}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &3532964796178327620
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147561017154748477}
+  m_CullTransparentMesh: 1
+--- !u!114 &5853574243678491731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147561017154748477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &407572237467803883
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8108558005209192474}
+  - component: {fileID: 5755384647945914864}
+  m_Layer: 0
+  m_Name: PersonaDetailMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8108558005209192474
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407572237467803883}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2329836379132256804}
+  - {fileID: 8919304801723398029}
+  - {fileID: 1952085361243361680}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5755384647945914864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407572237467803883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0853d7b64e392b648aa3aa169401d5e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativePageTemplate
+  PageId: PersonaDetailMenu
+--- !u!1 &682525490257851689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2724778348271338204}
+  - component: {fileID: 7772717456665854903}
+  - component: {fileID: 5163200318618095647}
+  - component: {fileID: 7297122598187235123}
+  - component: {fileID: 2795705111354736786}
+  - component: {fileID: 5385400853103733377}
+  m_Layer: 0
+  m_Name: "\u5F00\u59CB\u6E38\u620F"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2724778348271338204
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682525490257851689}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 238871964273744195}
+  - {fileID: 5404815736771029929}
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 660, y: -510}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &7772717456665854903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682525490257851689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[2]'
+  Position: {x: 660, y: -510}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: d5fc97dab37f76e458d8c47b2325e258, type: 2}
+  BorderThickness: 0
+--- !u!222 &5163200318618095647
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682525490257851689}
+  m_CullTransparentMesh: 1
+--- !u!114 &7297122598187235123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682525490257851689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: d5fc97dab37f76e458d8c47b2325e258, type: 2}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2795705111354736786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682525490257851689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.22, g: 1.17, b: 1.06, a: 1}
+    m_PressedColor: {r: 0.72, g: 0.67, b: 0.58, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.42, g: 0.42, b: 0.42, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 7297122598187235123}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5385400853103733377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682525490257851689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74efd99f27b3aaa44a2ebf5868ae35d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeButtonMotion
+--- !u!1 &856978190337682088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4150343226639480903}
+  - component: {fileID: 8667229986471725707}
+  - component: {fileID: 899908986272765692}
+  - component: {fileID: 4176911688270203947}
+  m_Layer: 0
+  m_Name: "\u8FD4\u56DE"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4150343226639480903
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856978190337682088}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5237258257488501594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12, y: -5}
+  m_SizeDelta: {x: 306, y: 60}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &8667229986471725707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856978190337682088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[1]/Text[0]'
+  Position: {x: 12, y: -5}
+  Size: {x: 306, y: 60}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  FontSize: 24
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u8FD4\u56DE"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &899908986272765692
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856978190337682088}
+  m_CullTransparentMesh: 1
+--- !u!114 &4176911688270203947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856978190337682088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u8FD4\u56DE"
+--- !u!1 &1036267992219181601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8569800445987193761}
+  - component: {fileID: 5904097717833770081}
+  - component: {fileID: 5775150093297415623}
+  - component: {fileID: 5062100993143048333}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8569800445987193761
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036267992219181601}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6711472859142893512}
+  - {fileID: 4946780185961924131}
+  - {fileID: 3679714898622481545}
+  - {fileID: 1581933384340381781}
+  - {fileID: 4698960570758863614}
+  - {fileID: 5237258257488501594}
+  - {fileID: 56754372868455090}
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 290, y: -115}
+  m_SizeDelta: {x: 1340, y: 850}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &5904097717833770081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036267992219181601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]'
+  Position: {x: 290, y: -115}
+  Size: {x: 1340, y: 850}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.05490196, g: 0.047058824, b: 0.043137256, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &5775150093297415623
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036267992219181601}
+  m_CullTransparentMesh: 1
+--- !u!114 &5062100993143048333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036267992219181601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.05490196, g: 0.047058824, b: 0.043137256, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &1135897606633584204
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5425901074567371772}
+  - component: {fileID: 326854626330804294}
+  - component: {fileID: 3000728178633204946}
+  - component: {fileID: 1148401765170702041}
+  m_Layer: 0
+  m_Name: "\u955C\u5B50\u4F1A\u8BB0\u4F4F\u6BCF\u4E00\u6B21\u9009\u62E9"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5425901074567371772
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135897606633584204}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 560, y: -935}
+  m_SizeDelta: {x: 800, y: 45}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &326854626330804294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135897606633584204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Text[3]'
+  Position: {x: 560, y: -935}
+  Size: {x: 800, y: 45}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.6392157, g: 0.59607846, b: 0.5254902, a: 1}
+  FontSize: 20
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u955C\u5B50\u4F1A\u8BB0\u4F4F\u6BCF\u4E00\u6B21\u9009\u62E9"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3000728178633204946
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135897606633584204}
+  m_CullTransparentMesh: 1
+--- !u!114 &1148401765170702041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135897606633584204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.6392157, g: 0.59607846, b: 0.5254902, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u955C\u5B50\u4F1A\u8BB0\u4F4F\u6BCF\u4E00\u6B21\u9009\u62E9"
+--- !u!1 &1178122465917516374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8919304801723398029}
+  - component: {fileID: 3669337227219054533}
+  m_Layer: 0
+  m_Name: Native Effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8919304801723398029
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178122465917516374}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8108558005209192474}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &3669337227219054533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178122465917516374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Native Effects[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1920, y: 1080}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!1 &1180790094279756056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8765344681933424793}
+  - component: {fileID: 3204759695982107624}
+  - component: {fileID: 1940929901419681330}
+  - component: {fileID: 6677484072609365956}
+  - component: {fileID: 8878821607076334631}
+  - component: {fileID: 3239233130029076635}
+  m_Layer: 0
+  m_Name: "\u8BBE\u7F6E"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8765344681933424793
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180790094279756056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 870081594419087944}
+  - {fileID: 2695100836134928342}
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 660, y: -780}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &3204759695982107624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180790094279756056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[5]'
+  Position: {x: 660, y: -780}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: d2f07b88979c78b4caff2370a7d5bc37, type: 2}
+  BorderThickness: 0
+--- !u!222 &1940929901419681330
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180790094279756056}
+  m_CullTransparentMesh: 1
+--- !u!114 &6677484072609365956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180790094279756056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: d2f07b88979c78b4caff2370a7d5bc37, type: 2}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8878821607076334631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180790094279756056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.22, g: 1.17, b: 1.06, a: 1}
+    m_PressedColor: {r: 0.72, g: 0.67, b: 0.58, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.42, g: 0.42, b: 0.42, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 6677484072609365956}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3239233130029076635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180790094279756056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74efd99f27b3aaa44a2ebf5868ae35d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeButtonMotion
+--- !u!1 &1311304814415695685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 870081594419087944}
+  - component: {fileID: 3406870972345985619}
+  - component: {fileID: 4897499585600888080}
+  - component: {fileID: 6741942007796342362}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &870081594419087944
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311304814415695685}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8765344681933424793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &3406870972345985619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311304814415695685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[5]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &4897499585600888080
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311304814415695685}
+  m_CullTransparentMesh: 1
+--- !u!114 &6741942007796342362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311304814415695685}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &2854923365040450848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4946780185961924131}
+  - component: {fileID: 7219862362052145371}
+  - component: {fileID: 3384298031621859394}
+  - component: {fileID: 8092287739629871209}
+  m_Layer: 0
+  m_Name: "\u4EBA\u683C\u724C01"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4946780185961924131
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854923365040450848}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 440, y: -45}
+  m_SizeDelta: {x: 800, y: 75}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &7219862362052145371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854923365040450848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Text[0]'
+  Position: {x: 440, y: -45}
+  Size: {x: 800, y: 75}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  FontSize: 42
+  FontStyle: 1
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 0
+  Copy: "\u4EBA\u683C\u724C01"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3384298031621859394
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854923365040450848}
+  m_CullTransparentMesh: 1
+--- !u!114 &8092287739629871209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854923365040450848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 42
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 42
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u4EBA\u683C\u724C01"
+--- !u!1 &2862444645733912620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6974054901449667189}
+  - component: {fileID: 8664382857986677846}
+  - component: {fileID: 1632208159450772759}
+  - component: {fileID: 6893438527414205278}
+  m_Layer: 0
+  m_Name: Art
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6974054901449667189
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2862444645733912620}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &8664382857986677846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2862444645733912620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Art[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1920, y: 1080}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 2800000, guid: 1582304b0e0a72b4192a735c0cf1b8e4, type: 3}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &1632208159450772759
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2862444645733912620}
+  m_CullTransparentMesh: 1
+--- !u!114 &6893438527414205278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2862444645733912620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 1582304b0e0a72b4192a735c0cf1b8e4, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!1 &3506101770662533051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7473865701132307203}
+  - component: {fileID: 3983900969159178511}
+  - component: {fileID: 4899949539895880245}
+  - component: {fileID: 4908952205473061583}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7473865701132307203
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3506101770662533051}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7031023352476364533}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &3983900969159178511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3506101770662533051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[4]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &4899949539895880245
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3506101770662533051}
+  m_CullTransparentMesh: 1
+--- !u!114 &4908952205473061583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3506101770662533051}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &3591781233775049262
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7561386629502134625}
+  - component: {fileID: 2981708856322614624}
+  - component: {fileID: 2867224015853199220}
+  - component: {fileID: 4351698767380095473}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7561386629502134625
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591781233775049262}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5237258257488501594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 330, y: 70}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &2981708856322614624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591781233775049262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[1]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 330, y: 70}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &2867224015853199220
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591781233775049262}
+  m_CullTransparentMesh: 1
+--- !u!114 &4351698767380095473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591781233775049262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &3962938078384539851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 410657790588691756}
+  - component: {fileID: 8899362305207620086}
+  - component: {fileID: 3737623291972786054}
+  - component: {fileID: 3614440627054812235}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &410657790588691756
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962938078384539851}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 770, y: -370}
+  m_SizeDelta: {x: 380, y: 1}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &8899362305207620086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962938078384539851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[1]'
+  Position: {x: 770, y: -370}
+  Size: {x: 380, y: 1}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.5}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3737623291972786054
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962938078384539851}
+  m_CullTransparentMesh: 1
+--- !u!114 &3614440627054812235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962938078384539851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.5}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4105245295189256451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6135936248593763884}
+  - component: {fileID: 6039088839001808198}
+  - component: {fileID: 1962814188074062591}
+  - component: {fileID: 7070635977817718877}
+  m_Layer: 0
+  m_Name: "\u7EE7\u7EED\u6E38\u620F"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6135936248593763884
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4105245295189256451}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6224374493251687007}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12, y: -5}
+  m_SizeDelta: {x: 576, y: 70}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6039088839001808198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4105245295189256451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[3]/Text[0]'
+  Position: {x: 12, y: -5}
+  Size: {x: 576, y: 70}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  FontSize: 24
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u7EE7\u7EED\u6E38\u620F"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &1962814188074062591
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4105245295189256451}
+  m_CullTransparentMesh: 1
+--- !u!114 &7070635977817718877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4105245295189256451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u7EE7\u7EED\u6E38\u620F"
+--- !u!1 &4174809716752521510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8713944563770284491}
+  - component: {fileID: 5578537765759019304}
+  - component: {fileID: 3458288334798351839}
+  - component: {fileID: 8425157546863421498}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8713944563770284491
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174809716752521510}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 56754372868455090}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 60, y: 60}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &5578537765759019304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174809716752521510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[2]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 60, y: 60}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &3458288334798351839
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174809716752521510}
+  m_CullTransparentMesh: 1
+--- !u!114 &8425157546863421498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174809716752521510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &4399208067111114186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3349220760903768640}
+  - component: {fileID: 6111961268050927025}
+  - component: {fileID: 9153963446525621946}
+  - component: {fileID: 8747235467221079128}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3349220760903768640
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4399208067111114186}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6111961268050927025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4399208067111114186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1920, y: 1080}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0.16}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &9153963446525621946
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4399208067111114186}
+  m_CullTransparentMesh: 1
+--- !u!114 &8747235467221079128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4399208067111114186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.16}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4433034637016291678
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1952085361243361680}
+  - component: {fileID: 4024011630658951118}
+  - component: {fileID: 3123370314737049130}
+  - component: {fileID: 5296904611154511284}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1952085361243361680
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433034637016291678}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8108558005209192474}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &4024011630658951118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433034637016291678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Panel[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1920, y: 1080}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3123370314737049130
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433034637016291678}
+  m_CullTransparentMesh: 1
+--- !u!114 &5296904611154511284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433034637016291678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4644560312599374012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 238871964273744195}
+  - component: {fileID: 6274374806129284594}
+  - component: {fileID: 2634495316083216987}
+  - component: {fileID: 7654815773897102931}
+  m_Layer: 0
+  m_Name: Frame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &238871964273744195
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644560312599374012}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2724778348271338204}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6274374806129284594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644560312599374012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[2]/Frame[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 1
+--- !u!222 &2634495316083216987
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644560312599374012}
+  m_CullTransparentMesh: 1
+--- !u!114 &7654815773897102931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644560312599374012}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9ed87bc32c24d40ad4367b3960f37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeFrameGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.35}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  Thickness: 1
+--- !u!1 &4650318052468096929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1581933384340381781}
+  - component: {fileID: 2165634649366759978}
+  - component: {fileID: 6937897291334855303}
+  - component: {fileID: 278583218504268413}
+  m_Layer: 0
+  m_Name: Art
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1581933384340381781
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4650318052468096929}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 65, y: -131.19499}
+  m_SizeDelta: {x: 305, y: 502.61002}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &2165634649366759978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4650318052468096929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Art[0]'
+  Position: {x: 65, y: -131.19499}
+  Size: {x: 305, y: 502.61002}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 2800000, guid: 9d9c934dc1b33b4498731f15d6bed9e3, type: 3}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &6937897291334855303
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4650318052468096929}
+  m_CullTransparentMesh: 1
+--- !u!114 &278583218504268413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4650318052468096929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 9d9c934dc1b33b4498731f15d6bed9e3, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!1 &4873461848697977359
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7217099489830497909}
+  - component: {fileID: 6094385051233914293}
+  - component: {fileID: 143091942065473360}
+  - component: {fileID: 3568001345859184625}
+  m_Layer: 0
+  m_Name: "\u7528\u724C\u5C40\uFF0C\u8BA4\u8BC6\u4EBA\u683C"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7217099489830497909
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4873461848697977359}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 630, y: -400}
+  m_SizeDelta: {x: 660, y: 55}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6094385051233914293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4873461848697977359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Text[2]'
+  Position: {x: 630, y: -400}
+  Size: {x: 660, y: 55}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.6392157, g: 0.59607846, b: 0.5254902, a: 1}
+  FontSize: 27
+  FontStyle: 1
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u7528\u724C\u5C40\uFF0C\u8BA4\u8BC6\u4EBA\u683C"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &143091942065473360
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4873461848697977359}
+  m_CullTransparentMesh: 1
+--- !u!114 &3568001345859184625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4873461848697977359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.6392157, g: 0.59607846, b: 0.5254902, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 27
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u7528\u724C\u5C40\uFF0C\u8BA4\u8BC6\u4EBA\u683C"
+--- !u!1 &5031965063538464056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2329836379132256804}
+  - component: {fileID: 3332806983660816814}
+  m_Layer: 0
+  m_Name: Content
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2329836379132256804
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5031965063538464056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6974054901449667189}
+  - {fileID: 3349220760903768640}
+  - {fileID: 5093516909029274432}
+  - {fileID: 5687712588226025708}
+  - {fileID: 410657790588691756}
+  - {fileID: 7217099489830497909}
+  - {fileID: 2724778348271338204}
+  - {fileID: 6224374493251687007}
+  - {fileID: 7031023352476364533}
+  - {fileID: 8765344681933424793}
+  - {fileID: 5425901074567371772}
+  - {fileID: 3118370273347857828}
+  - {fileID: 8569800445987193761}
+  m_Father: {fileID: 8108558005209192474}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &3332806983660816814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5031965063538464056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1920, y: 1080}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!1 &5102074049340818792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 56754372868455090}
+  - component: {fileID: 2131871819491893568}
+  - component: {fileID: 2806008837528149997}
+  - component: {fileID: 1130187227819916063}
+  - component: {fileID: 1343030238650516716}
+  - component: {fileID: 2295797800942253128}
+  m_Layer: 0
+  m_Name: "\xD7"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &56754372868455090
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102074049340818792}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8713944563770284491}
+  - {fileID: 6951755416169911221}
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1250, y: -20}
+  m_SizeDelta: {x: 60, y: 60}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &2131871819491893568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102074049340818792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[2]'
+  Position: {x: 1250, y: -20}
+  Size: {x: 60, y: 60}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.11764706, g: 0.11372549, b: 0.13333334, a: 0.98039216}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &2806008837528149997
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102074049340818792}
+  m_CullTransparentMesh: 1
+--- !u!114 &1130187227819916063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102074049340818792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.11764706, g: 0.11372549, b: 0.13333334, a: 0.98039216}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1343030238650516716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102074049340818792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.22, g: 1.17, b: 1.06, a: 1}
+    m_PressedColor: {r: 0.72, g: 0.67, b: 0.58, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.42, g: 0.42, b: 0.42, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1130187227819916063}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2295797800942253128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102074049340818792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74efd99f27b3aaa44a2ebf5868ae35d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeButtonMotion
+--- !u!1 &5339825594708854951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3137586257205269630}
+  - component: {fileID: 6098014753940297247}
+  m_Layer: 0
+  m_Name: Scroll content
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3137586257205269630
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339825594708854951}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4566929291846539043}
+  m_Father: {fileID: 4698960570758863614}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 480}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6098014753940297247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339825594708854951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Scroll viewport[0]/Scroll content[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 800, y: 480}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!1 &6133172313108723491
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3118370273347857828}
+  - component: {fileID: 6563994340801210493}
+  - component: {fileID: 5877210576850663482}
+  - component: {fileID: 2006835926071727906}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3118370273347857828
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6133172313108723491}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6563994340801210493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6133172313108723491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[6]'
+  Position: {x: 0, y: 0}
+  Size: {x: 1920, y: 1080}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0.78}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &5877210576850663482
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6133172313108723491}
+  m_CullTransparentMesh: 1
+--- !u!114 &2006835926071727906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6133172313108723491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6329144142325624944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4566929291846539043}
+  - component: {fileID: 8133826702953186710}
+  - component: {fileID: 2786343500255895711}
+  - component: {fileID: 7143387350128161077}
+  m_Layer: 0
+  m_Name: "\u89E6\u53D1\u6761\u4EF6\n\u8FDE\u7EED\u4E24\u6B21\u4F7F\u7528\u76F8\u540C\u724C\u578B\n\n\u751F\u6548\u6548\u679C\n+15 "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4566929291846539043
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329144142325624944}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3137586257205269630}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 480}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &8133826702953186710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329144142325624944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Scroll viewport[0]/Scroll content[0]/Text[0]'
+  Position: {x: 0, y: 0}
+  Size: {x: 800, y: 480}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  FontSize: 26
+  FontStyle: 1
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 0
+  Copy: "\u89E6\u53D1\u6761\u4EF6\n\u8FDE\u7EED\u4E24\u6B21\u4F7F\u7528\u76F8\u540C\u724C\u578B\n\n\u751F\u6548\u6548\u679C\n+15
+    \u57FA\u7840\u7B79\u7801\n\n\u526F\u5C5E\u6027\n2 \u7B2C2\u5C5E\u6027\u672A\u89E3\u9501
+    4 \u91D1\u5E01 \n 3 \u7B2C3\u5C5E\u6027\u672A\u89E3\u9501 6 \u91D1\u5E01"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &2786343500255895711
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329144142325624944}
+  m_CullTransparentMesh: 1
+--- !u!114 &7143387350128161077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329144142325624944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 26
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u89E6\u53D1\u6761\u4EF6\n\u8FDE\u7EED\u4E24\u6B21\u4F7F\u7528\u76F8\u540C\u724C\u578B\n\n\u751F\u6548\u6548\u679C\n+15
+    \u57FA\u7840\u7B79\u7801\n\n\u526F\u5C5E\u6027\n2 \u7B2C2\u5C5E\u6027\u672A\u89E3\u9501
+    4 \u91D1\u5E01 \n 3 \u7B2C3\u5C5E\u6027\u672A\u89E3\u9501 6 \u91D1\u5E01"
+--- !u!1 &6389041485758662462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6951755416169911221}
+  - component: {fileID: 1832446035445357329}
+  - component: {fileID: 5250039830720837885}
+  - component: {fileID: 1620655261462182674}
+  m_Layer: 0
+  m_Name: "\xD7"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6951755416169911221
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6389041485758662462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 56754372868455090}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12, y: -5}
+  m_SizeDelta: {x: 36, y: 50}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &1832446035445357329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6389041485758662462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[2]/Text[0]'
+  Position: {x: 12, y: -5}
+  Size: {x: 36, y: 50}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  FontSize: 24
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\xD7"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &5250039830720837885
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6389041485758662462}
+  m_CullTransparentMesh: 1
+--- !u!114 &1620655261462182674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6389041485758662462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\xD7"
+--- !u!1 &6429288200720306597
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3679714898622481545}
+  - component: {fileID: 6731883082153068430}
+  - component: {fileID: 3557710961722253995}
+  - component: {fileID: 1745881535067841791}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3679714898622481545
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6429288200720306597}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 440, y: -135}
+  m_SizeDelta: {x: 800, y: 1}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6731883082153068430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6429288200720306597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[0]'
+  Position: {x: 440, y: -135}
+  Size: {x: 800, y: 1}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.5}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3557710961722253995
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6429288200720306597}
+  m_CullTransparentMesh: 1
+--- !u!114 &1745881535067841791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6429288200720306597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 0.5}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6785964088376733163
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7031023352476364533}
+  - component: {fileID: 680432131148196443}
+  - component: {fileID: 8539208805155747529}
+  - component: {fileID: 7226721995210263805}
+  - component: {fileID: 6563711933233831151}
+  - component: {fileID: 2004674334664428108}
+  m_Layer: 0
+  m_Name: "\u4EBA\u683C\u56FE\u9274"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7031023352476364533
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785964088376733163}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7473865701132307203}
+  - {fileID: 4397095350520916577}
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 660, y: -690}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &680432131148196443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785964088376733163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[4]'
+  Position: {x: 660, y: -690}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: 7ee4179aac5dc7e4e8d03363db37605b, type: 2}
+  BorderThickness: 0
+--- !u!222 &8539208805155747529
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785964088376733163}
+  m_CullTransparentMesh: 1
+--- !u!114 &7226721995210263805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785964088376733163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 7ee4179aac5dc7e4e8d03363db37605b, type: 2}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6563711933233831151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785964088376733163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.22, g: 1.17, b: 1.06, a: 1}
+    m_PressedColor: {r: 0.72, g: 0.67, b: 0.58, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.42, g: 0.42, b: 0.42, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 7226721995210263805}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2004674334664428108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785964088376733163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74efd99f27b3aaa44a2ebf5868ae35d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeButtonMotion
+--- !u!1 &6790490769014556714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2695100836134928342}
+  - component: {fileID: 6373437248407393172}
+  - component: {fileID: 5132814205979311341}
+  - component: {fileID: 1927400544215825445}
+  m_Layer: 0
+  m_Name: "\u8BBE\u7F6E"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2695100836134928342
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6790490769014556714}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8765344681933424793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12, y: -5}
+  m_SizeDelta: {x: 576, y: 70}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6373437248407393172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6790490769014556714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[5]/Text[0]'
+  Position: {x: 12, y: -5}
+  Size: {x: 576, y: 70}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  FontSize: 24
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u8BBE\u7F6E"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &5132814205979311341
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6790490769014556714}
+  m_CullTransparentMesh: 1
+--- !u!114 &1927400544215825445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6790490769014556714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u8BBE\u7F6E"
+--- !u!1 &7200101736550675005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5404815736771029929}
+  - component: {fileID: 7947031947251455965}
+  - component: {fileID: 3405972816196760729}
+  - component: {fileID: 3664553456787609101}
+  m_Layer: 0
+  m_Name: "\u5F00\u59CB\u6E38\u620F"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5404815736771029929
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7200101736550675005}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2724778348271338204}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12, y: -5}
+  m_SizeDelta: {x: 576, y: 70}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &7947031947251455965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7200101736550675005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[2]/Text[0]'
+  Position: {x: 12, y: -5}
+  Size: {x: 576, y: 70}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  FontSize: 24
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u5F00\u59CB\u6E38\u620F"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3405972816196760729
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7200101736550675005}
+  m_CullTransparentMesh: 1
+--- !u!114 &3664553456787609101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7200101736550675005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u5F00\u59CB\u6E38\u620F"
+--- !u!1 &7212473220952587057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6224374493251687007}
+  - component: {fileID: 4744733194775001674}
+  - component: {fileID: 7598068265698079631}
+  - component: {fileID: 5812926158246238975}
+  - component: {fileID: 601163149564186237}
+  - component: {fileID: 53499713888920446}
+  m_Layer: 0
+  m_Name: "\u7EE7\u7EED\u6E38\u620F"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6224374493251687007
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212473220952587057}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2419150992389264899}
+  - {fileID: 6135936248593763884}
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 660, y: -600}
+  m_SizeDelta: {x: 600, y: 80}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &4744733194775001674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212473220952587057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[3]'
+  Position: {x: 660, y: -600}
+  Size: {x: 600, y: 80}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: d5fc97dab37f76e458d8c47b2325e258, type: 2}
+  BorderThickness: 0
+--- !u!222 &7598068265698079631
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212473220952587057}
+  m_CullTransparentMesh: 1
+--- !u!114 &5812926158246238975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212473220952587057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: d5fc97dab37f76e458d8c47b2325e258, type: 2}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &601163149564186237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212473220952587057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.22, g: 1.17, b: 1.06, a: 1}
+    m_PressedColor: {r: 0.72, g: 0.67, b: 0.58, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.42, g: 0.42, b: 0.42, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 5812926158246238975}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &53499713888920446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212473220952587057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74efd99f27b3aaa44a2ebf5868ae35d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeButtonMotion
+--- !u!1 &7347441631880713751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5093516909029274432}
+  - component: {fileID: 4310835738582288640}
+  - component: {fileID: 802673323181515189}
+  - component: {fileID: 6361648495497025049}
+  m_Layer: 0
+  m_Name: "\u4EBA\u683C\u724C"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5093516909029274432
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347441631880713751}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 625, y: -175}
+  m_SizeDelta: {x: 670, y: 130}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &4310835738582288640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347441631880713751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Text[0]'
+  Position: {x: 625, y: -175}
+  Size: {x: 670, y: 130}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  FontSize: 96
+  FontStyle: 1
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u4EBA\u683C\u724C"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &802673323181515189
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347441631880713751}
+  m_CullTransparentMesh: 1
+--- !u!114 &6361648495497025049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347441631880713751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9529412, g: 0.88235295, b: 0.7254902, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 96
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 96
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u4EBA\u683C\u724C"
+--- !u!1 &7391364041679169220
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4698960570758863614}
+  - component: {fileID: 5511177493311044150}
+  - component: {fileID: 9211004362823080772}
+  - component: {fileID: 8024148248956479622}
+  - component: {fileID: 5433959019365367906}
+  - component: {fileID: 2461167796903810120}
+  m_Layer: 0
+  m_Name: Scroll viewport
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4698960570758863614
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391364041679169220}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3137586257205269630}
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 440, y: -175}
+  m_SizeDelta: {x: 800, y: 480}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &5511177493311044150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391364041679169220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Scroll viewport[0]'
+  Position: {x: 440, y: -175}
+  Size: {x: 800, y: 480}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &9211004362823080772
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391364041679169220}
+  m_CullTransparentMesh: 1
+--- !u!114 &8024148248956479622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391364041679169220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5433959019365367906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391364041679169220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
+--- !u!114 &2461167796903810120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391364041679169220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
+  m_Content: {fileID: 3137586257205269630}
+  m_Horizontal: 0
+  m_Vertical: 1
+  m_MovementType: 2
+  m_Elasticity: 0.1
+  m_Inertia: 1
+  m_DecelerationRate: 0.135
+  m_ScrollSensitivity: 35
+  m_Viewport: {fileID: 4698960570758863614}
+  m_HorizontalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 0}
+  m_HorizontalScrollbarVisibility: 0
+  m_VerticalScrollbarVisibility: 0
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &7464796209572208814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5237258257488501594}
+  - component: {fileID: 4029627696722322889}
+  - component: {fileID: 7779324103990865825}
+  - component: {fileID: 347107602355178040}
+  - component: {fileID: 4554343010246810102}
+  - component: {fileID: 8265230725248359913}
+  m_Layer: 0
+  m_Name: "\u8FD4\u56DE"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5237258257488501594
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464796209572208814}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7561386629502134625}
+  - {fileID: 4150343226639480903}
+  m_Father: {fileID: 8569800445987193761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 505, y: -730}
+  m_SizeDelta: {x: 330, y: 70}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &4029627696722322889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464796209572208814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[7]/Panel[1]'
+  Position: {x: 505, y: -730}
+  Size: {x: 330, y: 70}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.34901962, g: 0.24313726, b: 0.10980392, a: 1}
+  FontSize: 0
+  FontStyle: 0
+  LineSpacing: 0
+  Font: {fileID: 0}
+  Alignment: 0
+  Copy: 
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &7779324103990865825
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464796209572208814}
+  m_CullTransparentMesh: 1
+--- !u!114 &347107602355178040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464796209572208814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.34901962, g: 0.24313726, b: 0.10980392, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4554343010246810102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464796209572208814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.22, g: 1.17, b: 1.06, a: 1}
+    m_PressedColor: {r: 0.72, g: 0.67, b: 0.58, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.42, g: 0.42, b: 0.42, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 347107602355178040}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8265230725248359913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464796209572208814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74efd99f27b3aaa44a2ebf5868ae35d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeButtonMotion
+--- !u!1 &7935985270136067069
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4397095350520916577}
+  - component: {fileID: 6325413143779835394}
+  - component: {fileID: 3888408037077894015}
+  - component: {fileID: 1953452496382199485}
+  m_Layer: 0
+  m_Name: "\u4EBA\u683C\u56FE\u9274"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4397095350520916577
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7935985270136067069}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7031023352476364533}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12, y: -5}
+  m_SizeDelta: {x: 576, y: 70}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6325413143779835394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7935985270136067069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Panel[4]/Text[0]'
+  Position: {x: 12, y: -5}
+  Size: {x: 576, y: 70}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  FontSize: 24
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u4EBA\u683C\u56FE\u9274"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &3888408037077894015
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7935985270136067069}
+  m_CullTransparentMesh: 1
+--- !u!114 &1953452496382199485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7935985270136067069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u4EBA\u683C\u56FE\u9274"
+--- !u!1 &8183967960425806833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5687712588226025708}
+  - component: {fileID: 4474811766141753750}
+  - component: {fileID: 381402111125341902}
+  - component: {fileID: 8472135794776925971}
+  m_Layer: 0
+  m_Name: "\u25C6"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5687712588226025708
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8183967960425806833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2329836379132256804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 630, y: -330}
+  m_SizeDelta: {x: 660, y: 42}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &4474811766141753750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8183967960425806833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a04c9b940776e429c31d2feb299ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PersonaCards.WebAligned::PersonaCards.WebAligned.NativeAuthoredElement
+  Key: '/Content[0]/Text[1]'
+  Position: {x: 630, y: -330}
+  Size: {x: 660, y: 42}
+  AnchorMin: {x: 0, y: 1}
+  AnchorMax: {x: 0, y: 1}
+  Pivot: {x: 0, y: 1}
+  Scale: {x: 1, y: 1, z: 1}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
+  Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  FontSize: 23
+  FontStyle: 0
+  LineSpacing: 0.85
+  Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+  Alignment: 4
+  Copy: "\u25C6"
+  Texture: {fileID: 0}
+  Sprite: {fileID: 0}
+  BorderThickness: 0
+--- !u!222 &381402111125341902
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8183967960425806833}
+  m_CullTransparentMesh: 1
+--- !u!114 &8472135794776925971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8183967960425806833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.827451, g: 0.6862745, b: 0.3882353, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c14689462c712bb4d8706154f514d739, type: 3}
+    m_FontSize: 23
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
+    m_LineSpacing: 0.85
+  m_Text: "\u25C6"

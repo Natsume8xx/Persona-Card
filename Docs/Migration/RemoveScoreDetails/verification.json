@@ -1,0 +1,18 @@
+{
+  "verifiedAt": "2026-09-09T20:49:05.2139019+08:00",
+  "scope": "Remove score details button, native dialog entry, authoring registration and scene reference per user request",
+  "tests": 286,
+  "passed": 286,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "runtimeChecks": "Six-checks passed including assertion that no score details button exists after playing",
+  "visualInspection": "web-status-after-play.png: removed button absent, score HUD and battle actions remain",
+  "runtimeExceptions": 0,
+  "nativeVisualJourney": "Not rerun for this UI removal; previous round passed",
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "fullPixelParityAudit": "not completed",
+  "removed": "Score details is intentionally removed, not remaining work",
+  "preserved": "Source scoring, previews, settlement, manual authored layout keys"
+}

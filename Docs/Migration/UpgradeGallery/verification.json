@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-09T19:30:46.4892559+08:00",
+  "scope": "Editable Upgrade page, source text/levels/confirm state, gallery detail return position",
+  "tests": 281,
+  "passed": 281,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "upgradeTemplate": "Upgrade.prefab generated alone and linked in existing PersonaWebAligned scene",
+  "runtimeChecks": "Upgrade template, target click, no-target disabled, cancel without charging; gallery detail round-trip position and fresh-open reset passed",
+  "nativeVisualJourney": "passed; fixture victories after first actual play",
+  "visualInspection": "upgrade-targets.png inspected at 1280x720",
+  "runtimeExceptions": 0,
+  "architecture": "Upgrade rendering extracted into partial; no full Presenter decoupling or page reuse",
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "fullPixelParityAudit": "not completed",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

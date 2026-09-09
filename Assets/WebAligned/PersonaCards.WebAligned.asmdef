@@ -1,0 +1,1 @@
+{"name":"PersonaCards.WebAligned","rootNamespace":"PersonaCards.WebAligned","references":["Unity.ugui","Unity.InputSystem","Unity.Newtonsoft.Json","PersonaCards.UI","PersonaCards.Cards"],"autoReferenced":true}

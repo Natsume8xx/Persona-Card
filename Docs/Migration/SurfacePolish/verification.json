@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-09-09T20:16:34.2309357+08:00",
+  "scope": "Battle and Upgrade static surface polish with existing assets; battle input guard and capture timing corrections",
+  "tests": 286,
+  "passed": 286,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "editableTemplates": "Components added to existing Battle and Upgrade prefabs without rebuilding scene or layout",
+  "runtimeChecks": "Final build: six-checks including upgrade target/cancel and gallery return passed",
+  "nativeVisualJourney": "Final build passed after two capture timing fixes; fixture victories after first actual play",
+  "visualInspection": "Battle and upgrade 1280x720 captures inspected; gradients, selected border, text and card separation",
+  "runtimeExceptions": 0,
+  "earlierFailures": "Preserved before-input-fix and before-resolution-wait journey logs; null score safety and capture waits corrected",
+  "architecture": "Vertex-only panel finish, no generated textures/materials/per-frame update; card Shadow adds vertices; performance not measured",
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "fullPixelParityAudit": "not completed",
+  "remaining": "Other pages polish, animation rhythm, Boss/persona/growth effects, page reuse, remote AI and manual validation",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

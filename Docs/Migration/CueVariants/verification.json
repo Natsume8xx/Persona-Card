@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-09T16:43:18.0644259+08:00",
+  "scope": "Source recording variants and basic combat cues",
+  "tests": 269,
+  "passed": 269,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "variantTests": "Source order, independent cooldown, muted/rejected calls do not advance, referenced clips exist",
+  "runtimeAudioTrace": "select 1/2/3, alternating tick 1/2, play 1 and score confirmed",
+  "discardRuntimeTrace": "not covered by this journey",
+  "nativeVisualJourney": "passed; fixture victories after first actual play",
+  "buttonRaycastAndClickChecks": "passed",
+  "runtimeExceptions": 0,
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "remainingAudio": "Persona charge/travel/impact, Boss timing, total 10/per-recording 3 concurrency caps, human listening",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

@@ -1,0 +1,18 @@
+{
+  "verifiedAt": "2026-09-09T21:30:54.8205133+08:00",
+  "scope": "Shop Forge Growth warm surface, readable scroll text, purchase button icon clearance",
+  "tests": 286,
+  "passed": 286,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "runtimeChecks": "Final build six-checks passed, removed score detail button remains absent",
+  "nativeVisualJourney": "Final build passed; growth local selection and scroll persistence, shop tab/scroll persistence; fixture victories after first real play",
+  "visualInspection": "Growth and shop 1280x720 captures inspected; final shop purchase button text clears icon",
+  "runtimeExceptions": 0,
+  "editableTemplates": "Surface components added to Shop Forge PersonaGrowth without scene rebuild",
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "fullPixelParityAudit": "not completed",
+  "remaining": "Other pages polish, Boss/persona/growth effects, page reuse/performance, remote AI and human validation"
+}

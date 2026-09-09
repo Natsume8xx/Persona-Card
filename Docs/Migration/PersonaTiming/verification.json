@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-09-09T17:56:37.7279198+08:00",
+  "scope": "Persona charge/travel/impact timing and durable handoff records",
+  "tests": 277,
+  "passed": 277,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "runtimeTimingCheck": "normal and accelerated playback, trail cleanup, highlight restoration, unchanged rule state",
+  "audioTrace": "charge -> travel -> impact repeated at both speeds",
+  "presentationFixture": "Direct ShowPersonaTrigger call; not evidence of a real persona trigger on that hand",
+  "visualInspection": "persona-travel.png inspected",
+  "nativeVisualJourney": "passed; fixture victories after first actual play",
+  "buttonRaycastAndClickChecks": "passed",
+  "runtimeExceptions": 0,
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "remainingPersonaPresentation": "Multi-target paths and full impact-ring parity",
+  "handoff": "Docs/Migration/HANDOFF.md",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

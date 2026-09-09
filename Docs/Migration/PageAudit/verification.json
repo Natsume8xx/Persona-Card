@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-09-09T19:09:02.1936419+08:00",
+  "scope": "Portrait gallery, forge explanations, page audit and architecture review",
+  "tests": 279,
+  "passed": 279,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "galleryTemplate": "Only Gallery.prefab explicitly regenerated",
+  "runtimeChecks": "Final layout: portrait height, click detail, return to gallery, existing input and settlement checks passed after interrupted run restarted",
+  "nativeVisualJourney": "passed before final gallery spacing-only correction; fixture victories after first actual play",
+  "visualInspection": "Final gallery-portrait-grid.png inspected",
+  "webComparison": "Live local web menu and gallery DOM; gallery screenshot inspected; other page inventory from code/templates and prior native captures",
+  "runtimeExceptions": 0,
+  "architecture": "Keep source rules bridge and atomic save writes; progressively separate page presentation/binding; Upgrade template missing",
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "fullPixelParityAudit": "not completed",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

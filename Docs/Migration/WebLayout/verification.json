@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-09-09T00:31:33.6856888+08:00",
+  "scope": "Web reference alignment: combined battle HUD, remaining/max counters, action consumption bars, animated score progress and compact action buttons",
+  "tests": 247,
+  "passed": 247,
+  "failed": 0,
+  "sourceModules": 57,
+  "sourceAuthority": "E:/GameDemo/MVP",
+  "windowsBuild": "passed",
+  "buttonRaycastAndClickChecks": "passed",
+  "nativeVisualJourney": "passed with test victory fixtures after first actual play",
+  "runtimeExceptions": 0,
+  "resolutions": [
+    "1600x900",
+    "1280x720"
+  ],
+  "editablePageTemplates": 22,
+  "scene": "Assets/Scenes/PersonaWebAligned.unity",
+  "manualFullPlaythrough": "not performed",
+  "visualParityPercentage": "not measured",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF",
+  "webReference": "Live local web battle inspected through browser; final battle-status-stack CSS used",
+  "statusAfterPlayChecks": "passed: one action consumed, maximum unchanged, action and score bar widths match source state"
+}

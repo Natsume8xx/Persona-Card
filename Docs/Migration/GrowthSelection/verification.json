@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-09T16:12:13.5299595+08:00",
+  "scope": "Growth slot selection updates in place",
+  "tests": 265,
+  "passed": 265,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "growthRuntimeChecks": "N04/N08/N12 passed: same page instance, scroll retained, storage and generated persona unchanged, rapid selection restores alpha, motion-off skips animation, actual confirm raycast enters shop",
+  "nativeVisualJourney": "passed; fixture victories after first actual play",
+  "buttonRaycastAndClickChecks": "passed",
+  "visualInspection": "growth-compare-N12.png inspected",
+  "runtimeExceptions": 0,
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "growthConfirmationCinematic": "not implemented",
+  "pageReusePerformanceOptimization": "Growth selection only; other page rebuilds remain",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}

@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-09-09T15:51:33.1334285+08:00",
+  "scope": "Shop detail reveal and committed purchase/unlock feedback",
+  "tests": 265,
+  "passed": 265,
+  "failed": 0,
+  "sourceModules": 57,
+  "windowsBuild": "passed",
+  "runtimeFeedbackChecks": "passed: authored transform restored, storage unchanged, no raycast interception, notices cleaned, motion disabled retains static success",
+  "purchaseFixture": "Production purchase gate with test-only effect callback",
+  "unlockChecks": "Unit tests: only the requested slot changing to unlocked triggers feedback",
+  "buttonRaycastAndClickChecks": "passed",
+  "visualInspection": "shop-purchase-feedback.png inspected",
+  "runtimeExceptions": 0,
+  "manualFullPlaythrough": "not performed",
+  "manualListening": "not performed",
+  "growthMotion": "not implemented this round",
+  "pageReusePerformanceOptimization": "not implemented",
+  "buildSha256": "D05C5848F7CC2EB32FF6016F54762EE3C666A69B862BE297DF2390830C1EA8CF"
+}
