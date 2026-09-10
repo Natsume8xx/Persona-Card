@@ -119,6 +119,7 @@ namespace PersonaCards.WebAligned
         }
         void Update()
         {
+            AiPumpTick();
             if(Keyboard.current==null||state==null)return;
             if(busy&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)resolutionFast=true;
             if(Keyboard.current.escapeKey.wasPressedThisFrame){HandleEscape();return;}

@@ -1,0 +1,13 @@
+{
+  "name": "persona-ai-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "《人格牌》AI 人格选择代理：部署到腾讯云 SCF，DeepSeek 服务端转发",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "tencentcloud-sdk-nodejs": "^4.0.1000"
+  }
+}

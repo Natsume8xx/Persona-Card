@@ -1,4 +1,5 @@
-// Native host surface. No browser, network or CLR access is exposed to game rules.
+// Native host surface. No browser or CLR access is exposed to game rules.
+// 唯一网络例外：末尾的 fetch 包装 → C# nativeNet.Fetch（白名单地址，重写为腾讯云 SCF 代理）。
 var window=globalThis;
 var innerWidth=1920,innerHeight=1080;
 var __storage={},__elements=new Map(),__timers=[],__nativeMenu=true,__lastScore=null,__errors=[];
@@ -29,3 +30,18 @@ function confirmStartRunWithLoadout(){clearRunSave();window.markPersonaCollectio
 var __nativeSettingsRequested=false,__nativePersonaDetail=null;
 function closeSettingsForTutorial(){}
 function openSettingsFromTutorial(){__nativeSettingsRequested=true}
+
+// 远程 AI 的唯一网络出口。ai-persona-selection-client 在模块加载时捕获 root.fetch，
+// 因此必须在 host 加载阶段定义。C# 侧只放行白名单 Worker 地址；网络异常/不可用 →
+// reject → 客户端 catch → NETWORK_ERROR → 本地安全兜底，玩家无感。
+var fetch=function(url,options){
+ options=options||{};
+ if(typeof nativeNet==='undefined'||!nativeNet||typeof nativeNet.Fetch!=='function')return Promise.reject(new Error('native fetch unavailable'));
+ var body=options.body===undefined||options.body===null?'':String(options.body);
+ var pending;
+ try{pending=nativeNet.Fetch(String(url),body)}catch(e){return Promise.reject(e)}
+ return Promise.resolve(pending).then(function(json){
+  var envelope;try{envelope=JSON.parse(json)}catch(e){return {ok:false,status:0,json:function(){return Promise.resolve(null)}}}
+  return {ok:!!envelope.ok,status:envelope.status||0,json:function(){return Promise.resolve(envelope.body)}};
+ });
+};

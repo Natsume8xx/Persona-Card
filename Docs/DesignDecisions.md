@@ -17,3 +17,4 @@
 11. 本地模板与降级闭环先行，真实 AI 后端作为 P1，不阻塞 MVP。
 12. 开发期使用统一符号占位资产；正式视觉采用离线制作并人工审核，禁止运行时 AI 生图。
 
+13. 远程 AI 人格选择（成长节点）：复用网页版 JS 客户端与其接口契约；服务端由队友的 Cloudflare Worker 改为自建腾讯云 SCF 代理（国内直连免 VPN，DeepSeek 密钥仅存服务端环境变量，绝不下发客户端）；Unity 侧经唯一白名单网络通道 `nativeNet.Fetch` 直连代理（URL 在 C# 侧重写，JS 与网页工程零改动），异步结果由快照 diff 泵捕获并重渲染；请求失败/超时/非法响应一律回落到本地合法候选安全兜底，玩家无感。实现要点：V8 引擎必须显式开 `V8ScriptEngineFlags.EnableTaskPromiseConversion`（默认不开，否则宿主 `Task<string>` 在 JS 侧是普通宿主对象而非 Promise，fetch 包装会瞬间落入 status:0 兜底）；headless 测试与编辑器迁移（`new NativeRules(false)`）禁用网络走确定性本地兜底，日常回归不依赖 DeepSeek 可用性。
