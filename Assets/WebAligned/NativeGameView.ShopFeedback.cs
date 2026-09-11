@@ -31,7 +31,7 @@ namespace PersonaCards.WebAligned
             yield return new WaitForSecondsRealtime(1.3f);Require(notice==null,"Static notice failed to clean up.");
             Debug.Log("NATIVE_SHOP_FEEDBACK_PASSED");
         }
-        JObject feedbackShopState;
+        JObject feedbackShopState;Coroutine shopDetailMotion;
         void RememberFeedbackShop(JObject before)
         {
             if(before?["shop"]!=null)feedbackShopState=before;
@@ -53,17 +53,33 @@ namespace PersonaCards.WebAligned
             }
             if(motionOn&&(success!=null||action=="shop-select"||action=="shop-persona"||action=="shop-tab")){
                 var detail=pageRoot.GetComponentsInChildren<RectTransform>().FirstOrDefault(r=>r.name=="商店详情区域");
-                if(detail!=null)StartCoroutine(RevealShopDetail(detail));
+                if(detail!=null){
+                    // 同成长 dialog：页面会被下一次 Render 连根重建，旧协程持有的 detail 会进入 Destroy 排队的将死窗口，
+                    // 该窗口内 GetComponent/AddComponent 可能抛异常或静默返回 null。先停掉旧协程，新协程内全部容忍。
+                    if(shopDetailMotion!=null)StopCoroutine(shopDetailMotion);
+                    shopDetailMotion=StartCoroutine(RevealShopDetail(detail));
+                }
             }
         }
         IEnumerator RevealShopDetail(RectTransform detail)
         {
-            var group=detail.GetComponent<CanvasGroup>()??detail.gameObject.AddComponent<CanvasGroup>();
+            // detail 可能来自已进入将死窗口的旧页：拿不到 CanvasGroup（null/异常）就静默放弃动画，绝不崩溃。
+            CanvasGroup group=null;
+            try{
+                if(detail!=null&&detail.gameObject!=null&&detail.gameObject.activeInHierarchy){
+                    group=detail.GetComponent<CanvasGroup>();
+                    if(group==null)group=detail.gameObject.AddComponent<CanvasGroup>();
+                }
+            }catch(System.Exception){group=null;}
+            if(group==null)yield break;
             var origin=detail.anchoredPosition;float alpha=group.alpha;
-            for(float t=0;t<.22f&&detail!=null&&detail.gameObject.activeInHierarchy;t+=Time.unscaledDeltaTime){
-                float p=1-Mathf.Pow(1-Mathf.Clamp01(t/.22f),3);group.alpha=alpha*Mathf.Lerp(.55f,1,p);detail.anchoredPosition=origin+Vector2.right*(12*(1-p));yield return null;
+            for(float t=0;t<.22f&&detail!=null&&detail.gameObject!=null&&detail.gameObject.activeInHierarchy&&group!=null;t+=Time.unscaledDeltaTime){
+                float p=1-Mathf.Pow(1-Mathf.Clamp01(t/.22f),3);
+                try{group.alpha=alpha*Mathf.Lerp(.55f,1,p);detail.anchoredPosition=origin+Vector2.right*(12*(1-p));}
+                catch(System.Exception){yield break;}
+                yield return null;
             }
-            if(detail!=null){detail.anchoredPosition=origin;group.alpha=alpha;}
+            try{if(detail!=null&&detail.gameObject!=null&&group!=null){detail.anchoredPosition=origin;group.alpha=alpha;}}catch(System.Exception){}
         }
         IEnumerator ShopNotice(CanvasGroup group,RectTransform rect)
         {
