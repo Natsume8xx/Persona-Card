@@ -41,8 +41,19 @@ namespace PersonaCards.WebAligned
             growthConfirm.interactable=(bool?)state["disabled"]?["#persona-growth-confirm"]!=true;
             StopGrowthSelectionMotion();
             if(motionOn&&(int?)before["growth"]?["selectedSlot"]!=selected){
-                growthNoteGroup=growthNote.GetComponent<CanvasGroup>()??growthNote.gameObject.AddComponent<CanvasGroup>();growthNoteAlpha=growthNoteGroup.alpha;
-                growthSelectionMotion=StartCoroutine(RevealGrowthSelection(growthNoteGroup,growthNoteAlpha));
+                // 成长节点出现时 AI 命名请求在飞，AiPump 可能恰在用户按下按钮后重建页面：
+                // 此时 growthNote 是已被 Destroy 排队的旧 note（将死窗口），GetComponent/AddComponent
+                // 可能抛异常或静默返回 null——必须容忍，拿不到 CanvasGroup 就跳过渐入动画，绝不崩溃。
+                CanvasGroup group=null;
+                try{
+                    if(growthNote!=null&&growthNote.gameObject!=null){
+                        group=growthNote.GetComponent<CanvasGroup>();
+                        if(group==null)group=growthNote.gameObject.AddComponent<CanvasGroup>();
+                    }
+                }catch(System.Exception){group=null;}
+                growthNoteGroup=group;
+                growthNoteAlpha=group==null?1:group.alpha;
+                if(group!=null)growthSelectionMotion=StartCoroutine(RevealGrowthSelection(group,growthNoteAlpha));
             }
             return true;
         }
