@@ -140,10 +140,11 @@ namespace PersonaCards.Battle.Personas
                 throw new ArgumentException($"未知效果类型「{entry.effect}」：{entry.personaId}");
             }
 
-            // 条件阈值：空 = 无
+            // 条件阈值：空 = 无；条件参数（品质文本）与阈值互斥，空串兜底旧资产反序列化的 null
             var threshold = entry.threshold.Length == 0
                 ? (int?)null
                 : int.Parse(entry.threshold, NumberStyles.Integer, CultureInfo.InvariantCulture);
+            var conditionParam = string.IsNullOrEmpty(entry.conditionParam) ? "" : entry.conditionParam;
 
             // 附加条件：可解析 → 结构化；否则 null（原文保留）
             ExtraConditionSpec extra = null;
@@ -179,6 +180,7 @@ namespace PersonaCards.Battle.Personas
                 trigger,
                 comparator,
                 threshold,
+                conditionParam,
                 extra,
                 entry.extraConditionRaw,
                 effect,

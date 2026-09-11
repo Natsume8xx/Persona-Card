@@ -16,6 +16,9 @@ namespace PersonaCards.Battle.Personas
         Less = 3,
 
         /// <summary>小于等于（&lt;=）。</summary>
-        LessOrEqual = 4
+        LessOrEqual = 4,
+
+        /// <summary>不等于（!=）。</summary>
+        NotEqual = 5
     }
 }

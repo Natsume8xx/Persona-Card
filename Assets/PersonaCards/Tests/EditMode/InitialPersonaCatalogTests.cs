@@ -7,7 +7,7 @@ namespace PersonaCards.Tests.EditMode
 {
     /// <summary>
     /// InitialPersonaCatalog 门面测试（P0-1E）：
-    /// 白盒回落 = 空模板目录 + 教学 3 张零差异；Configure 注入 16 条目后 TryFind 全命中；
+    /// 白盒回落 = 空模板目录 + 教学 3 张零差异；Configure 注入 8 条目后 TryFind 全命中；
     /// 门面映射表与 Data 契约常量交叉校验防漂移；[TearDown] Configure(null) 防静态泄漏。
     /// </summary>
     public class InitialPersonaCatalogTests
@@ -19,78 +19,53 @@ namespace PersonaCards.Tests.EditMode
             InitialPersonaCatalog.Configure(null);
         }
 
-        /// <summary>构建合法 16 条目资产（循环默认值 + 关键行覆盖真实配表值）。</summary>
+        /// <summary>新版 8 列引用式结构 8 张基础人格牌：(id, 名称, 触发, 比较符, 阈值, 条件参数, 效果, 参数1)。</summary>
+        private static readonly (string, string, string, string, string, string, string, string)[] FixtureEntries =
+        {
+            ("PER_001", "终局观察者", "连续使用相同牌型次数", "等于", "2", "", "增加筹码", "15"),
+            ("PER_002", "克制的赌徒", "计分牌数量", "大于等于", "4", "", "增加倍率", "1"),
+            ("PER_003", "结构收藏家", "牌型品质", "等于", "", "NORMAL", "增加筹码", "40"),
+            ("PER_004", "隐境寻路者", "已使用弃牌次数", "等于", "0", "", "增加筹码", "30"),
+            ("PER_005", "断舍离者",   "弃牌后出牌", "等于", "1", "", "增加倍率", "1"),
+            ("PER_006", "善变漫游者", "连续使用不同牌型次数", "不等于", "2", "", "增加筹码", "20"),
+            ("PER_007", "留手谋划者", "出牌数量", "小于等于", "4", "", "增加筹码", "20"),
+            ("PER_008", "满手承诺者", "牌型品质", "等于", "", "RARE", "增加独立倍率", "0.05"),
+        };
+
+        /// <summary>构建合法 8 条目资产（与新版配表逐字段一致；新版无列字段按 Mapper 默认值）。</summary>
         private static PersonaConfigAsset BuildValidAsset()
         {
             var asset = ScriptableObject.CreateInstance<PersonaConfigAsset>();
-            for (var index = 1; index <= 16; index++)
+            for (var index = 0; index < FixtureEntries.Length; index++)
             {
+                var (id, name, trigger, comparator, threshold, conditionParam, effect, effectParam1) = FixtureEntries[index];
                 asset.entries.Add(new PersonaConfigEntry
                 {
-                    personaId = $"PER_{index:D3}",
-                    displayName = $"11111{index}（暂定",
+                    personaId = id,
+                    displayName = name,
                     quality = "基础",
-                    qualityParam = "白色",
-                    behaviorTagId = $"T{index:D2}",
-                    trigger = "与上一手牌型相同",
-                    comparator = "等于",
-                    threshold = "1",
+                    qualityParam = "",
+                    behaviorTagId = "",
+                    trigger = trigger,
+                    comparator = comparator,
+                    threshold = threshold,
+                    conditionParam = conditionParam,
+                    subAttributeId = $"SUB_{index * 5 + 1:D3}",
+                    maxAttributeCount = "3",
+                    maxSubAttributeCount = "2",
+                    subAttributePoolCount = "5",
                     extraTrigger = "",
                     extraComparator = "",
                     extraThreshold = "",
                     extraConditionRaw = "",
-                    effect = "增加筹码",
-                    effectParam1 = "1",
+                    effect = effect,
+                    effectParam1 = effectParam1,
                     effectParam2 = "0",
                     effectRaw = "",
                     effectCap = "",
                     independentSettlement = false
                 });
             }
-
-            // 关键行覆盖为配表真实值（PER_001/007/013/015/016 见配表快照）
-            var per001 = asset.entries[0];
-            per001.effectParam1 = "9";
-
-            var per007 = asset.entries[6];
-            per007.trigger = "本局移除牌数量";
-            per007.comparator = "大于等于";
-            per007.effect = "每单位增加倍率";
-            per007.effectParam1 = "0.1";
-            per007.effectCap = "0.7";
-
-            var per013 = asset.entries[12];
-            per013.quality = "异质";
-            per013.qualityParam = "金色";
-            per013.trigger = "牌库数量";
-            per013.comparator = "小于等于";
-            per013.threshold = "30";
-            per013.extraConditionRaw = "另有计分牌数量条件*";
-            per013.effect = "最终倍率乘算";
-            per013.effectParam1 = "2.4500000000000002";
-            per013.independentSettlement = true;
-
-            var per015 = asset.entries[14];
-            per015.quality = "异质";
-            per015.trigger = "剩余出牌次数";
-            per015.threshold = "1";
-            per015.extraTrigger = "剩余弃牌次数";
-            per015.extraComparator = "等于";
-            per015.extraThreshold = "0";
-            per015.extraConditionRaw = "剩余弃牌次数=0";
-            per015.effect = "最终倍率乘算";
-            per015.effectParam1 = "2.1";
-            per015.independentSettlement = true;
-
-            var per016 = asset.entries[15];
-            per016.quality = "异质";
-            per016.trigger = "人格触发次数";
-            per016.comparator = "大于等于";
-            per016.threshold = "3";
-            per016.effect = "最终倍率乘算";
-            per016.effectParam1 = "2.2000000000000002";
-            per016.independentSettlement = true;
-
             return asset;
         }
 
@@ -140,18 +115,18 @@ namespace PersonaCards.Tests.EditMode
         }
 
         [Test]
-        public void Configure16EntriesMakesAllPersonasFindableAndSummarySet()
+        public void Configure8EntriesMakesAllPersonasFindableAndSummarySet()
         {
             InitialPersonaCatalog.Configure(BuildValidAsset().entries);
 
-            Assert.That(InitialPersonaCatalog.Templates.Count, Is.EqualTo(16));
-            Assert.That(InitialPersonaCatalog.LastConfiguredSummary, Is.EqualTo("16 张人格牌模板已加载。"));
+            Assert.That(InitialPersonaCatalog.Templates.Count, Is.EqualTo(8));
+            Assert.That(InitialPersonaCatalog.LastConfiguredSummary, Is.EqualTo("8 张人格牌模板已加载。"));
 
-            for (var index = 1; index <= 16; index++)
+            for (var index = 1; index <= 8; index++)
             {
                 Assert.That(InitialPersonaCatalog.TryFind($"PER_{index:D3}", out _), Is.True);
             }
-            Assert.That(InitialPersonaCatalog.TryFind("PER_017", out _), Is.False);
+            Assert.That(InitialPersonaCatalog.TryFind("PER_009", out _), Is.False);
         }
 
         [Test]
@@ -159,44 +134,45 @@ namespace PersonaCards.Tests.EditMode
         {
             InitialPersonaCatalog.Configure(BuildValidAsset().entries);
 
-            // PER_001：与上一手牌型相同 / 等于 / 阈值 1 / 增加筹码 9（默认循环值，锁死防回归）
+            // PER_001：连续使用相同牌型次数 = 2 / 增加筹码 15
             Assert.That(InitialPersonaCatalog.TryFind("PER_001", out var per001), Is.True);
-            Assert.That(per001.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.SameHandTypeAsPrevious));
+            Assert.That(per001.DisplayName, Is.EqualTo("终局观察者"));
+            Assert.That(per001.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.SameHandTypeStreak));
             Assert.That(per001.Comparator, Is.EqualTo(PersonaComparator.Equal));
-            Assert.That(per001.ConditionThreshold, Is.EqualTo(1));
+            Assert.That(per001.ConditionThreshold, Is.EqualTo(2));
+            Assert.That(per001.ConditionParam, Is.EqualTo(""));
             Assert.That(per001.EffectType, Is.EqualTo(PersonaEffectType.AddChips));
-            Assert.That(per001.EffectParam1, Is.EqualTo(9m));
-            Assert.That(per001.EffectCap, Is.Null);
+            Assert.That(per001.EffectParam1, Is.EqualTo(15m));
 
-            // PER_007：每单位增加倍率 0.1，上限 0.7
+            // PER_003：牌型品质 = NORMAL（无阈值，条件参数承载品质文本）
+            Assert.That(InitialPersonaCatalog.TryFind("PER_003", out var per003), Is.True);
+            Assert.That(per003.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.HandTypeQuality));
+            Assert.That(per003.ConditionThreshold, Is.Null);
+            Assert.That(per003.ConditionParam, Is.EqualTo("NORMAL"));
+
+            // PER_005：弃牌后出牌 = 1
+            Assert.That(InitialPersonaCatalog.TryFind("PER_005", out var per005), Is.True);
+            Assert.That(per005.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.AfterDiscardPlay));
+            Assert.That(per005.ConditionThreshold, Is.EqualTo(1));
+
+            // PER_006：连续使用不同牌型次数 != 2（新比较符「不等于」）
+            Assert.That(InitialPersonaCatalog.TryFind("PER_006", out var per006), Is.True);
+            Assert.That(per006.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.DifferentHandTypeStreak));
+            Assert.That(per006.Comparator, Is.EqualTo(PersonaComparator.NotEqual));
+            Assert.That(per006.ConditionThreshold, Is.EqualTo(2));
+
+            // PER_007：出牌数量 <= 4
             Assert.That(InitialPersonaCatalog.TryFind("PER_007", out var per007), Is.True);
-            Assert.That(per007.EffectType, Is.EqualTo(PersonaEffectType.PerUnitMultiplier));
-            Assert.That(per007.EffectParam1, Is.EqualTo(0.1m));
-            Assert.That(per007.EffectCap, Is.EqualTo(0.7m));
+            Assert.That(per007.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.SubmittedCardCount));
+            Assert.That(per007.Comparator, Is.EqualTo(PersonaComparator.LessOrEqual));
+            Assert.That(per007.ConditionThreshold, Is.EqualTo(4));
 
-            // PER_013：异质 / 牌库数量 <= 30 / 附加条件存原文（带星号未定稿）/ 浮点原文精确保存
-            Assert.That(InitialPersonaCatalog.TryFind("PER_013", out var per013), Is.True);
-            Assert.That(per013.Quality, Is.EqualTo(PersonaQuality.Mutant));
-            Assert.That(per013.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.DeckSize));
-            Assert.That(per013.Comparator, Is.EqualTo(PersonaComparator.LessOrEqual));
-            Assert.That(per013.ConditionThreshold, Is.EqualTo(30));
-            Assert.That(per013.ExtraCondition, Is.Null);
-            Assert.That(per013.ExtraConditionRaw, Is.EqualTo("另有计分牌数量条件*"));
-            Assert.That(per013.EffectParam1, Is.EqualTo(2.4500000000000002m));
-
-            // PER_015：附加条件结构化（剩余弃牌次数 = 0）
-            Assert.That(InitialPersonaCatalog.TryFind("PER_015", out var per015), Is.True);
-            Assert.That(per015.ExtraCondition, Is.Not.Null);
-            Assert.That(per015.ExtraCondition.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.DiscardsRemaining));
-            Assert.That(per015.ExtraCondition.Comparator, Is.EqualTo(PersonaComparator.Equal));
-            Assert.That(per015.ExtraCondition.Threshold, Is.EqualTo(0));
-            Assert.That(per015.ExtraConditionRaw, Is.EqualTo("剩余弃牌次数=0"));
-
-            // PER_016：人格触发次数 >= 3 / 独立结算 = 是
-            Assert.That(InitialPersonaCatalog.TryFind("PER_016", out var per016), Is.True);
-            Assert.That(per016.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.PersonaTriggerCount));
-            Assert.That(per016.ConditionThreshold, Is.EqualTo(3));
-            Assert.That(per016.IndependentSettlement, Is.True);
+            // PER_008：牌型品质 = RARE + 增加独立倍率 0.05（新效果，decimal 原文精确保存）
+            Assert.That(InitialPersonaCatalog.TryFind("PER_008", out var per008), Is.True);
+            Assert.That(per008.TriggerCondition, Is.EqualTo(PersonaTriggerCondition.HandTypeQuality));
+            Assert.That(per008.ConditionParam, Is.EqualTo("RARE"));
+            Assert.That(per008.EffectType, Is.EqualTo(PersonaEffectType.AddIndependentMultiplier));
+            Assert.That(per008.EffectParam1, Is.EqualTo(0.05m));
         }
 
         [Test]
@@ -216,7 +192,7 @@ namespace PersonaCards.Tests.EditMode
         public void ConfigureNullClearsPreviousTemplates()
         {
             InitialPersonaCatalog.Configure(BuildValidAsset().entries);
-            Assert.That(InitialPersonaCatalog.Templates.Count, Is.EqualTo(16));
+            Assert.That(InitialPersonaCatalog.Templates.Count, Is.EqualTo(8));
 
             InitialPersonaCatalog.Configure(null);
 
@@ -269,6 +245,28 @@ namespace PersonaCards.Tests.EditMode
             asset.entries.Add(asset.entries[0]);
             Assert.That(asset.Validate(out var error), Is.False);
             Assert.That(error, Does.Contain("重复"));
+        }
+
+        [Test]
+        public void ValidateRejectsConditionParamMismatch()
+        {
+            // 品质类触发缺条件参数 → 校验失败
+            var missingParam = BuildValidAsset();
+            missingParam.entries[2].conditionParam = "";
+            Assert.That(missingParam.Validate(out var error), Is.False);
+            Assert.That(error, Does.Contain("条件参数"));
+
+            // 非品质类触发带条件参数 → 校验失败
+            var strayParam = BuildValidAsset();
+            strayParam.entries[0].conditionParam = "NORMAL";
+            Assert.That(strayParam.Validate(out var error2), Is.False);
+            Assert.That(error2, Does.Contain("必须为空"));
+
+            // 条件参数值不在品质等级值域 → 校验失败
+            var badValue = BuildValidAsset();
+            badValue.entries[2].conditionParam = "LEGENDARY";
+            Assert.That(badValue.Validate(out var error3), Is.False);
+            Assert.That(error3, Does.Contain("LEGENDARY"));
         }
 
         [Test]

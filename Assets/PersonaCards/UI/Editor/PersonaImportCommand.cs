@@ -9,9 +9,9 @@ using UnityEngine;
 namespace PersonaCards.UI.Editor
 {
     /// <summary>
-    /// 人格牌配置导入命令：读取 Docs/人格牌.xlsx 的「人格牌配置」sheet，映射并覆写 PersonaConfig.asset（P0-1E）。
-    /// 「图片配置」sheet 的绑定 ID 集合用于人格牌_ID 对照警告（策划改 ID 只需同步图片配置）。
-    /// 任一行校验失败则整体中止（资产零改动），错误全部输出到 Console；警告（「特殊→异质」规范化、附加条件存原文）不阻塞导入。
+    /// 人格牌配置导入命令：读取 Docs/人格牌.xlsx 的「人格牌配置」+「人格牌_词条」+「人格牌_主属性」3 个 sheet（新版 8 列引用式结构），
+    /// 映射并覆写 PersonaConfig.asset（P0-1E）。「图片配置」sheet 的绑定 ID 集合用于人格牌_ID 对照警告（策划改 ID 只需同步图片配置）。
+    /// 任一行校验失败则整体中止（资产零改动），错误全部输出到 Console；警告（PER_009~016 待策划补充、绑定 ID 对照）不阻塞导入。
     /// </summary>
     public static class PersonaImportCommand
     {
@@ -40,13 +40,23 @@ namespace PersonaCards.UI.Editor
             }
 
             // 先读全字节再解析：FileShare.ReadWrite 容忍 Excel 打开占用的文件锁；内存流解析避免期间文件被改
-            List<Dictionary<string, string>> rows;
-            try
+            // 每个 sheet 独立内存流读取（互不影响）
+            List<Dictionary<string, string>> ReadSheet(string sheetName)
             {
                 using var memory = new MemoryStream();
                 using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     file.CopyTo(memory);
-                rows = XlsxTableReader.ReadTable(memory, PersonaTableContract.SheetName);
+                return XlsxTableReader.ReadTable(memory, sheetName);
+            }
+
+            List<Dictionary<string, string>> rows;
+            List<Dictionary<string, string>> entryRows;
+            List<Dictionary<string, string>> mainAttrRows;
+            try
+            {
+                rows = ReadSheet(PersonaTableContract.SheetName);
+                entryRows = ReadSheet(PersonaTableContract.EntrySheetName);
+                mainAttrRows = ReadSheet(PersonaTableContract.MainAttrSheetName);
             }
             catch (Exception exception)
             {
@@ -54,14 +64,11 @@ namespace PersonaCards.UI.Editor
                 return;
             }
 
-            // 图片配置 sheet 独立读取（各自内存流互不影响）；缺 sheet 只降级为跳过人格牌_ID 对照
+            // 图片配置 sheet 独立读取；缺 sheet 只降级为跳过人格牌_ID 对照
             ICollection<string> imageBindingIds = null;
             try
             {
-                using var imageMemory = new MemoryStream();
-                using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    file.CopyTo(imageMemory);
-                var imageRows = XlsxTableReader.ReadTable(imageMemory, ImageSheetContract.SheetName);
+                var imageRows = ReadSheet(ImageSheetContract.SheetName);
                 var ids = new HashSet<string>();
                 foreach (var row in imageRows)
                 {
@@ -75,7 +82,7 @@ namespace PersonaCards.UI.Editor
                 Debug.LogWarning($"[Persona] 读取「图片配置」sheet 失败（{exception.Message}），跳过人格牌_ID 对照校验。");
             }
 
-            var mapping = PersonaTableMapper.Map(rows, imageBindingIds);
+            var mapping = PersonaTableMapper.Map(rows, entryRows, mainAttrRows, imageBindingIds);
             foreach (var warning in mapping.Warnings)
                 Debug.LogWarning($"[Persona] {warning}");
 

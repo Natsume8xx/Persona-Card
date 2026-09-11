@@ -1,7 +1,8 @@
 namespace PersonaCards.Battle.Personas
 {
     /// <summary>
-    /// 人格牌效果类型（配置数据面，P0-1E 新增）：6 种效果，按配表「人格牌配置」sheet 出现序。
+    /// 人格牌效果类型（配置数据面，P0-1E 新增）：7 种效果，1~6 为旧 15 列扁平结构、7 为
+    /// 新版 8 列引用式主属性表追加（增加独立倍率）。
     /// 运行时结算接入留给后续 P0 玩法任务；与运行时枚举 PersonaEffectKind
     /// （AddChips/AddMultiplier/MultiplyFinal）分离，运行时 switch 不受波及。
     /// 显式赋值从 1 起：防序列化把缺省值 0 误读为合法枚举。
@@ -24,6 +25,9 @@ namespace PersonaCards.Battle.Personas
         PerUnitChips = 5,
 
         /// <summary>最终倍率乘算（PER_009/PER_011~016）。</summary>
-        MultiplyFinal = 6
+        MultiplyFinal = 6,
+
+        /// <summary>增加独立倍率（新版主属性表；参数 0.05 = 独立乘区乘 1.05，运行时接入时定结算语义）。</summary>
+        AddIndependentMultiplier = 7
     }
 }

@@ -38,6 +38,21 @@ namespace PersonaCards.Data
         [Tooltip("条件阈值原文（非负整数；空 = 无条件阈值）。")]
         public string threshold;
 
+        [Tooltip("条件参数原文（牌型品质类条件为品质文本 NORMAL/RARE；其他条件为空）。")]
+        public string conditionParam;
+
+        [Tooltip("次级属性_ID（SUB_xxx；新版 8 列引用式结构，仅存原文）。")]
+        public string subAttributeId;
+
+        [Tooltip("最大属性数量（新版 8 列引用式结构，仅存原文）。")]
+        public string maxAttributeCount;
+
+        [Tooltip("最大次级属性数量（新版 8 列引用式结构，仅存原文）。")]
+        public string maxSubAttributeCount;
+
+        [Tooltip("次级属性池数量（新版 8 列引用式结构，仅存原文）。")]
+        public string subAttributePoolCount;
+
         [Tooltip("附加条件·触发条件（可解析时；空 = 无结构化附加条件）。")]
         public string extraTrigger;
 
@@ -70,9 +85,9 @@ namespace PersonaCards.Data
     }
 
     /// <summary>
-    /// 人格牌配置资产：16 张人格牌（PER_001~016）的配表落地，由菜单「导入人格牌配置数据」写入。
+    /// 人格牌配置资产：新版配表 8 张基础人格牌（PER_001~008）的落地，由菜单「导入人格牌配置数据」写入。
     /// P0-1E 白盒语义：空条目资产合法（Battle 门面回落 = 空模板目录，教学 3 张独立静态锚点），
-    /// 因此 PER_001~016 齐全校验不在此层（在 PersonaTableMapper 导入层，防误删）。
+    /// 因此 PER_001~008 齐全校验不在此层（在 PersonaTableMapper 导入层，防误删）。
     /// 程序集边界：Data 不能引用 Battle → 枚举文本（品质/触发条件/比较符/效果类型）以 string 存规范值，
     /// 由 Battle 门面 Configure(条目列表) 时转换；数值列存 string 原文（如 PER_013 的 2.4500000000000002 精确保存），空串 = 无。
     /// </summary>
@@ -82,7 +97,7 @@ namespace PersonaCards.Data
         /// <summary>资产固定路径（导入命令与场景构建器共用）。</summary>
         public const string AssetPath = "Assets/PersonaCards/Data/PersonaConfig.asset";
 
-        [Tooltip("人格牌配置条目（PER_001~016 齐全，导入后按人格牌_ID 升序；空列表 = 白盒合法）。")]
+        [Tooltip("人格牌配置条目（新版为 PER_001~008 基础人格牌，导入后按人格牌_ID 升序；空列表 = 白盒合法）。")]
         public List<PersonaConfigEntry> entries = new List<PersonaConfigEntry>();
 
         /// <summary>
@@ -155,6 +170,51 @@ namespace PersonaCards.Data
                 {
                     error = $"「{entry.personaId}」的「条件阈值」值「{entry.threshold}」不是非负整数。";
                     return false;
+                }
+
+                // 条件参数（新版词条表）：品质类条件必须给品质文本，其他条件必须为空（IsNullOrEmpty 防旧资产反序列化 null）
+                var conditionParam = string.IsNullOrEmpty(entry.conditionParam) ? "" : entry.conditionParam;
+                if (entry.trigger == PersonaTableContract.TriggerHandTypeQuality)
+                {
+                    if (conditionParam.Length == 0)
+                    {
+                        error = $"「{entry.personaId}」的触发条件为「{PersonaTableContract.TriggerHandTypeQuality}」时「条件参数」必填（{string.Join("/", PersonaTableContract.QualityParamValues)}）。";
+                        return false;
+                    }
+                    if (Array.IndexOf(PersonaTableContract.QualityParamValues, conditionParam) < 0)
+                    {
+                        error = $"「{entry.personaId}」的「条件参数」值「{conditionParam}」无效，应为 {string.Join("/", PersonaTableContract.QualityParamValues)}。";
+                        return false;
+                    }
+                }
+                else if (conditionParam.Length > 0)
+                {
+                    error = $"「{entry.personaId}」的触发条件非「{PersonaTableContract.TriggerHandTypeQuality}」时「条件参数」必须为空（当前为「{conditionParam}」）。";
+                    return false;
+                }
+
+                // 新版 8 列结构字段：次级属性_ID 格式 SUB_xxx；3 个数量字段非负整数（空/缺省均允许）
+                if (!string.IsNullOrEmpty(entry.subAttributeId)
+                    && !Regex.IsMatch(entry.subAttributeId, @"^SUB_\d{3}$"))
+                {
+                    error = $"「{entry.personaId}」的「次级属性_ID」值「{entry.subAttributeId}」格式无效，应为 SUB_xxx。";
+                    return false;
+                }
+                foreach (var (fieldName, fieldValue) in new[]
+                {
+                    ("最大属性数量", entry.maxAttributeCount),
+                    ("最大次级属性数量", entry.maxSubAttributeCount),
+                    ("次级属性池数量", entry.subAttributePoolCount)
+                })
+                {
+                    var text = string.IsNullOrEmpty(fieldValue) ? "" : fieldValue;
+                    if (text.Length > 0
+                        && (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var countValue)
+                            || countValue < 0))
+                    {
+                        error = $"「{entry.personaId}」的「{fieldName}」值「{text}」不是非负整数。";
+                        return false;
+                    }
                 }
 
                 // 效果参数1：必填非负 decimal；效果参数2：空允许、非空非负 decimal；效果上限：空允许、非空非负 decimal

@@ -21,6 +21,7 @@ namespace PersonaCards.Battle.Personas
             PersonaTriggerCondition triggerCondition,
             PersonaComparator comparator,
             int? conditionThreshold,
+            string conditionParam,
             ExtraConditionSpec extraCondition,
             string extraConditionRaw,
             PersonaEffectType effectType,
@@ -66,6 +67,12 @@ namespace PersonaCards.Battle.Personas
                 throw new ArgumentOutOfRangeException(nameof(conditionThreshold));
             }
 
+            // 条件参数与阈值互斥：牌型品质类条件走参数文本（NORMAL/RARE），数值类条件走阈值
+            if (!string.IsNullOrEmpty(conditionParam) && conditionThreshold.HasValue)
+            {
+                throw new ArgumentException("Condition param and threshold cannot both be set.", nameof(conditionParam));
+            }
+
             // 效果参数非负（沿用 PersonaCardDefinition effectValue ≥ 0 语义）
             if (effectParam1 < 0m || effectParam2 < 0m)
             {
@@ -85,6 +92,7 @@ namespace PersonaCards.Battle.Personas
             TriggerCondition = triggerCondition;
             Comparator = comparator;
             ConditionThreshold = conditionThreshold;
+            ConditionParam = string.IsNullOrEmpty(conditionParam) ? "" : conditionParam;
             ExtraCondition = extraCondition;
             ExtraConditionRaw = extraConditionRaw;
             EffectType = effectType;
@@ -118,6 +126,9 @@ namespace PersonaCards.Battle.Personas
 
         /// <summary>条件阈值（null = 无）。</summary>
         public int? ConditionThreshold { get; }
+
+        /// <summary>条件参数原文（牌型品质类条件为品质文本 NORMAL/RARE；其余恒空串）。</summary>
+        public string ConditionParam { get; }
 
         /// <summary>附加条件（结构化；null = 无或不可解析）。</summary>
         public ExtraConditionSpec ExtraCondition { get; }
@@ -173,6 +184,10 @@ namespace PersonaCards.Battle.Personas
                 case "其他人格触发次数": value = PersonaTriggerCondition.OtherPersonaTriggerCount; return true;
                 case "剩余出牌次数": value = PersonaTriggerCondition.PlaysRemaining; return true;
                 case "人格触发次数": value = PersonaTriggerCondition.PersonaTriggerCount; return true;
+                case "牌型品质": value = PersonaTriggerCondition.HandTypeQuality; return true;
+                case "弃牌后出牌": value = PersonaTriggerCondition.AfterDiscardPlay; return true;
+                case "连续使用不同牌型次数": value = PersonaTriggerCondition.DifferentHandTypeStreak; return true;
+                case "出牌数量": value = PersonaTriggerCondition.SubmittedCardCount; return true;
                 default: value = default; return false;
             }
         }
@@ -186,6 +201,7 @@ namespace PersonaCards.Battle.Personas
                 case "大于等于": value = PersonaComparator.GreaterOrEqual; return true;
                 case "小于": value = PersonaComparator.Less; return true;
                 case "小于等于": value = PersonaComparator.LessOrEqual; return true;
+                case "不等于": value = PersonaComparator.NotEqual; return true;
                 default: value = default; return false;
             }
         }
@@ -201,6 +217,7 @@ namespace PersonaCards.Battle.Personas
                 case "每单位增加倍率": value = PersonaEffectType.PerUnitMultiplier; return true;
                 case "每单位增加筹码": value = PersonaEffectType.PerUnitChips; return true;
                 case "最终倍率乘算": value = PersonaEffectType.MultiplyFinal; return true;
+                case "增加独立倍率": value = PersonaEffectType.AddIndependentMultiplier; return true;
                 default: value = default; return false;
             }
         }
