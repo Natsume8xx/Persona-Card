@@ -39,7 +39,7 @@ var fetch=function(url,options){
  if(typeof nativeNet==='undefined'||!nativeNet||typeof nativeNet.Fetch!=='function')return Promise.reject(new Error('native fetch unavailable'));
  var body=options.body===undefined||options.body===null?'':String(options.body);
  var pending;
- try{pending=nativeNet.Fetch(String(url),body)}catch(e){return Promise.reject(e)}
+ try{pending=nativeNet.Fetch(String(url),body,Number(options.timeoutMs)||0)}catch(e){return Promise.reject(e)}
  return Promise.resolve(pending).then(function(json){
   var envelope;try{envelope=JSON.parse(json)}catch(e){return {ok:false,status:0,json:function(){return Promise.resolve(null)}}}
   return {ok:!!envelope.ok,status:envelope.status||0,json:function(){return Promise.resolve(envelope.body)}};

@@ -83,7 +83,7 @@ async function listAll(scf) {
 async function ensurePublicTrigger(scf) {
   const existing = await scf.ListTriggers({ FunctionName: FUNCTION_NAME, Namespace: NAMESPACE, Limit: 100 });
   const triggers = existing.Triggers || [];
-  if (triggers.some((t) => t.Type === 'functionurl')) {
+  if (triggers.some((t) => t.Type === 'functionurl' || t.Type === 'http')) {
     console.log('[deploy] 已存在函数 URL 触发器');
     return;
   }
@@ -99,27 +99,47 @@ async function ensurePublicTrigger(scf) {
 // 执行角色只在函数访问腾讯云资源（COS/DB 等）时才必需；本函数仅出网调用 DeepSeek。
 // 账号首次使用 SCF 前不存在默认角色 SCF_QcsRole（要开一次控制台才会自动创建），
 // 因此这里自动回退为「无角色创建」，跳过控制台激活这一步。
+// 另注：UpdateFunctionConfiguration 实测不识别 Handler 参数（UnknownParameter），更新配置时须剔除。
 let roleOmitted = false;
-function configFor(skipRole) {
+function createConfig(skipRole) {
   const config = { ...FUNCTION_CONFIG };
   if (skipRole || roleOmitted) delete config.Role;
   return config;
+}
+function updateConfig() {
+  const config = { ...FUNCTION_CONFIG };
+  delete config.Handler;
+  if (roleOmitted) delete config.Role;
+  return config;
+}
+
+async function waitUntilActive(scf, base) {
+  for (let i = 0; i < 18; i++) {
+    try {
+      const info = await scf.GetFunction(base);
+      if (info.Status === 'Active') return;
+    } catch (e) {
+      // 状态查询失败不阻塞，继续等待
+    }
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+  }
+  throw new Error('函数长时间未进入 Active 状态');
 }
 
 async function deploy(scf) {
   const base = { FunctionName: FUNCTION_NAME, Namespace: NAMESPACE };
   let created = false;
   try {
-    await scf.CreateFunction({ ...base, ...configFor(false), Environment: { Variables: envVars() }, Code: { ZipFile: zipBase64() } });
+    await scf.CreateFunction({ ...base, ...createConfig(false), Environment: { Variables: envVars() }, Code: { ZipFile: zipBase64() } });
     created = true;
     console.log('[deploy] 函数已创建：', FUNCTION_NAME);
   } catch (e) {
-    if (e && e.code === 'ResourceInUse.FunctionName') {
+    if (e && (e.code === 'ResourceInUse.FunctionName' || e.code === 'ResourceInUse.Function')) {
       console.log('[deploy] 函数已存在，更新代码与配置…');
     } else if (e && e.code === 'ResourceNotFound.Role') {
       console.warn('[deploy] 默认执行角色不存在，回退为无角色创建…');
       roleOmitted = true;
-      await scf.CreateFunction({ ...base, ...configFor(true), Environment: { Variables: envVars() }, Code: { ZipFile: zipBase64() } });
+      await scf.CreateFunction({ ...base, ...createConfig(true), Environment: { Variables: envVars() }, Code: { ZipFile: zipBase64() } });
       created = true;
       console.log('[deploy] 函数已创建（无执行角色）：', FUNCTION_NAME);
     } else {
@@ -128,7 +148,9 @@ async function deploy(scf) {
   }
   if (!created) {
     await scf.UpdateFunctionCode({ ...base, Code: { ZipFile: zipBase64() } });
-    await scf.UpdateFunctionConfiguration({ ...base, ...configFor(false), Environment: { Variables: envVars() } });
+    // 代码更新后函数进入 Updating，配置更新须等待其回到 Active，否则 FailedOperation.UpdateFunctionConfiguration
+    await waitUntilActive(scf, base);
+    await scf.UpdateFunctionConfiguration({ ...base, ...updateConfig(), Environment: { Variables: envVars() } });
     console.log('[deploy] 代码与配置已更新：', FUNCTION_NAME);
   }
   await ensurePublicTrigger(scf);

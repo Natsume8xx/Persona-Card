@@ -23,14 +23,16 @@ namespace PersonaCards.WebAligned
         static int inFlight;
         public static int InFlight => Volatile.Read(ref inFlight);
 
-        public async Task<string> Fetch(string url, string body)
+        public async Task<string> Fetch(string url, string body, double timeoutMs = 0)
         {
             var target = Resolve(url);
             if (target == null) throw new InvalidOperationException("AI 选择请求被拒：非白名单地址 " + url);
             Interlocked.Increment(ref inFlight);
             try
             {
-                using (var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) })
+                // 命名请求由 JS 侧透传 3 秒超时（规格 6.1）；选择请求沿用 20 秒
+                var timeout = timeoutMs > 0 ? TimeSpan.FromMilliseconds(timeoutMs) : TimeSpan.FromSeconds(20);
+                using (var client = new HttpClient { Timeout = timeout })
                 {
                     var content = new StringContent(body ?? "", System.Text.Encoding.UTF8, "application/json");
                     using (var response = await client.PostAsync(target, content).ConfigureAwait(false))

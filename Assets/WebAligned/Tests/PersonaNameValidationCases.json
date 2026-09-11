@@ -1,0 +1,307 @@
+{
+  "说明": "AI 人格命名双端共享验证向量：C# EditMode 测试与 Tools/AIProxy node 测试读取同一文件，保证客户端与服务端校验规则一致（规格 4.1「规则集中维护」）。styleVersion 变更时同步两侧实现。",
+  "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+  "baseReservedNames": [
+    "隐境寻路者",
+    "断舍离者",
+    "善变漫游者",
+    "留手谋划者",
+    "满手承诺者",
+    "终局观察者",
+    "克制的赌徒",
+    "结构收藏家",
+    "花色漫游者",
+    "同色共鸣者"
+  ],
+  "bossBaseNames": [
+    "实界之镜",
+    "箱中之神",
+    "向死之渊",
+    "规训之眼",
+    "意志之囚",
+    "迷宫之骑",
+    "无体之器",
+    "离情之徒",
+    "拒翔之翼",
+    "意义守夜者"
+  ],
+  "bossVariantPrefixes": [
+    "突变的",
+    "适应的",
+    "强化的",
+    "重组的"
+  ],
+  "formatValidNames": [
+    "留白守望者",
+    "迟疑的旅人",
+    "留痕者",
+    "拾隙人",
+    "迟暮观潮者",
+    "歧路织梦者",
+    "余响拾取者",
+    "歧路旅人",
+    "轻装赴约者",
+    "陌境访客",
+    "拾回旧影者",
+    "余响追随者",
+    "蓄意织局者",
+    "新痕收藏家",
+    "异彩织梦者",
+    "绯色守约者",
+    "惜物同行者"
+  ],
+  "formatInvalidNames": [
+    "AB",
+    "留痕",
+    "镜渊永恒宿命之神",
+    "<b>留痕者</b>",
+    "留痕者 ",
+    "留痕者\n",
+    "KEEPER",
+    "神王",
+    "观 察 者",
+    "留痕者￼"
+  ],
+  "reservedInvalidNames": [
+    "克制的赌徒",
+    "花色漫游者",
+    "同色共鸣者",
+    "隐境寻路者"
+  ],
+  "bossReservedInvalidNames": [
+    "实界之镜",
+    "箱中之神",
+    "突变的实界之镜",
+    "重组的意志之囚"
+  ],
+  "usedNamesInvalid": [
+    "迟暮观潮者",
+    "拾隙人"
+  ],
+  "validNameRequests": [
+    {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "打出与上一手不同的牌型",
+        "mainEffect": "独立倍率 +25%",
+        "growth": "本局每首次打出一种牌型，成长 1 层",
+        "summary": "打出与上一手不同的牌型时，独立倍率 +25%。本局每首次打出一种牌型，成长 1 层。"
+      },
+      "usedNames": [
+        "迟暮观潮者"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N12:zz0001",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N12:AI_BEHAVIOR_SNAPSHOT_V1:N12:1",
+      "runtimeNodeId": "N12",
+      "selectedCandidateId": "candidate-x",
+      "directionId": "AI_DIRECTION_FOLLOW",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "连续至少2次打出相同牌型",
+        "mainEffect": "最终得分提高 30%",
+        "growth": "每次触发时，成长 1 层",
+        "summary": "连续至少2次打出相同牌型时，最终得分提高 30%。每次触发时，成长 1 层。"
+      },
+      "usedNames": []
+    }
+  ],
+  "invalidNameRequests": {
+    "多余字段": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": [],
+      "extraField": true
+    },
+    "版本错误": {
+      "schemaVersion": 2,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    },
+    "风格版本不认识": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V0_9",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    },
+    "请求编号前缀非法": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V2:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    },
+    "选择编号节点不匹配": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N08:AI_BEHAVIOR_SNAPSHOT_V1:N08:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    },
+    "节点非法": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N99:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N99",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    },
+    "方向非法": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_UP",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    },
+    "玩家文案字段缺失": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g"
+      },
+      "usedNames": []
+    },
+    "玩家文案超长": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长"
+      },
+      "usedNames": []
+    },
+    "已用名超限": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "candidate-example-01",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": [
+        "甲名字",
+        "乙名字",
+        "丙名字"
+      ]
+    },
+    "候选ID为空": {
+      "schemaVersion": 1,
+      "requestId": "AI_PERSONA_NAME_V1:N04:lwabc1",
+      "selectionRequestId": "AI_PERSONA_SELECTION_V1:N04:AI_BEHAVIOR_SNAPSHOT_V1:N04:3",
+      "runtimeNodeId": "N04",
+      "selectedCandidateId": "",
+      "directionId": "AI_DIRECTION_BRIDGE",
+      "styleVersion": "PERSONA_NAME_STYLE_V1_1",
+      "playerCopy": {
+        "trigger": "t",
+        "mainEffect": "m",
+        "growth": "g",
+        "summary": "s"
+      },
+      "usedNames": []
+    }
+  },
+  "semanticInvalidNames": [
+    "留痕者二号",
+    "倍率增幅者",
+    "必胜的赌徒",
+    "镜中留痕者",
+    "永恒之神",
+    "留痕者之魂"
+  ]
+}
