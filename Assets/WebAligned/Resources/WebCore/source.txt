@@ -2062,7 +2062,10 @@
   function transitionTo(nodeId,context={}){const entered=enterNode(nodeId);return{completed:true,transitioned:true,to:nodeId,...entered,context}}
   function finishRun(result={type:'RUN_FINISHED'}){if(!state)return{finished:false};if(state.nodeStatus==='RUN_COMPLETED')return{finished:true,duplicate:true,state:clone(state)};state.nodeStatus='RUN_COMPLETED';state.runEndedAt=Date.now();state.finishResult=clone(result);const snapshot=clone(state);if(typeof onRunFinished==='function')onRunFinished(snapshot,clone(result));return{finished:true,duplicate:false,state:snapshot}}
   function restoreRun(savedState,context={}){
-    const incoming=clone(savedState);if(!incoming||typeof incoming!=='object')throw new Error('Invalid Run State');const template=assertTemplate(incoming.runTemplateId,{restoring:true}),node=assertNode(template,incoming.currentNodeId);for(const id of incoming.completedNodeIds||[])assertNode(template,id);
+    const incoming=clone(savedState);if(!incoming||typeof incoming!=='object')throw new Error('Invalid Run State');
+    // 旧存档的 AI 人格可能没有配图：按内部分类随机补一张，随下次保存持久化（新人格生成时已在工厂内配图）
+    for(const template of Object.values(incoming.dynamicPersonaTemplatesById||{})){if(!template?.portrait&&template?.aiPersonaMeta?.internalDirectionId&&root.AiPersonaPortraitPool){const portrait=root.AiPersonaPortraitPool.randomPortraitFor(template.aiPersonaMeta.internalDirectionId);if(portrait)template.portrait=portrait}}
+    const template=assertTemplate(incoming.runTemplateId,{restoring:true}),node=assertNode(template,incoming.currentNodeId);for(const id of incoming.completedNodeIds||[])assertNode(template,id);
     state={...incoming,transitionVersion:incoming.transitionVersion||TRANSITION_VERSION,nodeRuntimeById:incoming.nodeRuntimeById||{},developerOptions:{offlineAiPersonaEnabled:incoming.developerOptions?.offlineAiPersonaEnabled===true},personaGenerationMode:['LOCAL_V1','LEGACY_PROTOTYPE','DISABLED'].includes(incoming.personaGenerationMode)?incoming.personaGenerationMode:'LEGACY_PROTOTYPE',aiPersonaDirectionByNode:incoming.aiPersonaDirectionByNode||{},personaInstancesById:incoming.personaInstancesById||{},runPersonaPool:incoming.runPersonaPool||[],equippedPersonaInstanceIds:incoming.equippedPersonaInstanceIds||[null,null,null,null],dynamicPersonaTemplatesById:incoming.dynamicPersonaTemplatesById||{},personaHistory:{usedHandTypes:[],previousHandType:null,previousHandPriority:null,sameHandTypeStreak:0,...(incoming.personaHistory||{})},shopGrowthState:{...emptyShopGrowthState(),...clone(incoming.shopGrowthState||{})},runMetrics:incoming.runMetrics??(template.id==='RUN_TEMPLATE_TARGET'?emptyTargetMetrics():null),runResult:incoming.runResult??(template.id==='RUN_TEMPLATE_TARGET'?{initialPersonaTemplateIds:[],selectedCarryOutPersonaInstanceId:null,permanentCollectionCardId:null}:null)};const runtime=runtimeFor(node.id);runtime.entered=true;if(runtime.completed||(state.completedNodeIds||[]).includes(node.id))throw new Error(`Cannot restore completed current node: ${node.id}`);
     state.nodeStatus='IN_PROGRESS';state.battleIndexCompat=battleIndexFor(template,node.id,state.battleIndexCompat||0);callHandler('restore',node,{restoring:true,...context});return{restored:true,node:clone(node),state:clone(state)};
   }
@@ -2929,6 +2932,15 @@
   'use strict';
   const clone=value=>value==null?value:JSON.parse(JSON.stringify(value));
   const safe=value=>String(value||'AI').replace(/[^a-zA-Z0-9_-]/g,'_');
+  // 人格牌配图（策划分类 → 游戏内方向）：桥接=桥接，偏转=破局，映照=顺势。
+  // AI 人格生成/读档时按内部分类随机取一张，写入 template.portrait 随存档持久化（不在渲染时取，避免闪变）。
+  const AI_PERSONA_ART_POOLS={
+    AI_DIRECTION_BRIDGE:['personas-v2/ai-bridge-01.png','personas-v2/ai-bridge-02.png','personas-v2/ai-bridge-03.png','personas-v2/ai-bridge-04.png','personas-v2/ai-bridge-05.png','personas-v2/ai-bridge-06.png','personas-v2/ai-bridge-07.png','personas-v2/ai-bridge-08.png','personas-v2/ai-bridge-09.png','personas-v2/ai-bridge-10.png','personas-v2/ai-bridge-11.png'],
+    AI_DIRECTION_BREAK:['personas-v2/ai-deflect-01.png','personas-v2/ai-deflect-02.png','personas-v2/ai-deflect-03.png','personas-v2/ai-deflect-04.png','personas-v2/ai-deflect-05.png','personas-v2/ai-deflect-06.png','personas-v2/ai-deflect-07.png','personas-v2/ai-deflect-08.png','personas-v2/ai-deflect-09.png','personas-v2/ai-deflect-10.png','personas-v2/ai-deflect-11.png'],
+    AI_DIRECTION_FOLLOW:['personas-v2/ai-mirror-01.png','personas-v2/ai-mirror-02.png','personas-v2/ai-mirror-03.png','personas-v2/ai-mirror-04.png','personas-v2/ai-mirror-05.png','personas-v2/ai-mirror-06.png','personas-v2/ai-mirror-07.png','personas-v2/ai-mirror-08.png','personas-v2/ai-mirror-09.png','personas-v2/ai-mirror-10.png','personas-v2/ai-mirror-11.png']
+  };
+  function randomPortraitFor(directionId){const pool=AI_PERSONA_ART_POOLS[directionId]||[];return pool.length?`assets/art/${pool[Math.floor(Math.random()*pool.length)]}`:null}
+  root.AiPersonaPortraitPool=Object.freeze({randomPortraitFor,poolFor:directionId=>AI_PERSONA_ART_POOLS[directionId]||[]});
   function create(whitelist){
     if(!whitelist||whitelist.id!=='TARGET_AI_PERSONA_WHITELIST_V1')throw new Error('AI persona template factory requires the V1 whitelist');
     const effectById=new Map((whitelist.mainEffectParts||[]).map(item=>[item.id,item]));
@@ -2960,7 +2972,7 @@
         tags:['AI人格'],
         decisionStatus:'PROTOTYPE_ASSUMPTION',
         tone:'#725A3A',
-        portrait,
+        portrait:portrait||randomPortraitFor(candidate.directionId),
         aiPersonaMeta:{schemaVersion:1,playerFacing:false,sourceCandidateId:candidate.id,runtimeNodeId:candidate.runtimeNodeId,internalDirectionId:candidate.directionId,mechanismFamilyId:candidate.mechanismFamilyId||null,mechanismFingerprint:candidate.mechanismFingerprint,components:clone(candidate.components),behaviorTags:clone(candidate.behaviorTags),budgetMetrics:clone(candidate.budgetMetrics),playerCopy:clone(candidate.playerCopy)}
       };
     }
@@ -3225,7 +3237,19 @@
       state.records=state.records.map(record=>({...record,runsSinceLastUsed:used.has(record.cardId)?0:Math.max(0,Number(record.runsSinceLastUsed||0))+1}));
       const result=persist(state);return result.ok?{ok:true,records:list()}:{ok:false,reason:'STORAGE_FAILED',error:result.error};
     }
-    return{list,get,carryOut,beginRun,storageKey:STORAGE_KEY,version:VERSION};
+    function backfillPortraits(){
+      // 历史收藏记录的 AI 人格可能没有配图：按内部分类随机补一张并写回收藏存储（幂等，仅补缺失项）。
+      // 宿主在模块加载后才注入 localStorage（NativeRestoreStorage），模块加载期首读把缓存钉在了空集合上，
+      // 必须先失效缓存重读存储，否则旧收藏记录永远不可见（甚至会被之后的 carryOut 覆盖丢失）。
+      cached=null;
+      const pool=root.AiPersonaPortraitPool;if(!pool)return{ok:false,reason:'POOL_UNAVAILABLE'};
+      const state=read();let changed=false;
+      for(const record of state.records){const snapshot=record.templateSnapshot;
+        if(snapshot?.aiPersonaMeta?.internalDirectionId&&!snapshot.portrait){const portrait=pool.randomPortraitFor(snapshot.aiPersonaMeta.internalDirectionId);if(portrait){snapshot.portrait=portrait;changed=true}}}
+      if(!changed)return{ok:true,changed:false};
+      const result=persist(state);return result.ok?{ok:true,changed:true}:{ok:false,reason:'STORAGE_FAILED',error:result.error};
+    }
+    return{list,get,carryOut,beginRun,backfillPortraits,storageKey:STORAGE_KEY,version:VERSION};
   }
   root.PersonaCollection={create,STORAGE_KEY,VERSION};
 })(globalThis);

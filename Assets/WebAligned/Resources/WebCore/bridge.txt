@@ -69,7 +69,7 @@ function NativeAction(json){
  }
  __flush();return true;
 }
-function NativeRestoreStorage(json){__storage=JSON.parse(json);syncPermanentPersonaPool();try{const saved=JSON.parse(localStorage.getItem('persona-loadout')||'null');if(Array.isArray(saved))equippedPersonaIds=normalizedGalleryLoadout(saved)}catch{}return true}
+function NativeRestoreStorage(json){__storage=JSON.parse(json);if(typeof personaCollection!=='undefined'&&typeof personaCollection.backfillPortraits==='function'){try{personaCollection.backfillPortraits()}catch(error){console.warn('收藏配图补全失败:',error)}}syncPermanentPersonaPool();try{const saved=JSON.parse(localStorage.getItem('persona-loadout')||'null');if(Array.isArray(saved))equippedPersonaIds=normalizedGalleryLoadout(saved)}catch{}return true}
 
 
 
